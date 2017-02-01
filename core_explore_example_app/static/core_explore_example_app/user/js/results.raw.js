@@ -1,0 +1,1 @@
+var getResultsUrl = "{% url 'core_explore_example_get_results' %}";

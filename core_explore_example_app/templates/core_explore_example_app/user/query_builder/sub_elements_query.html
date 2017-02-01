@@ -1,0 +1,8 @@
+Define the criteria to find a match on sub-elements of <b>{{ parent_name }}</b>:
+{% for form_field in form_fields %}
+<p>
+    {% include 'core_explore_example_app/user/query_builder/criteria_select.html'%}
+    {% include 'core_explore_example_app/user/query_builder/yes_no.html'%}
+    {{ form_field.element_name }}: {{ form_field.html|safe }}
+</p>
+{% endfor %}

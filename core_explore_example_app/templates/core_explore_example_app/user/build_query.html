@@ -1,0 +1,82 @@
+{% load auth_extras %}
+
+<h1>Perform Search</h1>
+
+
+<span>
+   Click on a field of the Query Builder to add an element to your query. The elements selected in the previous step
+   will appear and you will be able to insert them in the query builder. Click on plus/minus icons to
+   add/remove criteria. You can save queries to build more complex queries and you will retrieve them on your
+   next connection. When your query is done, please click on Submit Query to get XML documents that match the
+   criteria.
+</span>
+
+
+<div id="queryBuilder">
+    <h2>Query Builder</h2>
+    {% if data.query_form%}
+        {{data.query_form|safe}}
+        {%else%}
+        <div id="queryForm">
+        {% include 'core_explore_example_app/user/query_builder/initial_form.html'%}
+        </div>
+    {% endif %}
+    <form>
+        <button type="button" class="btn btn-danger" onclick="clearCriteria()">Clear</button>
+        {% if user|has_perm:'explore.explore_save_query' %}
+        <button type="button" class="btn btn-secondary" onclick="saveQuery()">Save Query</button>
+        {%endif%}
+        <button type="button" class="btn btn-primary" onclick="submit_query()">Submit Query</button>
+    </form>
+    <hr>
+    {% if user.is_authenticated %}
+    <div id="queries">
+        <h2>Saved Queries</h2>
+        <form>
+            {% if user|has_perm:'explore.explore_delete_query' %}
+            <button type="button" class="btn btn-danger" onclick="clearQueries()" >Delete All</button>
+            {%endif%}
+        </form>
+        <div id="queriesTable">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="th-15px">Add to Builder</th>
+                        <th>Queries</th>
+                        {% if user|has_perm:'explore.explore_delete_query' %}
+                        <th class="th-15px">Delete</th>
+                        {%endif%}
+                    </tr>
+                </thead>
+                <tbody>
+                {% if data.queries %}
+                    {% for query in data.queries %}
+                      <tr>
+                        <td>
+                            <span class="icon upload fa fa-arrow-circle-up" style="color:green;"
+                                  onclick="addSavedQueryToForm('query{{ query.id }}')">
+                            </span>
+                        </td>
+                        <td>
+                            {{ query.displayed_query|safe }}
+                        </td>
+                        {% if user|has_perm:'explore.explore_delete_query' %}
+                        <td>
+                            <span class="icon invalid fa fa-minus" style="color:red;"
+                                  onclick="deleteQuery('query{{ query.id }}')">
+                            </span>
+                        </td>
+                        {%endif%}
+                      </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan='3' style='color:red;'>No Saved Queries for now.</td></tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div id="template_id" style="display:none;">{{data.template_id}}</div>

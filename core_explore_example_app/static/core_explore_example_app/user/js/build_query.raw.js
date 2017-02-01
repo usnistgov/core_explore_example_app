@@ -1,0 +1,14 @@
+var selectElementUrl = "{% url 'core_explore_example_select_element' %}";
+var updateUserInputUrl = "{% url 'core_explore_example_update_user_input' %}";
+var addCriteriaUrl = "{% url 'core_explore_example_add_criteria' %}";
+var removeCriteriaUrl = "{% url 'core_explore_example_remove_criteria' %}";
+var saveQueryUrl = "{% url 'core_explore_example_save_query' %}";
+var clearCriteriaUrl = "{% url 'core_explore_example_clear_criteria' %}";
+var clearQueriesUrl = "{% url 'core_explore_example_clear_queries' %}";
+var deleteQueryUrl = "{% url 'core_explore_example_delete_query' %}";
+var addQueryCriteriaUrl = "{% url 'core_explore_example_add_query_criteria' %}";
+var getQueryUrl = "{% url 'core_explore_example_get_query' %}";
+var resultsUrl = "{% url 'core_explore_example_results' data.template_id%}";
+var getSubElementsQueryBuilderUrl = "{% url 'core_explore_example_get_sub_elements_query_builder' %}";
+var insertSubElementsQueryUrl = "{% url 'core_explore_example_insert_sub_elements_query' %}";
+var reloadBuildQueryUrl = "{% url 'core_explore_example_build_query' data.template_id False %}";

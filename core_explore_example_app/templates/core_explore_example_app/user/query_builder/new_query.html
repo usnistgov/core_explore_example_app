@@ -1,0 +1,15 @@
+<p id='crit{{tagID}}'>
+    {% if first%}
+        {% include 'core_explore_example_app/user/query_builder/yes_no.html'%}
+    {% else %}
+        {% include 'core_explore_example_app/user/query_builder/and_or_not.html'%}
+    {% endif %}
+    <input onclick="showCustomTree('crit{{tagID}}')" readonly="readonly" type="text" class="queryInput"
+           value=" {{query|safe}} ">
+    <span id="ui{{tagID}}">
+    </span>
+    {% if not first%}
+    {% include 'core_explore_example_app/user/query_builder/remove.html'%}
+    {% endif %}
+    {% include 'core_explore_example_app/user/query_builder/add.html'%}
+</p>

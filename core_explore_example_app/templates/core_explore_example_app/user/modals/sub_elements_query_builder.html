@@ -1,0 +1,14 @@
+{% extends 'core_main_app/_render/admin/theme/tools/modal.html' %}
+
+{% block modal_id %}sub-elements-query-builder-modal{% endblock %}
+{% block modal_title %}Sub-Elements Query Builder{% endblock %}
+
+{% block modal_body %}
+<div id="subElementQueryBuilder"></div>
+<div id="subElementQueryError" style="color: red;"></div>
+<div id="leaves_id" style="display:none;"></div>
+{% endblock %}
+{% block modal_footer %}
+<a class="btn btn-default pull-left" data-dismiss="modal" href="#"><i class="fa fa-times"></i> Cancel</a>
+<a id="sub_elements_query_insert" class="btn btn-primary" href="#">Insert</a>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'core_main_app/_render/admin/theme/tools/modal.html' %}
+
+{% block modal_id %}custom-tree-modal{% endblock %}
+{% block modal_title %}Select an Element{% endblock %}
+
+{% block modal_body %}
+Select the element that you want to insert in the query.
+<div id="xsd_form">
+    {% if data.custom_form %}
+    You can customize this view by
+    <a href="{% url 'core_explore_example_select_fields' data.template_id %}">
+        selecting new fields
+    </a>
+    .
+    {{data.custom_form|safe}}
+    {% else %}
+    <p style="color:red;">
+        You should customize the template first.
+        <a href="{% url 'core_explore_example_select_fields' data.template_id %}"
+           style="color:red;font-weight:bold;">
+            Go back to 'Select Fields'
+        </a>
+        and select the elements that you want to use in your queries.
+    </p>
+    {% endif %}
+</div>
+<div id="current_criteria" style="display:none;"></div>
+{% endblock %}
+{% block modal_footer %}
+<a class="btn btn-default pull-left" data-dismiss="modal" href="#"><i class="fa fa-times"></i> Cancel</a>
+{% endblock %}

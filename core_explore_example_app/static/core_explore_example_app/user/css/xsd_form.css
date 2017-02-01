@@ -1,0 +1,13 @@
+#xsd_form ul{
+	padding-left: 30px;
+}
+
+#xsd_form li[select_class=none]{
+	display: none;
+}
+
+#xsd_form span.can_click{
+	cursor: pointer;
+	color: orange;
+	margin-left: 5px;
+}

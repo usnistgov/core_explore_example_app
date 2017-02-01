@@ -1,0 +1,44 @@
+#queryBuilder
+{
+	z-index:0;
+	overflow-y: auto;
+}
+
+#queryBuilder select
+{
+	width:70px;
+	font-size: 0.9em;
+	padding-left:0;
+	top:0;
+}
+
+#queryBuilder .elementInput
+{
+	font-size: 0.9em;
+	width:230px;
+	margin-bottom:0;
+}
+
+#queryBuilder input[readonly]
+{
+	cursor:pointer;
+}
+
+#queryBuilder .queryInput
+{
+	font-size: 0.9em;
+	width:472px;
+	margin-bottom:0;
+}
+
+#queryBuilder .valueInput
+{
+	font-size: 0.9em;
+	width:150px;
+	margin-bottom:0;
+}
+
+#queryBuilder p
+{
+	font-weight: bold;
+}

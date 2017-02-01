@@ -1,0 +1,42 @@
+{% load xsl_transform_tag %}
+{% if instance%}
+<p style="font-weight:bold; color:#369;">From {{instance}}</p>
+{% endif %}
+{% if results %}
+    {% for result in results %}
+        <div id="{{result.id}}" name="result">
+            <span class="expand" style='cursor:pointer;' onclick='showhideResult(event);'></span>
+            <span style='font-weight:bold;'>
+                <a href="#">{{ result.title }}</a>
+            </span>
+            <span style='color:grey;'>{{result.template.filename}}</span>
+            <div class='xmlResult' readonly='true' style="display:none;">
+            {{ result.xml_file|xsl_transform|safe}}
+            </div>
+        </div>
+    {% endfor %}
+{% else%}
+<span style="font-style:italic; color:red;"> No Results found... </span>
+{% endif %}
+
+{% if results.has_other_pages %}
+  <ul class="pagination">
+    {% if results.has_previous %}
+      <li><span onclick="get_results({{ results.previous_page_number }});">&laquo;</span></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in results.paginator.page_range %}
+      {% if results.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><span onclick="get_results({{ i }});">{{ i }}</span></li>
+      {% endif %}
+    {% endfor %}
+    {% if results.has_next %}
+            <li><span onclick="get_results({{ results.next_page_number }});">&raquo;</span></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
