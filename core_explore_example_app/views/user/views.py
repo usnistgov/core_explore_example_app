@@ -1,12 +1,14 @@
 """Explore example user views
 """
 import core_main_app.components.template_version_manager.api as template_version_manager_api
+from core_explore_common_app.components.query.models import Query
 from core_explore_example_app.utils.parser import generate_form, render_form
 from core_explore_example_app.components.saved_query import api as saved_query_api
 from core_main_app.components.template import api as template_api
 from core_main_app.utils.rendering import render
 from core_explore_example_app.components.explore_data_structure.models import ExploreDataStructure
 from core_explore_example_app.components.explore_data_structure import api as explore_data_structure_api
+from core_explore_common_app.components.query import api as query_api
 
 
 def index(request):
@@ -18,7 +20,9 @@ def index(request):
     Returns:
 
     """
-    assets = {}
+    assets = {
+        "css": ['core_curate_app/user/css/style.css']
+    }
 
     global_active_template_list = template_version_manager_api.get_active_global_version_manager()
     user_active_template_list = template_version_manager_api.get_active_version_manager_by_user_id(request.user.id)
@@ -122,13 +126,13 @@ def select_fields(request, template_id):
                       context={'errors': e.message})
 
 
-def build_query(request, template_id, new_form="True"):
+def build_query(request, template_id, query_id=None):
     """Page that allows to build and submit queries
 
     Args:
         request:
         template_id:
-        new_form:
+        query_id:
 
     Returns:
 
@@ -150,14 +154,18 @@ def build_query(request, template_id, new_form="True"):
             custom_form_string = request.session['customFormStringExplore']
 
         # If new form
-        if new_form == "True":
+        if query_id is None:
             # empty session variables
             request.session['mapCriteriaExplore'] = dict()
             request.session['savedQueryFormExplore'] = ""
+            # create new query object
+            query = Query(user_id=str(request.user.id), templates=[template])
+            query_api.upsert(query)
         else:
             # if not a new form and a query form is present in session
             if 'savedQueryFormExplore' in request.session:
                 saved_query_form = request.session['savedQueryFormExplore']
+            query = query_api.get_by_id(query_id)
 
         # Get saved queries of a user
         if '_auth_user_id' in request.session:
@@ -200,6 +208,7 @@ def build_query(request, template_id, new_form="True"):
 
             'custom_form': custom_form,
             'query_form': saved_query_form,
+            'query_id': str(query.id)
         }
 
         modals = [
@@ -222,12 +231,13 @@ def build_query(request, template_id, new_form="True"):
                       context={'errors': e.message})
 
 
-def results(request, template_id):
+def results(request, template_id, query_id):
     """Query results view
 
     Args:
         request:
         template_id:
+        query_id:
 
     Returns:
 
@@ -235,11 +245,11 @@ def results(request, template_id):
     assets = {
         "js": [
             {
-                "path": 'core_explore_example_app/user/js/results.js',
+                "path": 'core_explore_common_app/user/js/results.js',
                 "is_raw": False
             },
             {
-                "path": 'core_explore_example_app/user/js/results.raw.js',
+                "path": 'core_explore_common_app/user/js/results.raw.js',
                 "is_raw": True
             },
             {
@@ -248,11 +258,13 @@ def results(request, template_id):
             },
         ],
         "css": ["core_explore_example_app/user/css/query_result.css",
-                "core_main_app/common/css/XMLTree.css"],
+                "core_main_app/common/css/XMLTree.css",
+                "core_explore_common_app/user/css/results.css"],
     }
 
     context = {
         'template_id': template_id,
+        'query_id': query_id
     }
 
     return render(request,

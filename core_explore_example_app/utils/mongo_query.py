@@ -258,7 +258,7 @@ def xpath_to_dot_notation(xpath, namespaces):
     # replace / by .
     xpath = xpath.replace("/", ".")
 
-    return "dict_content" + xpath
+    return xpath[1:]
 
 
 def get_dot_notation_to_element(data_structure_element, namespaces):
@@ -318,62 +318,3 @@ def get_parent_path(data_structure_element_id, namespaces):
 
     return parent_path
 
-
-def compile_regex(query):
-    """Compile all regex in the query
-
-    Args:
-        query:
-
-    Returns:
-
-    """
-    for key, value in query.iteritems():
-        if key == "$and" or key == "$or":
-            for sub_value in value:
-                compile_regex(sub_value)
-        elif isinstance(value, unicode) or isinstance(value, str):
-            if len(value) >= 2 and value[0] == "/" and value[-1] == "/":
-                query[key] = re.compile(value[1:-1])
-        elif isinstance(value, dict):
-            compile_regex(value)
-
-
-def _prepare_query(query_dict, template_id):
-    """Prepares the query to execute
-
-    Args:
-        query_dict:
-        template_id:
-
-    Returns:
-
-    """
-    # get a copy of the query
-    query = copy.deepcopy(query_dict)
-    # compile the regex
-    compile_regex(query)
-    # if template id provided
-    if template_id is not None:
-        # add local template id to query
-        query.update({'template': ObjectId(template_id)})
-
-    return query
-
-
-def execute_query(query_dict, template_id=None):
-    """Executes the query
-
-    Args:
-        query_dict:
-        template_id:
-
-    Returns:
-
-    """
-    # prepare query to execute
-    query = _prepare_query(query_dict,template_id)
-    # get query results
-    results_list = data_api.execute_query(query)
-    # return list of results
-    return results_list

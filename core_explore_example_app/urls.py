@@ -9,9 +9,11 @@ urlpatterns = [
         name='core_explore_example_index'),
     url(r'^select-fields/(?P<template_id>\w+)$', user_views.select_fields,
         name='core_explore_example_select_fields'),
-    url(r'^build-query/(?P<template_id>\w+)/(?P<new_form>\w+)$', user_views.build_query,
+    url(r'^build-query/(?P<template_id>\w+)$', user_views.build_query,
         name='core_explore_example_build_query'),
-    url(r'^results/(?P<template_id>\w+)$', user_views.results,
+    url(r'^build-query/(?P<template_id>\w+)/(?P<query_id>\w+)$', user_views.build_query,
+        name='core_explore_example_build_query'),
+    url(r'^results/(?P<template_id>\w+)/(?P<query_id>\w+)$', user_views.results,
         name='core_explore_example_results'),
 
     url(r'^save-fields$', user_ajax.save_fields,
@@ -43,6 +45,4 @@ urlpatterns = [
         name='core_explore_example_add_query_criteria'),
     url(r'^get-query$', user_ajax.get_query,
         name='core_explore_example_get_query'),
-    url(r'^get-results$', user_ajax.get_results,
-        name='core_explore_example_get_results'),
 ]

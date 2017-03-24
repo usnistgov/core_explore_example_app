@@ -1,26 +1,10 @@
-
 {% load staticfiles %}
-<h1>Query Results</h1>
 
-From here you can view the results of your query.
-
-
-<div class="toolbar">
-	<div class="alert alert-warning" id="banner_results_wait" style="display: none;">
-		<h4><i class='fa fa-circle-o-notch fa-spin fa-2x'></i> Please wait...</h4>
-	</div>
-	<div class="alert alert-error" id="banner_errors" style="display: none;">
-		<a href="#" class="close" data-hide="alert" aria-label="close">&times;</a>
-		<h4><i class="fa fa-exclamation-circle fa-1x"></i> Error</h4>
-		<div id="btn_errors">
-	</div>
-	</div>
-	<div class="btn-group pull-right">
-    	<button class="btn btn-danger" style="text-decoration:none">
-			<a href="{% url 'core_explore_example_build_query' data.template_id False %}">Back to Query</a>
-		</button>
-  	</div>
+<div class="btn-group pull-right">
+    <a href="{% url 'core_explore_example_build_query' data.template_id data.query_id %}"
+       class="btn btn-danger" role="button">Back to Query</a>
 </div>
-<div id="results"></div>
-<div id="template_id" style="display:none;">{{data.template_id}}</div>
+
+{% include "core_explore_common_app/user/results/results.html" %}
+
 

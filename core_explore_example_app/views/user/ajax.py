@@ -2,27 +2,24 @@
 """
 from django.http import HttpResponse
 from django.http.response import HttpResponseBadRequest
-from django.template import loader
-from django.template.context import RequestContext
 from lxml import html
-from os.path import join
 import json
 
 from core_explore_example_app.components.saved_query.models import SavedQuery
 from core_explore_example_app.utils.displayed_query import build_query_pretty_criteria, build_enum_pretty_criteria, \
     build_pretty_criteria, build_or_pretty_criteria, build_and_pretty_criteria
 from core_explore_example_app.utils.mongo_query import build_query_criteria, build_enum_criteria, build_criteria, \
-    build_or_criteria, build_and_criteria, execute_query, get_dot_notation_to_element, get_parent_name, get_parent_path
+    build_or_criteria, build_and_criteria, get_dot_notation_to_element, get_parent_name, get_parent_path
 from core_explore_example_app.utils.query_builder import render_numeric_select, render_value_input, \
-    render_string_select, render_enum, render_initial_form, BranchInfo, CriteriaInfo, ElementInfo, QueryInfo, \
+    render_string_select, render_enum, render_initial_form, CriteriaInfo, ElementInfo, QueryInfo, \
     render_new_query, render_new_criteria, render_sub_elements_query, get_element_value, get_element_comparison, \
     prune_html_tree
-from core_explore_example_app.utils.results_paginator import ResultsPaginator
 from core_explore_example_app.utils.xml import get_list_xsd_numbers, validate_element_value, get_enumerations
 from core_main_app.utils.xml import get_namespaces, get_default_prefix
 from core_parser_app.components.data_structure_element import api as data_structure_element_api
 from core_main_app.components.template import api as template_api
 from core_explore_example_app.components.saved_query import api as saved_query_api
+from core_explore_common_app.components.query import api as query_api
 
 
 # FIXME: avoid session variables
@@ -677,77 +674,27 @@ def get_query(request):
     Returns:
 
     """
-    template_id = request.POST['templateID']
-    form_values = json.loads(request.POST['formValues'])
+    try:
+        template_id = request.POST['templateID']
+        query_id = request.POST['queryID']
+        form_values = json.loads(request.POST['formValues'])
 
-    # save current query builder in session to restore it when coming back to the page
-    query_form = request.POST['queryForm']
-    request.session['savedQueryFormExplore'] = query_form
+        # save current query builder in session to restore it when coming back to the page
+        query_form = request.POST['queryForm']
+        request.session['savedQueryFormExplore'] = query_form
 
-    errors = check_query_form(request, form_values, template_id)
-    if len(errors) == 0:
-        query = fields_to_query(request, form_values, template_id)
-        request.session['queryExplore'] = query
-        response_dict = {'query': json.dumps(query)}
-    else:
-        return HttpResponseBadRequest(_render_errors(errors), content_type='application/javascript')
+        errors = check_query_form(request, form_values, template_id)
+        query_object = query_api.get_by_id(query_id)
+        if len(query_object.data_sources) == 0:
+            errors.append("Please select at least 1 data source.")
 
-    return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
+        if len(errors) == 0:
+            query_content = fields_to_query(request, form_values, template_id)
+            query_object.content = json.dumps(query_content)
+            query_api.upsert(query_object)
+        else:
+            return HttpResponseBadRequest(_render_errors(errors), content_type='application/javascript')
 
-
-def get_results(request):
-    """Get results
-
-    Args:
-        request:
-
-    Returns:
-
-    """
-    # get selected template id
-    template_id = request.POST["templateID"]
-
-    # get query to execute
-    if 'queryExplore' not in request.session:
-        return HttpResponseBadRequest()
-    else:
-        query = request.session['queryExplore']
-
-    # get page if present
-    page = request.POST['page'] if 'page' in request.POST else None
-
-    # get query results
-    results_list = execute_query(query, template_id=template_id)
-
-    # prepare context
-    context_data = {"instance": "Local"}
-    if page is not None:
-        # paginate results
-        results = ResultsPaginator.get_results(results_list, page)
-        # set results in context
-        context_data['results'] = results
-    else:
-        # set results in context
-        context_data['results'] = results_list
-
-    context = RequestContext(request, context_data)
-    html_template = loader.get_template(join('core_explore_example_app', 'user', 'results', 'instance_results.html'))
-    results_html = html_template.render(context)
-
-    response_dict = {'results': results_html}
-    return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
-
-
-# FIXME: move to utils
-def _read_file_content(file_path):
-    """Reads the content of a file
-
-    Args:
-        file_path:
-
-    Returns:
-
-    """
-    with open(file_path) as _file:
-        file_content = _file.read()
-        return file_content
+        return HttpResponse(json.dumps({}), content_type='application/javascript')
+    except Exception, e:
+        return HttpResponseBadRequest(e.message, content_type='application/javascript')

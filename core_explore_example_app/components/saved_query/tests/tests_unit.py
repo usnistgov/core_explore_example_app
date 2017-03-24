@@ -22,7 +22,7 @@ class TestSavedQueryGetById(TestCase):
             saved_query_api.get_by_id(1)
 
     @patch.object(SavedQuery, 'get_by_id')
-    def test_data_get_by_id_return_data_if_found(self, mock_get):
+    def test_saved_query_get_by_id_returns_saved_query_if_found(self, mock_get):
         # Arrange
         mock_data = _create_saved_query()
         mock_get.return_value = mock_data

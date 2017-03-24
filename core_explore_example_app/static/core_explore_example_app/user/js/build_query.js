@@ -238,7 +238,7 @@ var remove_field = function(criteriaID){
             // save add button
             var add_button = $queryForm.find(".add:first").clone();
             // save first criteria select (different from others)
-            var first_select = $queryForm.find("select:first").clone();
+            var first_select = $queryForm.find("select.boolOperator:first").clone();
 
             // remove criteria
             $criteriaTag.remove();
@@ -253,7 +253,7 @@ var remove_field = function(criteriaID){
             // give add button to last criteria
             $queryForm.find("p:last").append(add_button);
             // give add button to last criteria
-            $queryForm.find("p:first").find("select").replaceWith(first_select);
+            $queryForm.find("p:first").find("select.boolOperator").replaceWith(first_select);
         }
     });
 };
@@ -474,6 +474,7 @@ var submit_query = function(){
 	var $queryForm = $("#queryForm");
 	var queryForm = $queryForm.prop('outerHTML');
 	var templateID = $("#template_id").html();
+    var queryID = $("#query_id").html();
     var formValues = getFormValues($queryForm);
 
     // get query from form
@@ -484,7 +485,8 @@ var submit_query = function(){
         data : {
             formValues: formValues,
         	queryForm: queryForm,
-        	templateID: templateID
+            templateID: templateID,
+            queryID: queryID
         },
         success: function(data){
             window.location = resultsUrl;
@@ -497,7 +499,7 @@ var submit_query = function(){
 };
 
 
-//Load controllers for enter data
+//Load controllers for build query
 $(document).ready(function() {
     var $xsdForm = $("#xsd_form");
 
