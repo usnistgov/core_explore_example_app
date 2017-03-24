@@ -18,10 +18,8 @@ Select a template from the following table. It will automatically load the appro
         <tr>
             <td templateID='{{template.current}}'>{{ template.title }}</td>
             <td>
-                <button class="btn set-template" >
-                    <a href="{% url 'core_explore_example_select_fields' template.current %}">
-                        Set as current template</a>
-                </button>
+                <a href="{% url 'core_explore_example_select_fields' template.current %}"
+                       class="btn btn-primary" role="button">Select Template</a>
             </td>
         </tr>
     {% endfor %}
@@ -42,10 +40,8 @@ Select a template from the following table. It will automatically load the appro
             <tr class="{{ rowcolors }}">
                 <td templateID='{{template.current}}'>{{ template.title }}</td>
                 <td>
-                    <button class="btn set-template" >
-                        <a href="{% url 'core_explore_example_select_fields' template.current %}">
-                            Set as current template</a>
-                    </button>
+                    <a href="{% url 'core_explore_example_select_fields' template.current %}"
+                       class="btn btn-primary" role="button">Select Template</a>
                 </td>
             </tr>
         {% endfor %}
