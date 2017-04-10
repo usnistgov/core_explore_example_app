@@ -1,7 +1,6 @@
 {% load auth_extras %}
 
-<h1>Perform Search</h1>
-
+<h2 class="title-page">Perform Search</h2>
 
 <span>
    Click on a field of the Query Builder to add an element to your query. The elements selected in the previous step
@@ -13,7 +12,7 @@
 
 
 <div id="queryBuilder">
-    <h2>Query Builder</h2>
+    <h3 class="title-text">Query Builder</h3>
     {% if data.query_form%}
         {{data.query_form|safe}}
         {%else%}
@@ -31,12 +30,8 @@
     <hr>
     {% if user.is_authenticated %}
     <div id="queries">
-        <h2>Saved Queries</h2>
-        <form>
-            {% if user|has_perm:'explore.explore_delete_query' %}
-            <button type="button" class="btn btn-danger" onclick="clearQueries()" >Delete All</button>
-            {%endif%}
-        </form>
+        <h3 class="title-text">Saved Queries</h3>
+
         <div id="queriesTable">
             <table class="table table-bordered">
                 <thead>
@@ -75,6 +70,11 @@
                 </tbody>
             </table>
         </div>
+        <form>
+            {% if user|has_perm:'explore.explore_delete_query' %}
+            <button type="button" class="btn btn-danger" onclick="clearQueries()" >Delete All</button>
+            {%endif%}
+        </form>
     </div>
     {% endif %}
 </div>

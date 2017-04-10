@@ -15,8 +15,10 @@
 #queryBuilder .elementInput
 {
 	font-size: 0.9em;
-	width:230px;
-	margin-bottom:0;
+	width: 230px;
+	margin-bottom: 0;
+	display: inline;
+	height: 20px;
 }
 
 #queryBuilder input[readonly]
@@ -29,6 +31,8 @@
 	font-size: 0.9em;
 	width:472px;
 	margin-bottom:0;
+	display: inline;
+	height: 20px;
 }
 
 #queryBuilder .valueInput
@@ -36,9 +40,12 @@
 	font-size: 0.9em;
 	width:150px;
 	margin-bottom:0;
+	display: inline;
+	height: 20px;
 }
 
 #queryBuilder p
 {
 	font-weight: bold;
+	margin: 1em;
 }

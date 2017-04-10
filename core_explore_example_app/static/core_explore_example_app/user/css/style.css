@@ -1,0 +1,37 @@
+ul.tabbed {
+	display: inline;
+	margin: 0;
+	padding: 0;
+}
+ul.tabbed li {
+	float: left;
+	list-style: none;
+}
+ul.tabbed a {text-decoration: none;}
+
+li.current_page_item a {color: #333;}
+
+.l-img {
+    float: left;
+    height: 40px;
+}
+
+.title-page{
+	font-size: 2.0em;
+	line-height: 1.6em;
+	font-weight: bold;
+}
+
+.title-table{
+	font-weight: bold;
+	font-size: smaller;
+}
+
+.title-text{
+    font-size: 18px;
+    margin-bottom: 0.5em;
+}
+
+.center-text{
+	text-align: center;
+}
