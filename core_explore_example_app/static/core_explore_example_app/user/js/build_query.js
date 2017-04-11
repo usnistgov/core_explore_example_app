@@ -383,7 +383,7 @@ var deleteQuery = function(savedQueryID){
     $("#delete-query-modal").modal("show");
     $("#delete-query").on('click', delete_query);
 
-    $("#query_id").html(savedQueryID);
+    $("#saved_query_id").html(savedQueryID);
 };
 
 
@@ -397,7 +397,7 @@ var delete_query = function(savedQueryID){
         type : "POST",
         dataType: "json",
         data : {
-        	savedQueryID: $("#query_id").html()
+        	savedQueryID: $("#saved_query_id").html()
         },
         success: function(data){
         	$('#queriesTable').load(document.URL +  ' #queriesTable', function() {});
