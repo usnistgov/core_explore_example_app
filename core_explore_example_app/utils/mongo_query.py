@@ -1,13 +1,10 @@
 """Util to build queries for mongo db
 """
-from bson.objectid import ObjectId
-import copy
 import json
 import re
 
-from core_explore_example_app.utils.xml import get_list_xsd_numbers, get_list_xsd_floating_numbers
-from core_main_app.components.data import api as data_api
 from core_parser_app.components.data_structure_element import api as data_structure_element_api
+from xml_utils.xsd_types.xsd_types import get_xsd_numbers, get_xsd_floating_numbers
 
 
 def build_query_criteria(query, is_not=False):
@@ -160,10 +157,10 @@ def build_criteria(element_path, comparison, value, element_type, default_prefix
     """
     # build the query: value can be found at element:value or at element.#text:value
     # second case appends when the element has attributes or namespace information
-    if element_type in get_list_xsd_numbers(default_prefix):
+    if element_type in get_xsd_numbers(default_prefix):
         element_query = build_int_criteria(element_path, comparison, value)
         attribute_query = build_int_criteria("{}.#text".format(element_path), comparison, value)
-    elif element_type in get_list_xsd_floating_numbers(default_prefix):
+    elif element_type in get_xsd_floating_numbers(default_prefix):
         element_query = build_float_criteria(element_path, comparison, value)
         attribute_query = build_float_criteria("{}.#text".format(element_path), comparison, value)
     else:

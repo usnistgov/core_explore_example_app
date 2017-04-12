@@ -5,7 +5,12 @@ from django.http.response import HttpResponseBadRequest
 from lxml import html
 import json
 
+from core_explore_common_app.components.query import api as query_api
+from core_parser_app.components.data_structure_element import api as data_structure_element_api
+from core_main_app.components.template import api as template_api
+
 from core_explore_example_app.components.saved_query.models import SavedQuery
+from core_explore_example_app.components.saved_query import api as saved_query_api
 from core_explore_example_app.utils.displayed_query import build_query_pretty_criteria, build_enum_pretty_criteria, \
     build_pretty_criteria, build_or_pretty_criteria, build_and_pretty_criteria
 from core_explore_example_app.utils.mongo_query import build_query_criteria, build_enum_criteria, build_criteria, \
@@ -14,12 +19,10 @@ from core_explore_example_app.utils.query_builder import render_numeric_select, 
     render_string_select, render_enum, render_initial_form, CriteriaInfo, ElementInfo, QueryInfo, \
     render_new_query, render_new_criteria, render_sub_elements_query, get_element_value, get_element_comparison, \
     prune_html_tree
-from core_explore_example_app.utils.xml import get_list_xsd_numbers, validate_element_value, get_enumerations
-from core_main_app.utils.xml import get_namespaces, get_default_prefix
-from core_parser_app.components.data_structure_element import api as data_structure_element_api
-from core_main_app.components.template import api as template_api
-from core_explore_example_app.components.saved_query import api as saved_query_api
-from core_explore_common_app.components.query import api as query_api
+from core_explore_example_app.utils.xml import validate_element_value, get_enumerations
+
+from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default_prefix
+from xml_utils.xsd_types.xsd_types import get_xsd_numbers
 
 
 # FIXME: avoid session variables
@@ -113,7 +116,7 @@ def get_sub_elements_query_builder(request):
         try:
             if element_type.startswith("{0}:".format(default_prefix)):
                 # numeric
-                if element_type in get_list_xsd_numbers(default_prefix):
+                if element_type in get_xsd_numbers(default_prefix):
                     sub_element_field = render_numeric_select() + render_value_input()
                 else:
                     sub_element_field = render_string_select() + render_value_input()
@@ -314,7 +317,7 @@ def update_user_input(request):
     try:
         if element_type.startswith("{0}:".format(default_prefix)):
             # numeric
-            if element_type in get_list_xsd_numbers(default_prefix):
+            if element_type in get_xsd_numbers(default_prefix):
                 user_inputs = render_numeric_select() + render_value_input()
             # string
             else:

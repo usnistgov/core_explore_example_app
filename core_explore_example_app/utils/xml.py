@@ -1,50 +1,7 @@
 """XML utils
 """
 from core_main_app.commons.exceptions import XMLError
-
-
-def get_list_xsd_numbers(namespace_prefix):
-    """Returns a list of formatted xsd number types
-
-    Args:
-        namespace_prefix:
-
-    Returns:
-
-    """
-    return [
-        '{0}:byte'.format(namespace_prefix),
-        '{0}:int'.format(namespace_prefix),
-        '{0}:integer'.format(namespace_prefix),
-        '{0}:long'.format(namespace_prefix),
-        '{0}:negativeInteger'.format(namespace_prefix),
-        '{0}:nonNegativeInteger'.format(namespace_prefix),
-        '{0}:nonPositiveInteger'.format(namespace_prefix),
-        '{0}:positiveInteger'.format(namespace_prefix),
-        '{0}:short'.format(namespace_prefix),
-        '{0}:unsignedLong'.format(namespace_prefix),
-        '{0}:unsignedInt'.format(namespace_prefix),
-        '{0}:unsignedShort'.format(namespace_prefix),
-        '{0}:unsignedByte'.format(namespace_prefix),
-        '{0}:float'.format(namespace_prefix),
-        '{0}:double'.format(namespace_prefix),
-        '{0}:decimal'.format(namespace_prefix)
-    ]
-
-
-def get_list_xsd_floating_numbers(namespace_prefix):
-    """Returns a list of formatted xsd floating number types
-
-    Args:
-        namespace_prefix:
-
-    Returns:
-
-    """
-    return [
-        '{0}:float'.format(namespace_prefix),
-        '{0}:double'.format(namespace_prefix),
-        '{0}:decimal'.format(namespace_prefix)]
+from xml_utils.xsd_types.xsd_types import get_xsd_floating_numbers, get_xsd_numbers
 
 
 def validate_element_value(element_name, element_type, element_value, namespace_prefix):
@@ -62,13 +19,13 @@ def validate_element_value(element_name, element_type, element_value, namespace_
     error = None
 
     # Floating number
-    if element_type in get_list_xsd_floating_numbers(namespace_prefix):
+    if element_type in get_xsd_floating_numbers(namespace_prefix):
         try:
             float(element_value)
         except ValueError:
             error = "Element {} must be a number.".format(element_name)
     # Number
-    elif element_type in get_list_xsd_numbers(namespace_prefix):
+    elif element_type in get_xsd_numbers(namespace_prefix):
         try:
             int(element_value)
         except ValueError:
