@@ -22,7 +22,7 @@
     {% endif %}
     <form>
         <button type="button" class="btn btn-danger" onclick="clearCriteria()">Clear</button>
-        {% if user|has_perm:'explore.explore_save_query' %}
+        {% if user|has_perm:'core_explore_example_app.save_query' %}
         <button type="button" class="btn btn-secondary" onclick="saveQuery()">Save Query</button>
         {%endif%}
         <button type="button" class="btn btn-primary" onclick="submit_query()">Submit Query</button>
@@ -38,7 +38,7 @@
                     <tr>
                         <th class="th-15px">Add to Builder</th>
                         <th>Queries</th>
-                        {% if user|has_perm:'explore.explore_delete_query' %}
+                        {% if user|has_perm:'core_explore_example_app.delete_query' %}
                         <th class="th-15px">Delete</th>
                         {%endif%}
                     </tr>
@@ -55,7 +55,7 @@
                         <td>
                             {{ query.displayed_query|safe }}
                         </td>
-                        {% if user|has_perm:'explore.explore_delete_query' %}
+                        {% if user|has_perm:'core_explore_example_app.delete_query' %}
                         <td>
                             <span class="icon invalid fa fa-minus" style="color:red;"
                                   onclick="deleteQuery('query{{ query.id }}')">
@@ -71,7 +71,7 @@
             </table>
         </div>
         <form>
-            {% if user|has_perm:'explore.explore_delete_query' %}
+            {% if user|has_perm:'core_explore_example_app.delete_query' %}
             <button type="button" class="btn btn-danger" onclick="clearQueries()" >Delete All</button>
             {%endif%}
         </form>

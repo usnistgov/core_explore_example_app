@@ -24,10 +24,15 @@ from core_explore_example_app.utils.xml import validate_element_value, get_enume
 from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default_prefix
 from xml_utils.xsd_types.xsd_types import get_xsd_numbers
 
+import core_main_app.utils.decorators as decorators
+import core_explore_example_app.permissions.rights as rights
+
 
 # FIXME: avoid session variables
 
 
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_access, raise_exception=True)
 def save_fields(request):
     """Saves the fields selected by the user
 
@@ -56,6 +61,8 @@ def save_fields(request):
     return HttpResponse(json.dumps({}), content_type='application/javascript')
 
 
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_access, raise_exception=True)
 def select_element(request):
     """Select an element in the custom tree
 
@@ -81,6 +88,8 @@ def select_element(request):
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
 
 
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_access, raise_exception=True)
 def get_sub_elements_query_builder(request):
     """Build the form for queries on sub elements
 
@@ -132,6 +141,8 @@ def get_sub_elements_query_builder(request):
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
 
 
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_access, raise_exception=True)
 def insert_sub_elements_query(request):
     """Inserts a query for a sub element in the query builder
 
@@ -284,6 +295,8 @@ def sub_elements_to_pretty_query(form_values, list_leaves_id, namespaces, defaul
     return query
 
 
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_access, raise_exception=True)
 def update_user_input(request):
     """Updates the user input of the query builder according to the type of the selected element
 
@@ -340,6 +353,8 @@ def update_user_input(request):
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
 
 
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_access, raise_exception=True)
 def add_criteria(request):
     """Adds an empty criteria to the query builder
 
@@ -356,6 +371,8 @@ def add_criteria(request):
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
 
 
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_access, raise_exception=True)
 def remove_criteria(request):
     """Removes a criteria from the query builder
 
@@ -377,6 +394,8 @@ def remove_criteria(request):
     return HttpResponse(json.dumps({}), content_type='application/javascript')
 
 
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_save_query, raise_exception=True)
 def save_query(request):
     """Saves a query and updates the html display
 
@@ -415,6 +434,8 @@ def save_query(request):
     return HttpResponse(json.dumps({}), content_type='application/javascript')
 
 
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_access, raise_exception=True)
 def check_query_form(request, form_values, template_id):
     """Checks that values entered by the user match each element type
 
@@ -452,6 +473,8 @@ def check_query_form(request, form_values, template_id):
     return errors
 
 
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_access, raise_exception=True)
 def fields_to_query(request, form_values, template_id):
     """Takes values from the html tree and creates a query from them
 
@@ -511,6 +534,8 @@ def fields_to_query(request, form_values, template_id):
     return query
 
 
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_access, raise_exception=True)
 def fields_to_pretty_query(request, form_values):
     """Transforms fields from the HTML form into pretty representation
 
@@ -581,6 +606,8 @@ def _render_errors(errors):
     return '<br/>'.join(errors)
 
 
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_access, raise_exception=True)
 def clear_criteria(request):
     """Clears the Query Builder
 
@@ -596,6 +623,8 @@ def clear_criteria(request):
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
 
 
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_delete_query, raise_exception=True)
 def clear_queries(request):
     """Deletes all saved queries
 
@@ -614,6 +643,8 @@ def clear_queries(request):
     return HttpResponse(json.dumps({}), content_type='application/javascript')
 
 
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_delete_query, raise_exception=True)
 def delete_query(request):
     """Deletes a query and update the HTML display
 
@@ -630,6 +661,8 @@ def delete_query(request):
     return HttpResponse(json.dumps({}), content_type='application/javascript')
 
 
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_access, raise_exception=True)
 def add_query_criteria(request):
     """Adds the selected query to query builder
 
@@ -668,6 +701,8 @@ def add_query_criteria(request):
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
 
 
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_access, raise_exception=True)
 def get_query(request):
     """Get a query
 
