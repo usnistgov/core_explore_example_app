@@ -1,10 +1,11 @@
 {% load staticfiles %}
 
-<div class="btn-group pull-right">
+<div class="pull-right">
+    {% if data.exporter_app %}
+        {% include "core_exporters_app/user/exporters/list/button_exporters_selector.html" with templates=data.templates_list %}
+    {% endif %}
     <a href="{% url 'core_explore_example_build_query' data.template_id data.query_id %}"
        class="btn btn-danger" role="button">Back to Query</a>
 </div>
 
 {% include "core_explore_common_app/user/results/results.html" %}
-
-
