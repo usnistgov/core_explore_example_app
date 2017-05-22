@@ -19,7 +19,7 @@ from django.core.urlresolvers import reverse_lazy
 
 @decorators.permission_required(content_type=rights.explore_example_content_type,
                                 permission=rights.explore_example_access,
-                                login_url=reverse_lazy("core_website_app_login"))
+                                login_url=reverse_lazy("core_main_app_login"))
 def index(request):
     """ Page that allows to select a template to start exploring data
 
@@ -50,7 +50,7 @@ def index(request):
 # TODO: form generation can take time
 @decorators.permission_required(content_type=rights.explore_example_content_type,
                                 permission=rights.explore_example_access,
-                                login_url=reverse_lazy("core_website_app_login"))
+                                login_url=reverse_lazy("core_main_app_login"))
 def select_fields(request, template_id):
     """Loads view to customize exploration tree
 
@@ -141,7 +141,7 @@ def select_fields(request, template_id):
 
 @decorators.permission_required(content_type=rights.explore_example_content_type,
                                 permission=rights.explore_example_access,
-                                login_url=reverse_lazy("core_website_app_login"))
+                                login_url=reverse_lazy("core_main_app_login"))
 def build_query(request, template_id, query_id=None):
     """Page that allows to build and submit queries
 
@@ -249,7 +249,7 @@ def build_query(request, template_id, query_id=None):
 
 @decorators.permission_required(content_type=rights.explore_example_content_type,
                                 permission=rights.explore_example_access,
-                                login_url=reverse_lazy("core_website_app_login"))
+                                login_url=reverse_lazy("core_main_app_login"))
 def results(request, template_id, query_id):
     """Query results view
 
