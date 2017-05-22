@@ -9,6 +9,9 @@ from core_explore_common_app.components.query import api as query_api
 from core_parser_app.components.data_structure_element import api as data_structure_element_api
 from core_main_app.components.template import api as template_api
 
+from core_explore_example_app.utils.parser import generate_form, render_form
+from core_explore_example_app.components.explore_data_structure.models import ExploreDataStructure
+from core_explore_example_app.components.explore_data_structure import api as explore_data_structure_api
 from core_explore_example_app.components.saved_query.models import SavedQuery
 from core_explore_example_app.components.saved_query import api as saved_query_api
 from core_explore_example_app.utils.displayed_query import build_query_pretty_criteria, build_enum_pretty_criteria, \
@@ -30,6 +33,47 @@ import core_explore_example_app.permissions.rights as rights
 
 # FIXME: avoid session variables
 
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_access, raise_exception=True)
+def load_form(request):
+    """ Load the form
+
+    Args:
+        request:
+
+    Returns:
+
+    """
+    try:
+        template_id = request.POST['templateID']
+
+        # get template
+        template = template_api.get(template_id)
+        # get data structure
+        try:
+            explore_data_structure = explore_data_structure_api. \
+                get_by_user_id_and_template_id(user_id=str(request.user.id), template_id=template_id)
+            # get the root element
+            root_element = explore_data_structure.data_structure_element_root
+        except:
+            # generate the root element
+            root_element = generate_form(request, template.content)
+            # create explore data structure
+            explore_data_structure = ExploreDataStructure(user=str(request.user.id),
+                                                          template=template,
+                                                          name=template.filename,
+                                                          data_structure_element_root=root_element)
+
+            # save the data structure
+            explore_data_structure_api.upsert(explore_data_structure)
+
+        # renders the form
+        xsd_form = render_form(request, root_element)
+        response_dict = {'xsd_form': xsd_form}
+        return HttpResponse(json.dumps(response_dict), content_type='application/json')
+    except Exception, e:
+        return HttpResponseBadRequest("An error occurred while generating the form.")
+
 
 @decorators.permission_required(content_type=rights.explore_example_content_type,
                                 permission=rights.explore_example_access, raise_exception=True)
@@ -42,7 +86,6 @@ def save_fields(request):
     Returns:
 
     """
-
     # get form content from HTML
     form_content = request.POST['formContent']
     request.session['formStringExplore'] = form_content

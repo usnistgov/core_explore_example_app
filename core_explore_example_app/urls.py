@@ -16,6 +16,8 @@ urlpatterns = [
     url(r'^results/(?P<template_id>\w+)/(?P<query_id>\w+)$', user_views.results,
         name='core_explore_example_results'),
 
+    url(r'^load-form$', user_ajax.load_form,
+        name='core_explore_example_load_form'),
     url(r'^save-fields$', user_ajax.save_fields,
         name='core_explore_example_save_fields'),
 

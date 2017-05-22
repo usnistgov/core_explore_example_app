@@ -6,10 +6,7 @@ from core_main_app.components.template import api as template_api
 from core_main_app.utils.rendering import render
 from core_explore_common_app.components.query import api as query_api
 from core_explore_common_app.components.query.models import Query
-from core_explore_example_app.utils.parser import generate_form, render_form
 from core_explore_example_app.components.saved_query import api as saved_query_api
-from core_explore_example_app.components.explore_data_structure.models import ExploreDataStructure
-from core_explore_example_app.components.explore_data_structure import api as explore_data_structure_api
 from core_explore_example_app.settings import INSTALLED_APPS
 
 import core_main_app.utils.decorators as decorators
@@ -62,29 +59,6 @@ def select_fields(request, template_id):
 
     """
     try:
-        # get template
-        template = template_api.get(template_id)
-        # get data structure
-        try:
-            explore_data_structure = explore_data_structure_api.\
-                get_by_user_id_and_template_id(user_id=str(request.user.id), template_id=template_id)
-            # get the root element
-            root_element = explore_data_structure.data_structure_element_root
-        except:
-            # generate the root element
-            root_element = generate_form(request, template.content)
-            # create explore data structure
-            explore_data_structure = ExploreDataStructure(user=str(request.user.id),
-                                                          template=template,
-                                                          name=template.filename,
-                                                          data_structure_element_root=root_element)
-
-            # save the data structure
-            explore_data_structure_api.upsert(explore_data_structure)
-
-        # renders the form
-        xsd_form = render_form(request, root_element)
-
         # Set the assets
         assets = {
             "js": [
@@ -123,8 +97,6 @@ def select_fields(request, template_id):
 
         # Set the context
         context = {
-            "xsd_form": xsd_form,
-            "data_structure": explore_data_structure,
             "template_id": template_id,
         }
 
