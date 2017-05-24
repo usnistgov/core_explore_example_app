@@ -4,21 +4,31 @@
 	overflow-y: auto;
 }
 
-#queryBuilder select
-{
-	width:70px;
-	font-size: 0.9em;
-	padding-left:0;
-	top:0;
-}
-
 #queryBuilder .elementInput
 {
-	font-size: 0.9em;
 	width: 230px;
-	margin-bottom: 0;
-	display: inline;
-	height: 20px;
+}
+
+#queryBuilder .queryInput
+{
+	width:460px;
+}
+
+#queryBuilder .valueInput
+{
+	width:150px;
+}
+
+#queryBuilder select.valueInput
+{
+	width:225px;
+}
+
+#queryBuilder input{
+    height: 25px;
+    font-size: 0.9em;
+    padding: 0em;
+    display: inline;
 }
 
 #queryBuilder input[readonly]
@@ -26,26 +36,16 @@
 	cursor:pointer;
 }
 
-#queryBuilder .queryInput
-{
-	font-size: 0.9em;
-	width:472px;
-	margin-bottom:0;
-	display: inline;
-	height: 20px;
-}
-
-#queryBuilder .valueInput
-{
-	font-size: 0.9em;
-	width:150px;
-	margin-bottom:0;
-	display: inline;
-	height: 20px;
-}
-
 #queryBuilder p
 {
 	font-weight: bold;
 	margin: 1em;
 }
+
+#subElementQueryBuilder .valueInput{
+    height: 25px;
+    width:150px;
+    display: inline;
+    padding: 0em;
+}
+
