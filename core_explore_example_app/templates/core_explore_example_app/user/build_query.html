@@ -2,83 +2,82 @@
 
 <h2 class="title-page">Perform Search</h2>
 
-<span>
+<p>
    Click on a field of the Query Builder to add an element to your query. The elements selected in the previous step
    will appear and you will be able to insert them in the query builder. Click on plus/minus icons to
    add/remove criteria. You can save queries to build more complex queries and you will retrieve them on your
    next connection. When your query is done, please click on Submit Query to get XML documents that match the
    criteria.
-</span>
-
-
-<div id="queryBuilder">
-    <h3 class="title-text">Query Builder</h3>
-    {% if data.query_form%}
-        {{data.query_form|safe}}
-        {%else%}
-        <div id="queryForm">
-        {% include 'core_explore_example_app/user/query_builder/initial_form.html'%}
-        </div>
-    {% endif %}
-    <form>
-        <button type="button" class="btn btn-danger" onclick="clearCriteria()">Clear</button>
-        {% if user|has_perm:'core_explore_example_app.save_query' %}
-        <button type="button" class="btn btn-secondary" onclick="saveQuery()">Save Query</button>
-        {%endif%}
-        <button type="button" class="btn btn-primary" onclick="submit_query()">Submit Query</button>
-    </form>
-    <hr>
-    {% if user.is_authenticated %}
-    <div id="queries">
-        <h3 class="title-text">Saved Queries</h3>
-
-        <div id="queriesTable">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th class="th-15px">Add to Builder</th>
-                        <th>Queries</th>
-                        {% if user|has_perm:'core_explore_example_app.delete_query' %}
-                        <th class="th-15px">Delete</th>
-                        {%endif%}
-                    </tr>
-                </thead>
-                <tbody>
-                {% if data.queries %}
-                    {% for query in data.queries %}
-                      <tr>
-                        <td>
-                            <span class="icon upload fa fa-arrow-circle-up" style="color:green;"
-                                  onclick="addSavedQueryToForm('query{{ query.id }}')">
-                            </span>
-                        </td>
-                        <td>
-                            {{ query.displayed_query|safe }}
-                        </td>
-                        {% if user|has_perm:'core_explore_example_app.delete_query' %}
-                        <td>
-                            <span class="icon invalid fa fa-minus" style="color:red;"
-                                  onclick="deleteQuery('query{{ query.id }}')">
-                            </span>
-                        </td>
-                        {%endif%}
-                      </tr>
-                    {% endfor %}
-                {% else %}
-                    <tr><td colspan='3' style='color:red;'>No Saved Queries for now.</td></tr>
-                {% endif %}
-                </tbody>
-            </table>
-        </div>
+</p>
+<div class="row">
+    <div id="queryBuilder">
+        <h3 class="title-text">Query Builder</h3>
+        {% if data.query_form%}
+            {{data.query_form|safe}}
+            {%else%}
+            <div id="queryForm">
+            {% include 'core_explore_example_app/user/query_builder/initial_form.html'%}
+            </div>
+        {% endif %}
         <form>
-            {% if user|has_perm:'core_explore_example_app.delete_query' %}
-            <button type="button" class="btn btn-danger" onclick="clearQueries()" >Delete All</button>
+            <button type="button" class="btn btn-danger" onclick="clearCriteria()">Clear</button>
+            {% if user|has_perm:'core_explore_example_app.save_query' %}
+            <button type="button" class="btn btn-secondary" onclick="saveQuery()">Save Query</button>
             {%endif%}
+            <button type="button" class="btn btn-primary" onclick="submit_query()">Submit Query</button>
         </form>
     </div>
-    {% endif %}
+    <div class="pull-right">
+        {% include 'core_explore_common_app/user/selector/data_sources_selector.html'%}
+    </div>
 </div>
+{% if user.is_authenticated %}
+<hr>
+<div id="queries">
+    <h3 class="title-text">Saved Queries</h3>
+    <div id="queriesTable">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class="th-15px">Add to Builder</th>
+                    <th>Queries</th>
+                    {% if user|has_perm:'core_explore_example_app.delete_query' %}
+                    <th class="th-15px">Delete</th>
+                    {%endif%}
+                </tr>
+            </thead>
+            <tbody>
+            {% if data.queries %}
+                {% for query in data.queries %}
+                  <tr>
+                    <td>
+                        <span class="fa fa-arrow-circle-up text-success" onclick="addSavedQueryToForm('query{{ query.id }}')">
+                        </span>
+                    </td>
+                    <td>
+                        {{ query.displayed_query|safe }}
+                    </td>
+                    {% if user|has_perm:'core_explore_example_app.delete_query' %}
+                    <td>
+                        <span class="fa fa-minus text-danger" onclick="deleteQuery('query{{ query.id }}')">
+                        </span>
+                    </td>
+                    {%endif%}
+                  </tr>
+                {% endfor %}
+            {% else %}
+                <tr><td colspan='3' class="text-danger">No Saved Queries for now.</td></tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+    <form>
+        {% if user|has_perm:'core_explore_example_app.delete_query' %}
+        <button type="button" class="btn btn-danger" onclick="clearQueries()" >Delete All</button>
+        {%endif%}
+    </form>
+</div>
+{% endif %}
 
-{% include 'core_explore_common_app/user/selector/data_sources_selector.html'%}
 
-<div id="template_id" style="display:none;">{{data.template_id}}</div>
+<div id="template_id" class="hidden">{{data.template_id}}</div>
