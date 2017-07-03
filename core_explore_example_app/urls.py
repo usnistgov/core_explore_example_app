@@ -5,13 +5,15 @@ from django.conf.urls import url
 from core_explore_example_app.views.user import views as user_views, ajax as user_ajax
 
 urlpatterns = [
-    url(r'^$', user_views.index,
+    url(r'^$', user_views.IndexView.as_view(),
         name='core_explore_example_index'),
-    url(r'^select-fields/(?P<template_id>\w+)$', user_views.select_fields,
+
+    url(r'^select-fields/(?P<template_id>\w+)$', user_views.SelectFieldsView.as_view(),
         name='core_explore_example_select_fields'),
-    url(r'^build-query/(?P<template_id>\w+)$', user_views.build_query,
+
+    url(r'^build-query/(?P<template_id>\w+)$', user_views.BuildQueryView.as_view(),
         name='core_explore_example_build_query'),
-    url(r'^build-query/(?P<template_id>\w+)/(?P<query_id>\w+)$', user_views.build_query,
+    url(r'^build-query/(?P<template_id>\w+)/(?P<query_id>\w+)$', user_views.BuildQueryView.as_view(),
         name='core_explore_example_build_query'),
     url(r'^results/(?P<template_id>\w+)/(?P<query_id>\w+)$', user_views.results,
         name='core_explore_example_results'),

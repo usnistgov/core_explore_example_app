@@ -1,25 +1,25 @@
 {% load staticfiles %}
 
-<div class="title-page">Select Template</div>
+<div class="title-page">Select {{ data.object_name|title  }}</div>
 
-Select a template from the following table. It will automatically load the appropriate form and display it on the next page.
+Select a {{ data.object_name }} from the following table. It will automatically load the appropriate form and display it on the next page.
 
 <!-- FIXME: HTML below common with core_curate_app/curate.html -->
 
 <div id="template_selection">
-    <div class="center-text"><h1 class="title-text">Global Templates</h1></div>
+    <div class="center-text"><h1 class="title-text">Global {{ data.object_name|title }}s</h1></div>
 
 <table class="table table-bordered">
     <tr>
-        <th class="title-table">Template name</th>
+        <th class="title-table">{{ data.object_name|title }} name</th>
         <th class="title-table" style="width: 150px;">Actions</th>
     </tr>
-    {% for template in data.global_templates %}
+    {% for global_object in data.global_objects %}
         <tr>
-            <td templateID='{{template.current}}'>{{ template.title }}</td>
+            <td templateID='{{global_object.current}}'>{{ global_object.title }}</td>
             <td>
-                <a href="{% url 'core_explore_example_select_fields' template.current %}"
-                       class="btn btn-primary" role="button">Select Template</a>
+                <a href="{% url data.select_object_redirect global_object.current %}"
+                   class="btn btn-primary" role="button">Select {{ data.object_name|title }}</a>
             </td>
         </tr>
     {% endfor %}
@@ -27,27 +27,27 @@ Select a template from the following table. It will automatically load the appro
 
 {% if user.is_authenticated %}
 
-    <div class="center-text"><h3 class="title-text">User Defined Templates</h3></div>
+    <div class="center-text"><h3 class="title-text">User Defined {{data.object_name|title}}s</h3></div>
 
-    {% if data.user_templates %}
+    {% if data.user_objects %}
     <table class="table table-bordered">
         <tr>
-            <th class="title-table">Template name</th>
+            <th class="title-table">{{data.object_name|title}} name</th>
             <th class="title-table" style="width: 150px;">Actions</th>
         </tr>
-        {% for template in data.user_templates %}
+        {% for user_object in data.user_objects %}
             <tr>
-                <td templateID='{{template.current}}'>{{ template.title }}</td>
+                <td templateID='{{user_object.id}}'>{{ user_object.title }}</td>
                 <td>
-                    <a href="{% url 'core_explore_example_select_fields' template.current %}"
-                       class="btn btn-primary" role="button">Select Template</a>
+                    <a href="{% url data.select_object_redirect user_object.current %}"
+                        class="btn btn-primary" role="button">Select {{ data.object_name|title }}</a>
                 </td>
             </tr>
         {% endfor %}
     </table>
     {% else %}
         <div class="unavailable">
-            No user templates available.
+            No user {{ data.object_name }}s available.
         </div>
     {% endif %}
 {% endif %}
