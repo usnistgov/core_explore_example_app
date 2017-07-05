@@ -257,13 +257,13 @@ def sub_elements_to_query(form_values, list_leaves_id, namespaces, default_prefi
     Returns:
 
     """
-    elem_match = {}
-    i = 0
+    elem_match = []
 
     # get the parent path using the first element of the list
     parent_path = get_parent_path(list_leaves_id[0], namespaces)
 
-    for field in form_values:
+    for i in range(0, len(form_values)):
+        field = form_values[i]
         if field['selected'] is True:
             bool_comp = field['operator']
             if bool_comp == 'NOT':
@@ -285,9 +285,9 @@ def sub_elements_to_query(form_values, list_leaves_id, namespaces, default_prefi
             except:
                 criteria = build_criteria(element_name, comparison, value, element_type, default_prefix, is_not)
 
-            elem_match.update(criteria)
+            elem_match.append(criteria)
 
-    query = {parent_path: {"$elemMatch": elem_match}}
+    query = {parent_path: {"$elemMatch": {"$and": elem_match}}}
 
     return query
 
