@@ -305,20 +305,11 @@ var save_query = function(formValues, templateID){
             clear_criteria();
         },
         error: function(data){
-            $('#listErrors').html(data.responseText);
-            displayErrors();
+            showErrorModal(data.responseText);
         }
     });
 };
 
-
-/**
- * Display errors
- */
-var displayErrors = function()
-{
-    $( "#errors-modal" ).modal("show");
-};
 
 /**
  * Clear the current criteria in the query builder
@@ -492,8 +483,7 @@ var submit_query = function(){
             window.location = resultsUrl;
         },
         error: function(data){
-            $('#listErrors').html(data.responseText);
-            displayErrors();
+            showErrorModal(data.responseText);
         }
     });
 };

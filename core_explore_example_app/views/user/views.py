@@ -185,6 +185,10 @@ def build_query(request, template_id, query_id=None):
                     "path": "core_parser_app/js/choice.js",
                     "is_raw": False
                 },
+                {
+                    "path": 'core_main_app/common/js/modals/error_page_modal.js',
+                    "is_raw": True
+                }
             ],
             "css": ["core_explore_example_app/user/css/query_builder.css",
                     "core_explore_example_app/user/css/xsd_form.css"]
@@ -202,7 +206,7 @@ def build_query(request, template_id, query_id=None):
         modals = [
             "core_explore_example_app/user/modals/custom_tree.html",
             "core_explore_example_app/user/modals/sub_elements_query_builder.html",
-            "core_explore_example_app/user/modals/errors.html",
+            "core_main_app/common/modals/error_page_modal.html",
             "core_explore_example_app/user/modals/delete_all_queries.html",
             "core_explore_example_app/user/modals/delete_query.html"
         ]
@@ -252,6 +256,10 @@ def results(request, template_id, query_id):
             {
                 "path": 'core_main_app/common/js/XMLTree.js',
                 "is_raw": False
+            },
+            {
+                "path": 'core_main_app/common/js/modals/error_page_modal.js',
+                "is_raw": True
             }
         ],
         "css": ["core_explore_example_app/user/css/query_result.css",
@@ -259,7 +267,9 @@ def results(request, template_id, query_id):
                 "core_explore_common_app/user/css/results.css"],
     }
 
-    modals = []
+    modals = [
+        "core_main_app/common/modals/error_page_modal.html"
+    ]
 
     if 'core_exporters_app' in INSTALLED_APPS:
         # add all assets needed
