@@ -261,72 +261,77 @@ class BuildQueryView(View):
         return query_api.upsert(query)
 
 
-@decorators.permission_required(content_type=rights.explore_example_content_type,
-                                permission=rights.explore_example_access,
-                                login_url=reverse_lazy("core_main_app_login"))
-def results(request, template_id, query_id):
-    """Query results view
+class ResultQueryView(View):
+    back_to_query_redirect = 'core_explore_example_build_query'
 
-    Args:
-        request:
-        template_id:
-        query_id:
+    @method_decorator(decorators.
+                      permission_required(content_type=rights.explore_example_content_type,
+                                          permission=rights.explore_example_access,
+                                          login_url=reverse_lazy("core_main_app_login")))
+    def get(self, request, template_id, query_id):
+        """Query results view
 
-    Returns:
+        Args:
+            request:
+            template_id:
+            query_id:
 
-    """
-    context = {
-        'template_id': template_id,
-        'query_id': query_id,
-        'exporter_app': False
-    }
+        Returns:
 
-    assets = {
-        "js": [
-            {
-                "path": 'core_explore_common_app/user/js/results.js',
-                "is_raw": False
-            },
-            {
-                "path": 'core_explore_common_app/user/js/results.raw.js',
-                "is_raw": True
-            },
-            {
-                "path": 'core_main_app/common/js/XMLTree.js',
-                "is_raw": False
-            },
-            {
-                "path": 'core_main_app/common/js/modals/error_page_modal.js',
-                "is_raw": True
-            }
-        ],
-        "css": ["core_explore_example_app/user/css/query_result.css",
-                "core_main_app/common/css/XMLTree.css",
-                "core_explore_common_app/user/css/results.css"],
-    }
+        """
+        context = {
+            'template_id': template_id,
+            'query_id': query_id,
+            'exporter_app': False,
+            'back_to_query_redirect': self.back_to_query_redirect
+        }
 
-    modals = [
-        "core_main_app/common/modals/error_page_modal.html"
-    ]
+        assets = {
+            "js": [
+                {
+                    "path": 'core_explore_common_app/user/js/results.js',
+                    "is_raw": False
+                },
+                {
+                    "path": 'core_explore_common_app/user/js/results.raw.js',
+                    "is_raw": True
+                },
+                {
+                    "path": 'core_main_app/common/js/XMLTree.js',
+                    "is_raw": False
+                },
+                {
+                    "path": 'core_main_app/common/js/modals/error_page_modal.js',
+                    "is_raw": True
+                }
+            ],
+            "css": ["core_explore_example_app/user/css/query_result.css",
+                    "core_main_app/common/css/XMLTree.css",
+                    "core_explore_common_app/user/css/results.css"],
+        }
 
-    if 'core_exporters_app' in INSTALLED_APPS:
-        # add all assets needed
-        assets['js'].extend([{
-                "path": 'core_exporters_app/user/js/exporters/list/modals/list_exporters_selector.js',
-                "is_raw": False
-            }])
-        # add the modal
-        modals.extend([
-            "core_exporters_app/user/exporters/list/modals/list_exporters_selector.html"
-        ])
-        # the modal need all selected template
-        query = query_api.get_by_id(query_id)
+        modals = [
+            "core_main_app/common/modals/error_page_modal.html"
+        ]
 
-        context['exporter_app'] = True
-        context['templates_list'] = json.dumps([str(template.id) for template in query.templates])
+        if 'core_exporters_app' in INSTALLED_APPS:
+            # add all assets needed
+            assets['js'].extend([{
+                    "path": 'core_exporters_app/user/js/exporters/list/modals/list_exporters_selector.js',
+                    "is_raw": False
+                }])
+            # add the modal
+            modals.extend([
+                "core_exporters_app/user/exporters/list/modals/list_exporters_selector.html"
+            ])
+            # the modal need all selected template
+            query = query_api.get_by_id(query_id)
 
-    return render(request,
-                  'core_explore_example_app/user/results.html',
-                  assets=assets,
-                  modals=modals,
-                  context=context)
+            context['exporter_app'] = True
+            context['templates_list'] = json.dumps([str(template.id) for template in query.templates])
+
+        return render(request,
+                      'core_explore_example_app/user/results.html',
+                      assets=assets,
+                      modals=modals,
+                      context=context)

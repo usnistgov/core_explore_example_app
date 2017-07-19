@@ -15,7 +15,7 @@ urlpatterns = [
         name='core_explore_example_build_query'),
     url(r'^build-query/(?P<template_id>\w+)/(?P<query_id>\w+)$', user_views.BuildQueryView.as_view(),
         name='core_explore_example_build_query'),
-    url(r'^results/(?P<template_id>\w+)/(?P<query_id>\w+)$', user_views.results,
+    url(r'^results/(?P<template_id>\w+)/(?P<query_id>\w+)$', user_views.ResultQueryView.as_view(),
         name='core_explore_example_results'),
 
     url(r'^load-form$', user_ajax.load_form,
