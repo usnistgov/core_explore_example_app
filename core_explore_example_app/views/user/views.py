@@ -40,8 +40,8 @@ class IndexView(View):
             "css": ['core_explore_example_app/user/css/style.css']
         }
 
-        global_active_template_list = self.api.get_active_global_version_manager()
-        user_active_template_list = self.api.get_active_version_manager_by_user_id(request.user.id)
+        global_active_template_list = self.get_global_active_list()
+        user_active_template_list = self.get_user_active_list(request.user.id)
 
         context = {
             'global_objects': global_active_template_list,
@@ -51,6 +51,29 @@ class IndexView(View):
         }
 
         return render(request, self.get_redirect, assets=assets, context=context)
+
+    def get_global_active_list(self):
+        """ Get all global version managers.
+
+        Args:
+
+        Returns:
+            List of all global version managers
+
+        """
+        return self.api.get_active_global_version_manager()
+
+    def get_user_active_list(self, user_id):
+        """ Get all active version managers with given user id.
+
+        Args:
+            user_id:
+
+        Returns:
+            List of all global version managers with given user.
+
+        """
+        return self.api.get_active_version_manager_by_user_id(user_id)
 
 
 class SelectFieldsView(View):
