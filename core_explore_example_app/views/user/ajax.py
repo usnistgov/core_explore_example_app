@@ -11,7 +11,8 @@ from core_explore_common_app.components.query import api as query_api
 from core_parser_app.components.data_structure_element import api as data_structure_element_api
 from core_main_app.components.template import api as template_api
 
-from core_explore_example_app.utils.parser import generate_form, render_form
+from core_explore_example_app.utils.parser import generate_form, render_form, generate_element_absent, \
+    generate_choice_absent, remove_form_element
 from core_explore_example_app.components.explore_data_structure.models import ExploreDataStructure
 from core_explore_example_app.components.explore_data_structure import api as explore_data_structure_api
 from core_explore_example_app.components.saved_query.models import SavedQuery
@@ -75,6 +76,62 @@ def load_form(request):
         return HttpResponse(json.dumps(response_dict), content_type='application/json')
     except Exception, e:
         return HttpResponseBadRequest("An error occurred while generating the form.")
+
+
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_access, raise_exception=True)
+def generate_element(request):
+    """Generate an element absent from the form.
+
+    Args:
+        request:
+
+    Returns:
+
+    """
+    try:
+        element_id = request.POST['id']
+        html_form = generate_element_absent(request, element_id)
+    except Exception, e:
+        return HttpResponseBadRequest()
+
+    return HttpResponse(html_form)
+
+
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_access, raise_exception=True)
+def generate_choice(request):
+    """Generate a choice branch absent from the form.
+
+    Args:
+        request:
+
+    Returns:
+
+    """
+    try:
+        element_id = request.POST['id']
+        html_form = generate_choice_absent(request, element_id)
+    except Exception, e:
+        return HttpResponseBadRequest()
+
+    return HttpResponse(html_form)
+
+
+@decorators.permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_access, raise_exception=True)
+def remove_element(request):
+    """Remove an element from the form.
+
+    Args:
+        request:
+
+    Returns:
+
+    """
+    element_id = request.POST['id']
+    code, html_form = remove_form_element(request, element_id)
+    return HttpResponse(json.dumps({'code': code, 'html': html_form}))
 
 
 @decorators.permission_required(content_type=rights.explore_example_content_type,

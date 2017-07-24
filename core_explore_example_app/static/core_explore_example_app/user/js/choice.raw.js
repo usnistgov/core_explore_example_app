@@ -1,0 +1,1 @@
+var generateChoiceUrl = "{% url 'core_explore_example_generate_choice' %}";

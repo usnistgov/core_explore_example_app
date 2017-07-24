@@ -5,6 +5,10 @@ var showCustomTree = function(currentCriteriaID)
 {
     $("#current_criteria").html(currentCriteriaID);
     $( "#custom-tree-modal" ).modal("show");
+    // hide remove and add buttons
+    var xsd_form = $("#xsd_form");
+    xsd_form.find(".remove").hide();
+    xsd_form.find(".add").hide();
 };
 
 

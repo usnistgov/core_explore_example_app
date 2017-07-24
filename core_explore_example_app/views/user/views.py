@@ -117,8 +117,24 @@ class SelectFieldsView(View):
                         "is_raw": True
                     },
                     {
+                        "path": "core_parser_app/js/buttons.js",
+                        "is_raw": False
+                    },
+                    {
+                        "path": "core_explore_example_app/user/js/buttons.raw.js",
+                        "is_raw": True
+                    },
+                    {
+                        "path": "core_parser_app/js/modules.js",
+                        "is_raw": False
+                    },
+                    {
                         "path": "core_parser_app/js/choice.js",
                         "is_raw": False
+                    },
+                    {
+                        "path": "core_explore_example_app/user/js/choice.raw.js",
+                        "is_raw": True
                     },
                     {
                         "path": "core_explore_example_app/user/js/select_fields.js",

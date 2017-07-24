@@ -63,15 +63,12 @@ var load_form = function(template_id){
         	$("#xsd_form").html(data.xsd_form);
         	// show save button
         	$("button.save-fields").removeClass("hidden");
-        	// hide remove and add buttons
-            $(".remove").hide();
-            $(".add").hide();
         },
         error: function(data){
             $("#xsd_form").html("An unexpected error occurred while loading the form.");
         }
     });
-}
+};
 
 //Load controllers for enter data
 $(document).ready(function() {

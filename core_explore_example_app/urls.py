@@ -22,6 +22,12 @@ urlpatterns = [
         name='core_explore_example_load_form'),
     url(r'^save-fields$', user_ajax.save_fields,
         name='core_explore_example_save_fields'),
+    url(r'^generate-element$', user_ajax.generate_element,
+        name='core_explore_example_generate_element'),
+    url(r'^generate-choice$', user_ajax.generate_choice,
+        name='core_explore_example_generate_choice'),
+    url(r'^remove-element$', user_ajax.remove_element,
+        name='core_explore_example_remove_element'),
 
     url(r'^select-element$', user_ajax.select_element,
         name='core_explore_example_select_element'),
