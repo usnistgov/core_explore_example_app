@@ -37,7 +37,8 @@ urlpatterns = [
         name='core_explore_example_add_criteria'),
     url(r'^remove-criteria$', user_ajax.remove_criteria,
         name='core_explore_example_remove_criteria'),
-    url(r'^save-query$', user_ajax.save_query,
+    url(r'^save-query$', user_ajax.SaveQueryView.as_view(
+        fields_to_query_func=user_ajax.fields_to_query),
         name='core_explore_example_save_query'),
     url(r'^clear-criteria$', user_ajax.clear_criteria,
         name='core_explore_example_clear_criteria'),
@@ -47,6 +48,7 @@ urlpatterns = [
         name='core_explore_example_delete_query'),
     url(r'^add-query-criteria$', user_ajax.add_query_criteria,
         name='core_explore_example_add_query_criteria'),
-    url(r'^get-query$', user_ajax.get_query,
+    url(r'^get-query$', user_ajax.GetQueryView.as_view(
+        fields_to_query_func=user_ajax.fields_to_query),
         name='core_explore_example_get_query'),
 ]

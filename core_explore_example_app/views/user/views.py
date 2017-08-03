@@ -151,6 +151,7 @@ class SelectFieldsView(View):
 class BuildQueryView(View):
     build_query_url = 'core_explore_example_build_query'
     get_query_url = 'core_explore_example_get_query'
+    save_query_url = 'core_explore_example_save_query'
     results_url = 'core_explore_example_results'
     object_name = "template"
 
@@ -249,7 +250,8 @@ class BuildQueryView(View):
 
                 "build_query_url": self.build_query_url,
                 "results_url": self.results_url,
-                "get_query_url": self.get_query_url
+                "get_query_url": self.get_query_url,
+                "save_query_url": self.save_query_url
             }
 
             modals = [

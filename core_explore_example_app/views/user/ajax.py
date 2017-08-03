@@ -2,6 +2,8 @@
 """
 from django.http import HttpResponse
 from django.http.response import HttpResponseBadRequest
+from django.utils.decorators import method_decorator
+from django.views.generic import View
 from lxml import html
 import json
 
@@ -438,46 +440,6 @@ def remove_criteria(request):
 
 
 @decorators.permission_required(content_type=rights.explore_example_content_type,
-                                permission=rights.explore_example_save_query, raise_exception=True)
-def save_query(request):
-    """Saves a query and updates the html display
-
-    Args:
-        request:
-
-    Returns:
-
-    """
-    form_values = json.loads(request.POST['formValues'])
-    template_id = request.POST['templateID']
-
-    # Check that the user can save a query
-    errors = []
-    if '_auth_user_id' in request.session:
-        user_id = request.session['_auth_user_id']
-    else:
-        error = 'You have to login to save a query.'
-        return HttpResponseBadRequest(error, content_type='application/javascript')
-
-    # Check that the query is valid
-    errors = check_query_form(request, form_values, template_id)
-    if len(errors) == 0:
-        query = fields_to_query(request, form_values, template_id)
-        displayed_query = fields_to_pretty_query(request, form_values)
-
-        # save the query in the data base
-        saved_query = SavedQuery(user_id=str(user_id),
-                                 template=template_api.get(template_id),
-                                 query=json.dumps(query),
-                                 displayed_query=displayed_query)
-        saved_query_api.upsert(saved_query)
-    else:
-        return HttpResponseBadRequest(_render_errors(errors), content_type='application/javascript')
-
-    return HttpResponse(json.dumps({}), content_type='application/javascript')
-
-
-@decorators.permission_required(content_type=rights.explore_example_content_type,
                                 permission=rights.explore_example_access, raise_exception=True)
 def check_query_form(request, form_values, template_id):
     """Checks that values entered by the user match each element type
@@ -514,67 +476,6 @@ def check_query_form(request, form_values, template_id):
                 errors.append(error)
 
     return errors
-
-
-@decorators.permission_required(content_type=rights.explore_example_content_type,
-                                permission=rights.explore_example_access, raise_exception=True)
-def fields_to_query(request, form_values, template_id):
-    """Takes values from the html tree and creates a query from them
-
-    Args:
-        request:
-        form_values:
-        template_id:
-
-    Returns:
-
-    """
-
-    map_criteria = request.session['mapCriteriaExplore']
-
-    query = dict()
-    for field in form_values:
-        bool_comp = field['operator']
-        if bool_comp == 'NOT':
-            is_not = True
-        else:
-            is_not = False
-
-        # get element value
-        value = get_element_value(field)
-        # get comparison operator
-        comparison = get_element_comparison(field)
-
-        # get data structures for query
-        criteria_info = json.loads(map_criteria[field['id']])
-        element_info = json.loads(criteria_info['elementInfo']) if criteria_info['elementInfo'] is not None else None
-        query_info = json.loads(criteria_info['queryInfo']) if criteria_info['queryInfo'] is not None else None
-
-        element_type = element_info['type']
-        if element_type == "query":
-            query_value = query_info['query']
-            criteria = build_query_criteria(query_value, is_not)
-        elif element_type == "enum":
-            element = element_info['path']
-            criteria = build_enum_criteria(element, value, is_not)
-        else:
-            element = element_info['path']
-            template = template_api.get(template_id)
-            namespaces = get_namespaces(template.content)
-            default_prefix = get_default_prefix(namespaces)
-            criteria = build_criteria(element, comparison, value, element_type, default_prefix, is_not)
-
-        if bool_comp == 'OR':
-            query = build_or_criteria(query, criteria)
-        elif bool_comp == 'AND':
-            query = build_and_criteria(query, criteria)
-        else:
-            if form_values.index(field) == 0:
-                query.update(criteria)
-            else:
-                query = build_and_criteria(query, criteria)
-
-    return query
 
 
 @decorators.permission_required(content_type=rights.explore_example_content_type,
@@ -744,38 +645,151 @@ def add_query_criteria(request):
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
 
 
+# @staticmethod
 @decorators.permission_required(content_type=rights.explore_example_content_type,
-                                permission=rights.explore_example_access, raise_exception=True)
-def get_query(request):
-    """Get a query
+                                permission=rights.explore_example_access,
+                                raise_exception=True)
+def fields_to_query(request, form_values, template_id):
+    """Takes values from the html tree and creates a query from them
 
     Args:
         request:
+        form_values:
+        template_id:
 
     Returns:
 
     """
-    try:
-        template_id = request.POST['templateID']
-        query_id = request.POST['queryID']
-        form_values = json.loads(request.POST['formValues'])
 
-        # save current query builder in session to restore it when coming back to the page
-        query_form = request.POST['queryForm']
-        request.session['savedQueryFormExplore'] = query_form
+    map_criteria = request.session['mapCriteriaExplore']
 
-        errors = check_query_form(request, form_values, template_id)
-        query_object = query_api.get_by_id(query_id)
-        if len(query_object.data_sources) == 0:
-            errors.append("Please select at least 1 data source.")
+    query = dict()
+    for field in form_values:
+        bool_comp = field['operator']
+        is_not = bool_comp == 'NOT'
 
-        if len(errors) == 0:
-            query_content = fields_to_query(request, form_values, template_id)
-            query_object.content = json.dumps(query_content)
-            query_api.upsert(query_object)
+        # get element value
+        value = get_element_value(field)
+        # get comparison operator
+        comparison = get_element_comparison(field)
+
+        # get data structures for query
+        criteria_info = json.loads(map_criteria[field['id']])
+        element_info = json.loads(criteria_info['elementInfo']) if criteria_info[
+                                                                       'elementInfo']is not None else None
+        query_info = json.loads(criteria_info['queryInfo']) if criteria_info[
+                                                                   'queryInfo'] is not None else None
+
+        element_type = element_info['type']
+        if element_type == "query":
+            query_value = query_info['query']
+            criteria = build_query_criteria(query_value, is_not)
+        elif element_type == "enum":
+            element = element_info['path']
+            criteria = build_enum_criteria(element, value, is_not)
         else:
-            return HttpResponseBadRequest(_render_errors(errors), content_type='application/javascript')
+            element = element_info['path']
+            template = template_api.get(template_id)
+            namespaces = get_namespaces(template.content)
+            default_prefix = get_default_prefix(namespaces)
+            criteria = build_criteria(element, comparison, value, element_type, default_prefix,
+                                      is_not)
+
+        if bool_comp == 'OR':
+            query = build_or_criteria(query, criteria)
+        elif bool_comp == 'AND':
+            query = build_and_criteria(query, criteria)
+        else:
+            if form_values.index(field) == 0:
+                query.update(criteria)
+            else:
+                query = build_and_criteria(query, criteria)
+
+    return query
+
+
+class GetQueryView(View):
+    fields_to_query_func = None
+
+    @method_decorator(decorators.
+                      permission_required(content_type=rights.explore_example_content_type,
+                                permission=rights.explore_example_access, raise_exception=True))
+    def post(self, request):
+        """Get a query
+
+        Args:
+            request:
+
+        Returns:
+
+        """
+        try:
+            template_id = request.POST['templateID']
+            query_id = request.POST['queryID']
+            form_values = json.loads(request.POST['formValues'])
+
+            # save current query builder in session to restore it when coming back to the page
+            query_form = request.POST['queryForm']
+            request.session['savedQueryFormExplore'] = query_form
+
+            errors = check_query_form(request, form_values, template_id)
+            query_object = query_api.get_by_id(query_id)
+            if len(query_object.data_sources) == 0:
+                errors.append("Please select at least 1 data source.")
+
+            if len(errors) == 0:
+                query_content = self.fields_to_query_func(request, form_values, template_id)
+                query_object.content = json.dumps(query_content)
+                query_api.upsert(query_object)
+            else:
+                return HttpResponseBadRequest(_render_errors(errors), content_type='application/javascript')
+
+            return HttpResponse(json.dumps({}), content_type='application/javascript')
+        except Exception, e:
+            return HttpResponseBadRequest(e.message, content_type='application/javascript')
+
+
+class SaveQueryView(View):
+    fields_to_query_func = fields_to_query
+
+    @method_decorator(decorators.
+                      permission_required(content_type=rights.explore_example_content_type,
+                                          permission=rights.explore_example_save_query,
+                                          raise_exception=True))
+    def post(self, request):
+        """Save a query and update the html display
+
+        Args:
+            request:
+
+        Returns:
+
+        """
+        form_values = json.loads(request.POST['formValues'])
+        template_id = request.POST['templateID']
+
+        # Check that the user can save a query
+        errors = []
+        if '_auth_user_id' in request.session:
+            user_id = request.session['_auth_user_id']
+        else:
+            error = 'You have to login to save a query.'
+            return HttpResponseBadRequest(error, content_type='application/javascript')
+
+        # Check that the query is valid
+        errors = check_query_form(request, form_values, template_id)
+        if len(errors) == 0:
+            query = self.fields_to_query_func(request, form_values, template_id)
+            displayed_query = fields_to_pretty_query(request, form_values)
+
+            # save the query in the data base
+            saved_query = SavedQuery(user_id=str(user_id),
+                                     template=template_api.get(template_id),
+                                     query=json.dumps(query),
+                                     displayed_query=displayed_query)
+            saved_query_api.upsert(saved_query)
+        else:
+            return HttpResponseBadRequest(_render_errors(errors),
+                                          content_type='application/javascript')
 
         return HttpResponse(json.dumps({}), content_type='application/javascript')
-    except Exception, e:
-        return HttpResponseBadRequest(e.message, content_type='application/javascript')
