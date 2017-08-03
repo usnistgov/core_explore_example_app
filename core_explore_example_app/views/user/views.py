@@ -21,6 +21,7 @@ class IndexView(View):
     api = template_version_manager_api
     get_redirect = 'core_explore_example_app/user/index.html'
     select_object_redirect = "core_explore_example_select_fields"
+    build_query_redirect = "core_explore_example_build_query"
     object_name = "template"
 
     @method_decorator(decorators.
@@ -48,6 +49,7 @@ class IndexView(View):
             'user_objects': user_active_template_list,
             'object_name': self.object_name,
             'select_object_redirect': self.select_object_redirect,
+            'build_query_redirect': self.build_query_redirect,
         }
 
         return render(request, self.get_redirect, assets=assets, context=context)

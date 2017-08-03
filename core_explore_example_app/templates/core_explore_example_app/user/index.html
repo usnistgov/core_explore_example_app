@@ -12,14 +12,16 @@ Select a {{ data.object_name }} from the following table. It will automatically 
 <table class="table table-bordered">
     <tr>
         <th class="title-table">{{ data.object_name|title }} name</th>
-        <th class="title-table" style="width: 150px;">Actions</th>
+        <th class="title-table" style="width: 300px;">Actions</th>
     </tr>
     {% for global_object in data.global_objects %}
         <tr>
             <td templateID='{{global_object.current}}'>{{ global_object.title }}</td>
             <td>
                 <a href="{% url data.select_object_redirect global_object.current %}"
-                   class="btn btn-primary" role="button">Select {{ data.object_name|title }}</a>
+                   class="btn btn-primary" role="button">Select Query Fields</a>
+                <a href="{% url data.build_query_redirect global_object.current %}"
+                       class="btn btn-success" role="button">Go to Query Builder</a>
             </td>
         </tr>
     {% endfor %}
@@ -33,14 +35,16 @@ Select a {{ data.object_name }} from the following table. It will automatically 
     <table class="table table-bordered">
         <tr>
             <th class="title-table">{{data.object_name|title}} name</th>
-            <th class="title-table" style="width: 150px;">Actions</th>
+            <th class="title-table" style="width: 300px;">Actions</th>
         </tr>
         {% for user_object in data.user_objects %}
             <tr>
                 <td templateID='{{user_object.id}}'>{{ user_object.title }}</td>
                 <td>
-                    <a href="{% url data.select_object_redirect user_object.current %}"
-                        class="btn btn-primary" role="button">Select {{ data.object_name|title }}</a>
+                    <a href="{% url data.select_object_redirect global_object.current %}"
+                       class="btn btn-primary" role="button">Select Query Fields</a>
+                    <a href="{% url data.build_query_redirect global_object.current %}"
+                       class="btn btn-success" role="button">Go to Query Builder</a>
                 </td>
             </tr>
         {% endfor %}
