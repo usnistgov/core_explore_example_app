@@ -155,6 +155,7 @@ class BuildQueryView(View):
     get_query_url = 'core_explore_example_get_query'
     save_query_url = 'core_explore_example_save_query'
     results_url = 'core_explore_example_results'
+    select_fields_url = 'core_explore_example_select_fields'
     object_name = "template"
 
     @method_decorator(decorators.
@@ -253,7 +254,9 @@ class BuildQueryView(View):
                 "build_query_url": self.build_query_url,
                 "results_url": self.results_url,
                 "get_query_url": self.get_query_url,
-                "save_query_url": self.save_query_url
+                "save_query_url": self.save_query_url,
+
+                "select_fields_url": self.select_fields_url
             }
 
             modals = [

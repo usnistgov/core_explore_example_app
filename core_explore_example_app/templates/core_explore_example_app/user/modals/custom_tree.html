@@ -8,7 +8,7 @@ Select the element that you want to insert in the query.
 <div id="xsd_form">
     {% if data.custom_form %}
     You can customize this view by
-    <a href="{% url 'core_explore_example_select_fields' data.template_id %}">
+    <a href="{% url data.select_fields_url data.template_id %}">
         selecting new fields
     </a>
     .
@@ -16,7 +16,7 @@ Select the element that you want to insert in the query.
     {% else %}
     <p style="color:red;">
         You should customize the template first.
-        <a href="{% url 'core_explore_example_select_fields' data.template_id %}"
+        <a href="{% url data.select_fields_url data.template_id %}"
            style="color:red;font-weight:bold;">
             Go back to 'Select Fields'
         </a>
