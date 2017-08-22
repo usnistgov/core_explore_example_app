@@ -145,22 +145,33 @@ def save_fields(request):
     Returns:
 
     """
-    # get form content from HTML
-    form_content = request.POST['formContent']
-    request.session['formStringExplore'] = form_content
+    try:
+        # get parameters form request
+        form_content = request.POST['formContent']
+        template_id = request.POST['templateID']
 
-    # modify the form string to only keep the selected elements
-    html_tree = html.fromstring(form_content)
-    any_checked = prune_html_tree(html_tree)
+        # modify the form string to only keep the selected elements
+        html_tree = html.fromstring(form_content)
+        any_checked = prune_html_tree(html_tree)
 
-    if any_checked:
-        # if elements selected in the form, set the pruned form in session variable
-        request.session['customFormStringExplore'] = html.tostring(html_tree)
-    else:
-        # if no elements selected in the form, empty session variable
-        request.session['customFormStringExplore'] = ""
+        # get explore data structure
+        explore_data_structure = explore_data_structure_api.get_by_user_id_and_template_id(str(request.user.id),
+                                                                                           template_id)
 
-    return HttpResponse(json.dumps({}), content_type='application/javascript')
+        # if checkboxes were checked
+        if any_checked:
+            # save html form
+            explore_data_structure.selected_fields_html_tree = html.tostring(html_tree)
+        else:
+            # otherwise, empty any previously saved html form
+            explore_data_structure.selected_fields_html_tree = None
+
+        # update explore data structure
+        explore_data_structure_api.upsert(explore_data_structure)
+
+        return HttpResponse(json.dumps({}), content_type='application/javascript')
+    except Exception, e:
+        return HttpResponseBadRequest("An error occurred while saving the form.")
 
 
 @decorators.permission_required(content_type=rights.explore_example_content_type,

@@ -2,16 +2,18 @@
 """
 import json
 
+from django.core.urlresolvers import reverse_lazy
+from django.views.generic import View
+from django.utils.decorators import method_decorator
+
 import core_main_app.components.template_version_manager.api as template_version_manager_api
 import core_main_app.utils.decorators as decorators
 from core_explore_common_app.components.query import api as query_api
 from core_explore_common_app.components.query.models import Query
 from core_main_app.components.template import api as template_api
+from core_explore_example_app.components.explore_data_structure import api as explore_data_structure_api
 from core_main_app.utils.rendering import render
-from django.core.urlresolvers import reverse_lazy
-from django.views.generic import View
-from django.utils.decorators import method_decorator
-
+from core_main_app.commons import exceptions as exceptions
 import core_explore_example_app.permissions.rights as rights
 from core_explore_example_app.components.saved_query import api as saved_query_api
 from core_explore_example_app.settings import INSTALLED_APPS
@@ -202,12 +204,15 @@ class BuildQueryView(View):
                                        format(self.object_name)})
 
             # Init variables
-            custom_form_string = ""
             saved_query_form = ""
 
-            # If custom fields form present, set it
-            if 'customFormStringExplore' in request.session:
-                custom_form_string = request.session['customFormStringExplore']
+            try:
+                explore_data_structure = explore_data_structure_api.get_by_user_id_and_template_id(str(request.user.id),
+                                                                                                   template_id)
+                # If custom fields form present, set it
+                custom_form = explore_data_structure.selected_fields_html_tree
+            except exceptions.DoesNotExist:
+                custom_form = None
 
             # If new form
             if query_id is None:
@@ -229,11 +234,6 @@ class BuildQueryView(View):
                                                                             template_id=template_id)
             else:
                 user_queries = []
-
-            if custom_form_string != "":
-                custom_form = custom_form_string
-            else:
-                custom_form = None
 
             assets = {
                 "js": self._get_js(),
