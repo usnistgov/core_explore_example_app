@@ -220,30 +220,8 @@ class BuildQueryView(View):
                 custom_form = None
 
             assets = {
-                "js": [
-                    {
-                        "path": 'core_explore_example_app/user/js/build_query.js',
-                        "is_raw": False
-                    },
-                    {
-                        "path": 'core_explore_example_app/user/js/build_query.raw.js',
-                        "is_raw": True
-                    },
-                    {
-                        "path": 'core_parser_app/js/autosave.raw.js',
-                        "is_raw": True
-                    },
-                    {
-                        "path": "core_parser_app/js/choice.js",
-                        "is_raw": False
-                    },
-                    {
-                        "path": 'core_main_app/common/js/modals/error_page_modal.js',
-                        "is_raw": True
-                    }
-                ],
-                "css": ["core_explore_example_app/user/css/query_builder.css",
-                        "core_explore_example_app/user/css/xsd_form.css"]
+                "js": self._get_js(),
+                "css": self._get_css()
             }
 
             context = {
@@ -294,6 +272,37 @@ class BuildQueryView(View):
         # create new query object
         query = Query(user_id=str(user_id), templates=[template])
         return query_api.upsert(query)
+
+    @staticmethod
+    def _get_js():
+        return [
+            {
+                "path": 'core_explore_example_app/user/js/build_query.js',
+                "is_raw": False
+            },
+            {
+                "path": 'core_explore_example_app/user/js/build_query.raw.js',
+                "is_raw": True
+            },
+            {
+                "path": 'core_parser_app/js/autosave.raw.js',
+                "is_raw": True
+            },
+            {
+                "path": "core_parser_app/js/choice.js",
+                "is_raw": False
+            },
+            {
+                "path": 'core_main_app/common/js/modals/error_page_modal.js',
+                "is_raw": True
+            }]
+
+    @staticmethod
+    def _get_css():
+        return [
+            "core_explore_example_app/user/css/query_builder.css",
+            "core_explore_example_app/user/css/xsd_form.css"
+        ]
 
 
 class ResultQueryView(View):
