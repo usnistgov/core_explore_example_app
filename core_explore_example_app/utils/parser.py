@@ -1,5 +1,6 @@
 """Parser util for explore app
 """
+from core_explore_example_app.settings import PARSER_DOWNLOAD_DEPENDENCIES
 from core_parser_app.tools.parser.parser import XSDParser, remove_child_element
 from core_parser_app.tools.parser.renderer.checkbox import CheckboxRenderer
 from core_parser_app.components.data_structure_element import api as data_structure_element_api
@@ -19,7 +20,7 @@ def get_parser():
                      collapse=True,
                      auto_key_keyref=False,
                      implicit_extension_base=False,
-                     download_dependencies=False,
+                     download_dependencies=PARSER_DOWNLOAD_DEPENDENCIES,
                      store_type=True)
 
 
