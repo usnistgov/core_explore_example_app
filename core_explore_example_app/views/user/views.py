@@ -178,6 +178,7 @@ class BuildQueryView(View):
     object_name = "template"
     data_sources_selector_template = 'core_explore_common_app/user/selector/data_sources_selector' \
                                      '.html'
+    query_builder_interface = 'core_explore_example_app/user/query_builder/initial_form.html'
 
     @method_decorator(decorators.
                       permission_required(content_type=rights.explore_example_content_type,
@@ -255,7 +256,8 @@ class BuildQueryView(View):
                 "select_fields_url": self.select_fields_url,
                 "local_query_url": self.local_query_url,
 
-                "data_sources_selector_template": self.data_sources_selector_template
+                "data_sources_selector_template": self.data_sources_selector_template,
+                "query_builder_interface": self.query_builder_interface
             }
 
             modals = [

@@ -16,7 +16,7 @@
             {{data.query_form|safe}}
             {%else%}
             <div id="queryForm">
-            {% include 'core_explore_example_app/user/query_builder/initial_form.html'%}
+            {% include data.query_builder_interface|safe %}
             </div>
         {% endif %}
         <form>
