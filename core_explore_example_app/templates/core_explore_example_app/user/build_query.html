@@ -3,15 +3,11 @@
 <h2 class="title-page">Perform Search</h2>
 
 <p>
-   Click on a field of the Query Builder to add an element to your query. The elements selected in the previous step
-   will appear and you will be able to insert them in the query builder. Click on plus/minus icons to
-   add/remove criteria. You can save queries to build more complex queries and you will retrieve them on your
-   next connection. When your query is done, please click on Submit Query to get XML documents that match the
-   criteria.
+   {{ data.description }}
 </p>
 <div class="row">
     <div id="queryBuilder">
-        <h3 class="title-text">Query Builder</h3>
+        <h3 class="title-text">{{ data.title }}</h3>
         {% if data.query_form%}
             {{data.query_form|safe}}
             {%else%}

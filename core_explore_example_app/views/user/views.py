@@ -244,6 +244,8 @@ class BuildQueryView(View):
             context = {
                 'queries': user_queries,
                 'template_id': template_id,
+                'description': self.get_description(),
+                'title': self.get_title(),
 
                 'custom_form': custom_form,
                 'query_form': saved_query_form,
@@ -321,6 +323,18 @@ class BuildQueryView(View):
             "core_explore_example_app/user/css/query_builder.css",
             "core_explore_example_app/user/css/xsd_form.css"
         ]
+
+    @staticmethod
+    def get_description():
+        return "Click on a field of the Query Builder to add an element to your query. "\
+               "The elements selected in the previous step will appear and you will be able to insert "\
+               "them in the query builder. Click on plus/minus icons to add/remove criteria. "\
+               "You can save queries to build more complex queries and you will retrieve them on your next connection."\
+               " When your query is done, please click on Submit Query to get XML documents that match the criteria."
+
+    @staticmethod
+    def get_title():
+        return "Query Builder"
 
 
 class ResultQueryView(View):

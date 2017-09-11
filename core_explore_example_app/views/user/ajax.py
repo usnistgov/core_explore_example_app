@@ -1,37 +1,34 @@
 """Explore Example app Ajax views
 """
+import json
+
 from django.http import HttpResponse
 from django.http.response import HttpResponseBadRequest
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 from lxml import html
-import json
+from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default_prefix
+from xml_utils.xsd_types.xsd_types import get_xsd_numbers
 
+import core_explore_example_app.permissions.rights as rights
+import core_main_app.utils.decorators as decorators
 from core_explore_common_app.components.query import api as query_api
-from core_parser_app.components.data_structure_element import api as data_structure_element_api
-from core_main_app.components.template import api as template_api
-
-from core_explore_example_app.utils.parser import generate_form, render_form, generate_element_absent, \
-    generate_choice_absent, remove_form_element
-from core_explore_example_app.components.explore_data_structure.models import ExploreDataStructure
 from core_explore_example_app.components.explore_data_structure import api as explore_data_structure_api
-from core_explore_example_app.components.saved_query.models import SavedQuery
 from core_explore_example_app.components.saved_query import api as saved_query_api
+from core_explore_example_app.components.saved_query.models import SavedQuery
 from core_explore_example_app.utils.displayed_query import build_query_pretty_criteria, build_enum_pretty_criteria, \
     build_pretty_criteria, build_or_pretty_criteria, build_and_pretty_criteria
 from core_explore_example_app.utils.mongo_query import build_query_criteria, build_enum_criteria, build_criteria, \
     build_or_criteria, build_and_criteria, get_dot_notation_to_element, get_parent_name, get_parent_path
+from core_explore_example_app.utils.parser import render_form, generate_element_absent, \
+    generate_choice_absent, remove_form_element
 from core_explore_example_app.utils.query_builder import render_numeric_select, render_value_input, \
     render_string_select, render_enum, render_initial_form, CriteriaInfo, ElementInfo, QueryInfo, \
     render_new_query, render_new_criteria, render_sub_elements_query, get_element_value, get_element_comparison, \
     prune_html_tree
 from core_explore_example_app.utils.xml import validate_element_value, get_enumerations
-
-from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default_prefix
-from xml_utils.xsd_types.xsd_types import get_xsd_numbers
-
-import core_main_app.utils.decorators as decorators
-import core_explore_example_app.permissions.rights as rights
+from core_main_app.components.template import api as template_api
+from core_parser_app.components.data_structure_element import api as data_structure_element_api
 
 
 # FIXME: avoid session variables
@@ -50,25 +47,11 @@ def load_form(request):
     try:
         template_id = request.POST['templateID']
 
-        # get template
-        template = template_api.get(template_id)
         # get data structure
-        try:
-            explore_data_structure = explore_data_structure_api. \
-                get_by_user_id_and_template_id(user_id=str(request.user.id), template_id=template_id)
-            # get the root element
-            root_element = explore_data_structure.data_structure_element_root
-        except:
-            # generate the root element
-            root_element = generate_form(request, template.content)
-            # create explore data structure
-            explore_data_structure = ExploreDataStructure(user=str(request.user.id),
-                                                          template=template,
-                                                          name=template.filename,
-                                                          data_structure_element_root=root_element)
-
-            # save the data structure
-            explore_data_structure_api.upsert(explore_data_structure)
+        data_structure = explore_data_structure_api.create_and_get_explore_data_structure(request,
+                                                                                          template_id,
+                                                                                          request.user.id)
+        root_element = data_structure.data_structure_element_root
 
         # renders the form
         xsd_form = render_form(request, root_element)
