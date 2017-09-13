@@ -1,12 +1,13 @@
 """Utils for the query builder
 """
-from django.template.context import Context, RequestContext
+from django.template.context import Context
 from django.template import loader
-import json
 from os.path import join
 
 
 # Classes Definition
+from core_explore_example_app.utils.xml import get_enumerations
+from xml_utils.xsd_types.xsd_types import get_xsd_numbers
 
 
 class BranchInfo:
@@ -20,54 +21,6 @@ class BranchInfo:
     def add_selected_leaf(self, leaf_id):
         self.selected_leaves.append(leaf_id)
         self.keep_the_branch = True
-
-
-class ElementInfo:
-    """
-    Store information about element from the XML schema
-    """
-
-    def __init__(self, type="", path=""):
-        self.type = type
-        self.path = path
-
-    def __to_json__(self):
-        return json.dumps(self, default=lambda o: o.__dict__)
-
-
-class CriteriaInfo:
-    """
-    Store information about a criteria from the query builder
-    """
-
-    def __init__(self, elementInfo=None, queryInfo=None):
-        self.elementInfo = elementInfo
-        self.queryInfo = queryInfo
-
-    def __to_json__(self):
-        json_dict = dict()
-        if self.elementInfo is None:
-            json_dict["elementInfo"] = None
-        else:
-            json_dict["elementInfo"] = self.elementInfo.__to_json__()
-        if self.queryInfo is None:
-            json_dict["queryInfo"] = None
-        else:
-            json_dict["queryInfo"] = self.queryInfo.__to_json__()
-        return json.dumps(json_dict)
-
-
-class QueryInfo:
-    """
-    Store information about a query
-    """
-
-    def __init__(self, query="", displayed_query=""):
-        self.query = query
-        self.displayed_query = displayed_query
-
-    def __to_json__(self):
-        return json.dumps(self, default=lambda o: o.__dict__)
 
 
 # Util functions
@@ -285,17 +238,16 @@ def render_add_button():
     return _render_template(join('core_explore_example_app', 'user', 'query_builder', 'add.html'))
 
 
-def render_enum(request, enums):
+def render_enum(enums):
     """Returns html select from an enumeration
 
     Args:
-        request:
         enums:
 
     Returns:
 
     """
-    context = RequestContext(request, {
+    context = Context({
         'enums': enums,
     })
     return _render_template(join('core_explore_example_app', 'user', 'query_builder', 'enum.html'), context)
@@ -373,7 +325,37 @@ def get_element_comparison(element_field):
     Returns:
 
     """
-    return element_field['comparison'] if 'comparison' in element_field else None
+    return element_field['comparison'] if 'comparison' in element_field else 'is'
+
+
+def get_user_inputs(element_type, data_structure_element, default_prefix):
+    """Get user inputs from element type
+
+    Args:
+        element_type:
+        data_structure_element:
+        default_prefix:
+
+    Returns:
+
+    """
+    try:
+        if element_type is not None and element_type.startswith("{0}:".format(default_prefix)):
+            # numeric
+            if element_type in get_xsd_numbers(default_prefix):
+                user_inputs = render_numeric_select() + render_value_input()
+            # string
+            else:
+                user_inputs = render_string_select() + render_value_input()
+        else:
+            # enumeration
+            enums = get_enumerations(data_structure_element)
+            user_inputs = render_enum(enums)
+    except:
+        # default renders string form
+        user_inputs = render_string_select() + render_value_input()
+
+    return user_inputs
 
 
 def _render_template(template_path, context=None):

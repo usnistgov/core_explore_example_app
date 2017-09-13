@@ -24,14 +24,15 @@ var selectElement = function(event)
         type : "POST",
         dataType: "json",
         data : {
-        	elementID: elementID,
-        	criteriaID: criteriaID
+        	elementID: elementID
         },
 		success: function(data){
-            var $criteriaTag = $("#" + data.criteriaTagID);
+            var $criteriaTag = $("#" + criteriaID);
             $($criteriaTag.children()[1]).val(data.elementName);
             $($criteriaTag.children()[1]).attr("class","elementInput");
-            updateUserInputs(elementID, data.criteriaID);
+            $($criteriaTag).attr("element_id", elementID);
+            $($criteriaTag).attr("element_name", data.elementName);
+            updateUserInputs(elementID, criteriaID.substring(4, criteriaID.length)); // crit0 -> 0
             $( "#custom-tree-modal" ).modal("hide");
 	    }
     });
@@ -81,7 +82,6 @@ var prepare_sub_element_query = function(){
  * AJAX call, inserts a sub query in the form
  */
 var insert_sub_element_query = function(){
-    var leavesID = $("#leaves_id").html();
     var $subElementQueryBuilder = $("#subElementQueryBuilder");
     var selectedCheckboxes = $subElementQueryBuilder.find("input[type=checkbox]:checked");
 
@@ -99,13 +99,16 @@ var insert_sub_element_query = function(){
         type : "POST",
         dataType: "json",
         data : {
-        	leavesID: leavesID,
         	formValues: formValues,
             templateID: templateID,
             criteriaID: criteriaID
         },
 		success: function(data){
             var $criteria = $("#" + data.criteriaID);
+            // set criteria attributes
+            $criteria.attr("element_id", data.queryID);
+            $criteria.attr("element_name", data.prettyQuery);
+            $criteria.attr("element_type", "query");
             // insert the pretty query in the query builder
             $($criteria.children()[1]).attr("value", data.prettyQuery);
             var field = $criteria.children()[1];
@@ -128,30 +131,33 @@ var insert_sub_element_query = function(){
 /**
  * When an element is selected in the query builder, input fields are added to the
  * form according to the type of the element.
- * @param fromElementID
+ * @param elementID
  * @param criteriaID
  */
-var updateUserInputs = function(fromElementID, criteriaID){
+var updateUserInputs = function(elementID, criteriaID){
     var templateID = $("#template_id").html();
-	update_user_inputs(fromElementID, criteriaID, templateID);
+	update_user_inputs(elementID, criteriaID, templateID);
 };
 
 
 /**
  * AJAX call, update user inputs for the selected element type
  */
-var update_user_inputs = function(fromElementID, criteriaID, templateID){
+var update_user_inputs = function(elementID, criteriaID, templateID){
     $.ajax({
         url : updateUserInputUrl,
         type : "POST",
         dataType: "json",
         data : {
-        	fromElementID: fromElementID,
-        	criteriaID: criteriaID,
+        	elementID: elementID,
+        	// criteriaID: criteriaID,
         	templateID: templateID
         },
         success: function(data){
-            $("#ui" + criteriaID).html(data.userInputs);
+            var $ui = $("#ui" + criteriaID);
+            var $criteria = $("#crit" + criteriaID);
+            $ui.html(data.userInputs);
+            $criteria.attr('element_type', data.element_type);
         }
     });
 };
@@ -219,48 +225,30 @@ var removeField = function(event){
     var $target = $(event.target);
     var $parent = $($target.parents("p"));
     var criteriaID = $parent.attr('id');
+	var $queryForm = $("#queryForm");
+    var $criteriaTag = $("#" + criteriaID);
+
+    // save add button
+    var add_button = $queryForm.find(".add:first").clone();
+    // save first criteria select (different from others)
+    var first_select = $queryForm.find("select.boolOperator:first").clone();
+
     // remove criteria
-	remove_field(criteriaID);
+    $criteriaTag.remove();
+
+    // delete remove button if only one criteria left
+    var list_remove = $queryForm.find(".remove");
+    if (list_remove.length == 1){
+        $(list_remove[0]).remove();
+    }
+    // remove all add buttons
+    $queryForm.find(".add").remove();
+    // give add button to last criteria
+    $queryForm.find("p:last").append(add_button);
+    // give add button to last criteria
+    $queryForm.find("p:first").find("select.boolOperator").replaceWith(first_select);
 };
 
-
-/**
- * AJAX call, remove field from the form
- */
-var remove_field = function(criteriaID){
-    $.ajax({
-        url : removeCriteriaUrl,
-        type : "POST",
-        dataType: "json",
-        data : {
-        	criteriaID: criteriaID
-        },
-        success: function(data){
-            var $queryForm = $("#queryForm");
-            var $criteriaTag = $("#" + criteriaID);
-
-            // save add button
-            var add_button = $queryForm.find(".add:first").clone();
-            // save first criteria select (different from others)
-            var first_select = $queryForm.find("select.boolOperator:first").clone();
-
-            // remove criteria
-            $criteriaTag.remove();
-
-            // delete remove button if only one criteria left
-            var list_remove = $queryForm.find(".remove");
-            if (list_remove.length == 1){
-                $(list_remove[0]).remove();
-            }
-            // remove all add buttons
-            $queryForm.find(".add").remove();
-            // give add button to last criteria
-            $queryForm.find("p:last").append(add_button);
-            // give add button to last criteria
-            $queryForm.find("p:first").find("select.boolOperator").replaceWith(first_select);
-        }
-    });
-};
 
 /**
  * Transforms form fields into JSON
@@ -269,13 +257,18 @@ var remove_field = function(criteriaID){
 var getFormValues = function ($form) {
     var values = [];
     $form.find("p").each(function(){
-        var formValue = Object();
-        formValue.selected = $(this).find(".criteriaSelect").is(":checked");
-        formValue.id = $(this).attr("id");
-        formValue.value = $(this).find(".valueInput").val();
-        formValue.comparison = $(this).find(".valueComparison").val();
-        formValue.operator = $(this).find(".boolOperator").val();
-        values.push(formValue);
+        var element_id = $(this).attr("element_id");
+        if (typeof element_id !== typeof undefined && element_id !== false) {
+            var formValue = Object();
+            formValue.id = element_id;
+            formValue.selected = $(this).find(".criteriaSelect").is(":checked");
+            formValue.value = $(this).find(".valueInput").val();
+            formValue.comparison = $(this).find(".valueComparison").val();
+            formValue.operator = $(this).find(".boolOperator").val();
+            formValue.name = $(this).attr("element_name");
+            formValue.type = $(this).attr("element_type");
+            values.push(formValue);
+        }
     });
 
     return JSON.stringify(values);
@@ -404,10 +397,11 @@ var delete_query = function(savedQueryID){
 
 /**
  * Insert a saved query in the query builder
- * @param savedQueryID
+ * @param savedQueryTagID
  */
-var addSavedQueryToForm = function(savedQueryID){
+var addSavedQueryToForm = function(savedQueryTagID){
     var nextTagID = getNextTagID();
+    var savedQueryID = savedQueryTagID.substring(5, savedQueryTagID.length); // queryXXX -> XXX
 	add_saved_query_to_form(nextTagID, savedQueryID);
 };
 
@@ -429,13 +423,12 @@ var add_saved_query_to_form = function(tagID, savedQueryID){
         success: function(data){
             var $queryForm = $("#queryForm");
 
-            console.log(data.first);
             if (data.first){
                 // keep only one field if many empty added
                 $queryForm.find(":not(:first)").remove();
                 // replace first field with query
                 $queryForm.find("p:last").replaceWith(data.query);
-            }else{
+            }else {
                 // remove all add buttons
                 $queryForm.find(".add").remove();
                 // set query
@@ -444,14 +437,13 @@ var add_saved_query_to_form = function(tagID, savedQueryID){
                 // update buttons
                 var $first_criteria = $($queryForm.find("p:first"));
 
-                if ($first_criteria.find(".remove").length == 0){
+                if ($first_criteria.find(".remove").length == 0) {
                     // clone existing button
                     var remove_button = $queryForm.find(".remove:first").clone();
                     // append missing button
                     $first_criteria.append(remove_button);
                 }
             }
-
         }
     });
 };

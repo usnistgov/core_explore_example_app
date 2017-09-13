@@ -1,11 +1,11 @@
-<p id='crit{{tagID}}'>
+<p id='crit{{tagID}}' element_id="{{query.id}}" element_type="query" element_name="{{query.displayed_query}}">
     {% if first%}
         {% include 'core_explore_example_app/user/query_builder/yes_no.html'%}
     {% else %}
         {% include 'core_explore_example_app/user/query_builder/and_or_not.html'%}
     {% endif %}
     <input onclick="showCustomTree('crit{{tagID}}')" readonly="readonly" type="text" class="queryInput"
-           value=" {{query|safe}} ">
+           value=" {{query.displayed_query|safe}} ">
     <span id="ui{{tagID}}">
     </span>
     {% if not first%}

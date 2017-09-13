@@ -3,8 +3,14 @@
 import json
 import re
 
-from core_parser_app.components.data_structure_element import api as data_structure_element_api
+from core_explore_example_app.utils.query_builder import get_element_value, get_element_comparison
+from core_explore_example_app.utils.xml import validate_element_value
+from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default_prefix
 from xml_utils.xsd_types.xsd_types import get_xsd_numbers, get_xsd_floating_numbers
+
+from core_parser_app.components.data_structure_element import api as data_structure_element_api
+from core_main_app.components.template import api as template_api
+from core_explore_example_app.components.saved_query import api as saved_query_api
 
 
 def build_query_criteria(query, is_not=False):
@@ -86,27 +92,6 @@ def build_string_criteria(path, comparison, value):
     return criteria
 
 
-def build_enum_criteria(path, value, is_not=False):
-    """Builds a criteria for an enumeration
-
-    Args:
-        path:
-        value:
-        is_not:
-
-    Returns:
-
-    """
-    criteria = dict()
-
-    if is_not:
-        criteria[path] = json.loads('{{"ne": "{0}" }}'.format(repr(value)))
-    else:
-        criteria[path] = value
-
-    return criteria
-
-
 def build_and_criteria(criteria1, criteria2):
     """Builds a criteria that is the result of criteria1 and criteria2
 
@@ -141,7 +126,22 @@ def build_or_criteria(criteria1, criteria2):
     return or_criteria
 
 
-def build_criteria(element_path, comparison, value, element_type, default_prefix, is_not=False):
+def build_wildcard_criteria(criteria):
+    """Build wildcard criteria, from criteria.
+
+    Args:
+        criteria:
+
+    Returns:
+
+    """
+    key, value = criteria.popitem()
+    criteria_key = {'path': "/.*{}/".format(key)}
+    criteria_value = {'value': value}
+    return build_and_criteria(criteria_key, criteria_value)
+
+
+def build_criteria(element_path, comparison, value, element_type, default_prefix, is_not=False, use_wildcard=False):
     """Looks at element type and route to the right function to build the criteria
 
     Args:
@@ -151,6 +151,7 @@ def build_criteria(element_path, comparison, value, element_type, default_prefix
         element_type:
         default_prefix:
         is_not:
+        use_wildcard:
 
     Returns:
 
@@ -166,6 +167,10 @@ def build_criteria(element_path, comparison, value, element_type, default_prefix
     else:
         element_query = build_string_criteria(element_path, comparison, value)
         attribute_query = build_string_criteria("{}.#text".format(element_path), comparison, value)
+
+    if use_wildcard:
+        element_query = build_wildcard_criteria(element_query)
+        attribute_query = build_wildcard_criteria(attribute_query)
 
     criteria = build_or_criteria(element_query, attribute_query)
 
@@ -315,3 +320,123 @@ def get_parent_path(data_structure_element_id, namespaces):
 
     return parent_path
 
+
+def check_query_form(form_values, template_id):
+    """Checks that values entered by the user match each element type
+
+    Args:
+        form_values:
+        template_id:
+
+    Returns:
+
+    """
+    template = template_api.get(template_id)
+    namespaces = get_namespaces(template.content)
+    default_prefix = get_default_prefix(namespaces)
+
+    # check if there are no errors in the query
+    errors = []
+
+    if len(form_values) == 0:
+        errors.append("The query is empty.")
+
+    for field in form_values:
+            element_value = get_element_value(field)
+            error = validate_element_value(field['name'], field['type'], element_value, default_prefix)
+            if error is not None:
+                errors.append(error)
+
+    return errors
+
+
+def fields_to_query(form_values, template_id, use_wildcard=False):
+    """Takes values from the html tree and creates a query from them
+
+    Args:
+        form_values:
+        template_id:
+        use_wildcard:
+
+    Returns:
+
+    """
+    # get template
+    template = template_api.get(template_id)
+    # get namespaces
+    namespaces = get_namespaces(template.content)
+    # get default prefix
+    default_prefix = get_default_prefix(namespaces)
+
+    query = dict()
+    for field in form_values:
+        bool_comp = field['operator']
+        is_not = bool_comp == 'NOT'
+        element_type = field['type']
+
+        # get element value
+        value = get_element_value(field)
+        # get comparison operator
+        comparison = get_element_comparison(field)
+
+        element_id = field['id']
+
+        if element_type == "query":
+            saved_query = saved_query_api.get_by_id(element_id)
+            criteria = build_query_criteria(json.loads(saved_query.query), is_not)
+        else:
+            data_structure_element = data_structure_element_api.get_by_id(element_id)
+            element = get_dot_notation_to_element(data_structure_element, namespaces)
+            criteria = build_criteria(element, comparison, value, element_type, default_prefix, is_not, use_wildcard)
+
+        if bool_comp == 'OR':
+            query = build_or_criteria(query, criteria)
+        elif bool_comp == 'AND':
+            query = build_and_criteria(query, criteria)
+        else:
+            if form_values.index(field) == 0:
+                query.update(criteria)
+            else:
+                query = build_and_criteria(query, criteria)
+
+    return query
+
+
+def sub_elements_to_query(form_values, namespaces, default_prefix):
+    """Transforms HTML fields in a query on sub-elements
+
+    Args:
+        form_values:
+        namespaces:
+        default_prefix:
+
+    Returns:
+
+    """
+    elem_match = []
+
+    # get the parent path using the first element of the list
+    parent_path = get_parent_path(form_values[0]['id'], namespaces)
+
+    for i in range(0, len(form_values)):
+        field = form_values[i]
+        if field['selected'] is True:
+            bool_comp = field['operator']
+            if bool_comp == 'NOT':
+                is_not = True
+            else:
+                is_not = False
+
+            data_structure_element = data_structure_element_api.get_by_id(field['id'])
+            element_type = data_structure_element.options['type']
+            element_name = data_structure_element.options['name']
+            value = get_element_value(field)
+            comparison = get_element_comparison(field)
+
+            criteria = build_criteria(element_name, comparison, value, element_type, default_prefix, is_not)
+
+            elem_match.append(criteria)
+
+    query = {parent_path: {"$elemMatch": {"$and": elem_match}}}
+
+    return query

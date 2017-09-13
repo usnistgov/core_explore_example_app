@@ -2,6 +2,8 @@
 """
 
 from django.conf.urls import url
+
+from core_explore_example_app.utils.mongo_query import fields_to_query
 from core_explore_example_app.views.user import views as user_views, ajax as user_ajax
 
 urlpatterns = [
@@ -41,10 +43,8 @@ urlpatterns = [
 
     url(r'^add-criteria$', user_ajax.add_criteria,
         name='core_explore_example_add_criteria'),
-    url(r'^remove-criteria$', user_ajax.remove_criteria,
-        name='core_explore_example_remove_criteria'),
     url(r'^save-query$', user_ajax.SaveQueryView.as_view(
-        fields_to_query_func=user_ajax.fields_to_query),
+        fields_to_query_func=fields_to_query),
         name='core_explore_example_save_query'),
     url(r'^clear-criteria$', user_ajax.clear_criteria,
         name='core_explore_example_clear_criteria'),
@@ -55,6 +55,6 @@ urlpatterns = [
     url(r'^add-query-criteria$', user_ajax.add_query_criteria,
         name='core_explore_example_add_query_criteria'),
     url(r'^get-query$', user_ajax.GetQueryView.as_view(
-        fields_to_query_func=user_ajax.fields_to_query),
+        fields_to_query_func=fields_to_query),
         name='core_explore_example_get_query'),
 ]

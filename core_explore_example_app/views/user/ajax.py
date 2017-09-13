@@ -1,37 +1,33 @@
 """Explore Example app Ajax views
 """
-import json
-
 from django.http import HttpResponse
 from django.http.response import HttpResponseBadRequest
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 from lxml import html
-from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default_prefix
-from xml_utils.xsd_types.xsd_types import get_xsd_numbers
+import json
 
-import core_explore_example_app.permissions.rights as rights
-import core_main_app.utils.decorators as decorators
 from core_explore_common_app.components.query import api as query_api
-from core_explore_example_app.components.explore_data_structure import api as explore_data_structure_api
-from core_explore_example_app.components.saved_query import api as saved_query_api
-from core_explore_example_app.components.saved_query.models import SavedQuery
-from core_explore_example_app.utils.displayed_query import build_query_pretty_criteria, build_enum_pretty_criteria, \
-    build_pretty_criteria, build_or_pretty_criteria, build_and_pretty_criteria
-from core_explore_example_app.utils.mongo_query import build_query_criteria, build_enum_criteria, build_criteria, \
-    build_or_criteria, build_and_criteria, get_dot_notation_to_element, get_parent_name, get_parent_path
+from core_parser_app.components.data_structure_element import api as data_structure_element_api
+from core_main_app.components.template import api as template_api
+
 from core_explore_example_app.utils.parser import render_form, generate_element_absent, \
     generate_choice_absent, remove_form_element
-from core_explore_example_app.utils.query_builder import render_numeric_select, render_value_input, \
-    render_string_select, render_enum, render_initial_form, CriteriaInfo, ElementInfo, QueryInfo, \
-    render_new_query, render_new_criteria, render_sub_elements_query, get_element_value, get_element_comparison, \
-    prune_html_tree
-from core_explore_example_app.utils.xml import validate_element_value, get_enumerations
-from core_main_app.components.template import api as template_api
-from core_parser_app.components.data_structure_element import api as data_structure_element_api
+from core_explore_example_app.components.explore_data_structure import api as explore_data_structure_api
+from core_explore_example_app.components.saved_query.models import SavedQuery
+from core_explore_example_app.components.saved_query import api as saved_query_api
+from core_explore_example_app.utils.displayed_query import sub_elements_to_pretty_query, fields_to_pretty_query
+from core_explore_example_app.utils.mongo_query import get_parent_name, sub_elements_to_query, fields_to_query, \
+    check_query_form
+from core_explore_example_app.utils.query_builder import render_initial_form, \
+    render_new_query, render_new_criteria, render_sub_elements_query, prune_html_tree, get_user_inputs
 
+from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default_prefix
 
-# FIXME: avoid session variables
+import core_main_app.utils.decorators as decorators
+import core_explore_example_app.permissions.rights as rights
+from core_explore_example_app.apps import ExploreExampleAppConfig
+
 
 @decorators.permission_required(content_type=rights.explore_example_content_type,
                                 permission=rights.explore_example_access, raise_exception=True)
@@ -170,15 +166,13 @@ def select_element(request):
     """
     # get element id
     element_id = request.POST['elementID']
-    criteria_id = request.POST['criteriaID']
 
     # get schema element
     schema_element = data_structure_element_api.get_by_id(element_id)
 
     response_dict = {
-        "criteriaTagID": criteria_id,
-        "criteriaID": str(criteria_id[4:]),
-        "elementName": schema_element.options['label']
+        "elementName": schema_element.options['label'],
+        "elementID": element_id,
     }
 
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
@@ -218,20 +212,12 @@ def get_sub_elements_query_builder(request):
         element_type = data_structure_element.options['type']
         element_name = data_structure_element.options['name']
 
-        try:
-            if element_type.startswith("{0}:".format(default_prefix)):
-                # numeric
-                if element_type in get_xsd_numbers(default_prefix):
-                    sub_element_field = render_numeric_select() + render_value_input()
-                else:
-                    sub_element_field = render_string_select() + render_value_input()
-            else:
-                # enumeration
-                enums = get_enumerations(data_structure_element)
-                sub_element_field = render_enum(request, enums)
-        except:
-            sub_element_field = render_string_select() + render_value_input()
-        form_fields.append({'element_name': element_name, 'html': sub_element_field})
+        user_inputs = get_user_inputs(element_type, data_structure_element, default_prefix)
+
+        form_fields.append({'element_id': leaf_id,
+                            'element_name': element_name,
+                            'element_type': element_type,
+                            'html': user_inputs})
 
     response_dict = {'subElementQueryBuilder': render_sub_elements_query(parent_name, form_fields)}
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
@@ -248,16 +234,9 @@ def insert_sub_elements_query(request):
     Returns:
 
     """
-
     form_values = json.loads(request.POST['formValues'])
-    leaves_id = request.POST['leavesID']
     template_id = request.POST['templateID']
     criteria_id = request.POST['criteriaID']
-
-    # get list of leaves from string
-    list_leaves_id = leaves_id.split(" ")
-
-    map_criteria = request.session['mapCriteriaExplore']
 
     # get template
     template = template_api.get(template_id)
@@ -267,128 +246,27 @@ def insert_sub_elements_query(request):
     # get default prefix
     default_prefix = get_default_prefix(namespaces)
 
-    errors = []
-    for i in range(0, len(form_values)):
-        field = form_values[i]
-        if field['selected'] is True:
-            data_structure_element = data_structure_element_api.get_by_id(list_leaves_id[i])
-            element_type = data_structure_element.options['type']
-            element_name = data_structure_element.options['name']
-            element_value = get_element_value(field)
-
-            error = validate_element_value(element_name, element_type, element_value, default_prefix)
-            if error is not None:
-                errors.append(error)
+    # keep only selected fields
+    form_values = [field for field in form_values if field['selected'] is True]
+    errors = check_query_form(form_values, template_id)
 
     if len(errors) == 0:
-        query = sub_elements_to_query(form_values, list_leaves_id, namespaces, default_prefix)
-        displayed_query = sub_elements_to_pretty_query(form_values, list_leaves_id, namespaces, default_prefix)
-        criteria_info = CriteriaInfo()
-        criteria_info.queryInfo = QueryInfo(query, displayed_query)
-        criteria_info.elementInfo = ElementInfo("query")
-        map_criteria[criteria_id] = criteria_info.__to_json__()
-        request.session['mapCriteriaExplore'] = map_criteria
+        query = sub_elements_to_query(form_values, namespaces, default_prefix)
+        displayed_query = sub_elements_to_pretty_query(form_values, namespaces)
         ui_id = "ui" + criteria_id[4:]
+        temporary_query = SavedQuery(user_id=ExploreExampleAppConfig.name,
+                                     template=template,
+                                     query=json.dumps(query),
+                                     displayed_query=displayed_query)
+        saved_query_api.upsert(temporary_query)
         response_dict = {'criteriaID': criteria_id,
                          'prettyQuery': displayed_query,
-                         'uiID': ui_id}
+                         'uiID': ui_id,
+                         'queryID': str(temporary_query.id)}
     else:
         return HttpResponseBadRequest("<br/>".join(errors), content_type='application/javascript')
 
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
-
-
-def sub_elements_to_query(form_values, list_leaves_id, namespaces, default_prefix):
-    """Transforms HTML fields in a query on sub-elements
-
-    Args:
-        form_values:
-        list_leaves_id:
-        namespaces:
-        default_prefix:
-
-    Returns:
-
-    """
-    elem_match = []
-
-    # get the parent path using the first element of the list
-    parent_path = get_parent_path(list_leaves_id[0], namespaces)
-
-    for i in range(0, len(form_values)):
-        field = form_values[i]
-        if field['selected'] is True:
-            bool_comp = field['operator']
-            if bool_comp == 'NOT':
-                is_not = True
-            else:
-                is_not = False
-
-            data_structure_element = data_structure_element_api.get_by_id(list_leaves_id[i])
-            element_type = data_structure_element.options['type']
-            element_name = data_structure_element.options['name']
-            value = get_element_value(field)
-            comparison = get_element_comparison(field)
-
-            try:
-                if element_type.startswith("{0}:".format(default_prefix)):
-                    criteria = build_criteria(element_name, comparison, value, element_type, default_prefix, is_not)
-                else:
-                    criteria = build_enum_criteria(element_name, value, is_not)
-            except:
-                criteria = build_criteria(element_name, comparison, value, element_type, default_prefix, is_not)
-
-            elem_match.append(criteria)
-
-    query = {parent_path: {"$elemMatch": {"$and": elem_match}}}
-
-    return query
-
-
-def sub_elements_to_pretty_query(form_values, list_leaves_id, namespaces, default_prefix):
-    """Transforms HTML fields in a user readable query
-
-    Args:
-        form_values:
-        list_leaves_id:
-        namespaces:
-        default_prefix:
-
-    Returns:
-
-    """
-    # get the parent path using the first element of the list
-    parent_name = get_parent_name(list_leaves_id[0], namespaces)
-
-    list_criteria = []
-    for i in range(0, len(form_values)):
-        field = form_values[i]
-        if field['selected'] is True:
-            bool_comp = field['operator']
-            if bool_comp == 'NOT':
-                is_not = True
-            else:
-                is_not = False
-
-            data_structure_element = data_structure_element_api.get_by_id(list_leaves_id[i])
-            element_type = data_structure_element.options['type']
-            element_name = data_structure_element.options['name']
-            value = get_element_value(field)
-            comparison = get_element_comparison(field)
-
-            try:
-                if element_type.startswith("{0}:".format(default_prefix)):
-                    criteria = build_pretty_criteria(element_name, comparison, value, is_not)
-                else:
-                    criteria = build_enum_pretty_criteria(element_name, value, is_not)
-            except:
-                criteria = build_pretty_criteria(element_name, comparison, value, is_not)
-
-            list_criteria.append(criteria)
-
-    query = "{0}({1})".format(parent_name, ", ".join(list_criteria))
-
-    return query
 
 
 @decorators.permission_required(content_type=rights.explore_example_content_type,
@@ -402,15 +280,8 @@ def update_user_input(request):
     Returns:
 
     """
-    from_element_id = request.POST['fromElementID']
-    criteria_id = request.POST['criteriaID']
+    from_element_id = request.POST['elementID']
     template_id = request.POST['templateID']
-
-    map_criteria = request.session['mapCriteriaExplore']
-
-    to_criteria_id = "crit" + str(criteria_id)
-
-    criteria_info = CriteriaInfo()
 
     # get schema element
     data_structure_element = data_structure_element_api.get_by_id(from_element_id)
@@ -420,32 +291,11 @@ def update_user_input(request):
     # convert xml path to mongo dot notation
     namespaces = get_namespaces(template.content)
     default_prefix = get_default_prefix(namespaces)
-    dot_notation = get_dot_notation_to_element(data_structure_element, namespaces)
 
     element_type = data_structure_element.options['type']
-    try:
-        if element_type.startswith("{0}:".format(default_prefix)):
-            # numeric
-            if element_type in get_xsd_numbers(default_prefix):
-                user_inputs = render_numeric_select() + render_value_input()
-            # string
-            else:
-                user_inputs = render_string_select() + render_value_input()
-        else:
-            # enumeration
-            element_type = 'enum'
-            enums = get_enumerations(data_structure_element)
-            user_inputs = render_enum(request, enums)
-    except:
-        # default renders string form
-        element_type = "{}:string".format(default_prefix)
-        user_inputs = render_string_select() + render_value_input()
+    user_inputs = get_user_inputs(element_type, data_structure_element, default_prefix)
 
-    criteria_info.elementInfo = ElementInfo(path=dot_notation, type=element_type)
-    map_criteria[to_criteria_id] = criteria_info.__to_json__()
-    request.session['mapCriteriaExplore'] = map_criteria
-
-    response_dict = {'userInputs': user_inputs}
+    response_dict = {'userInputs': user_inputs, 'element_type': element_type}
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
 
 
@@ -465,128 +315,6 @@ def add_criteria(request):
 
     response_dict = {'criteria': new_criteria_html}
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
-
-
-@decorators.permission_required(content_type=rights.explore_example_content_type,
-                                permission=rights.explore_example_access, raise_exception=True)
-def remove_criteria(request):
-    """Removes a criteria from the query builder
-
-    Args:
-        request:
-
-    Returns:
-
-    """
-    criteria_id = request.POST['criteriaID']
-    try:
-        # remove criteria from list of criteria
-        map_criteria = request.session['mapCriteriaExplore']
-        del map_criteria[criteria_id]
-        request.session['mapCriteriaExplore'] = map_criteria
-    except:
-        pass
-
-    return HttpResponse(json.dumps({}), content_type='application/javascript')
-
-
-@decorators.permission_required(content_type=rights.explore_example_content_type,
-                                permission=rights.explore_example_access, raise_exception=True)
-def check_query_form(request, form_values, template_id):
-    """Checks that values entered by the user match each element type
-
-    Args:
-        request:
-        form_values:
-        template_id:
-
-    Returns:
-
-    """
-
-    map_criteria = request.session['mapCriteriaExplore']
-
-    template = template_api.get(template_id)
-    namespaces = get_namespaces(template.content)
-    default_prefix = get_default_prefix(namespaces)
-
-    # check if there are no errors in the query
-    errors = []
-    if len(map_criteria) != len(form_values) or len(map_criteria) == 0:
-        errors.append("Some fields are empty.")
-    else:
-        for field in form_values:
-            criteria_info = json.loads(map_criteria[field['id']])
-            element_info = json.loads(criteria_info['elementInfo'])
-            element_type = element_info['type']
-            element_path = element_info['path']
-            element_name = element_path.split('.')[-1]
-            element_value = get_element_value(field)
-            error = validate_element_value(element_name, element_type, element_value, default_prefix)
-            if error is not None:
-                errors.append(error)
-
-    return errors
-
-
-@decorators.permission_required(content_type=rights.explore_example_content_type,
-                                permission=rights.explore_example_access, raise_exception=True)
-def fields_to_pretty_query(request, form_values):
-    """Transforms fields from the HTML form into pretty representation
-
-    Args:
-        request:
-        form_values:
-
-    Returns:
-
-    """
-
-    map_criteria = request.session['mapCriteriaExplore']
-
-    query = ""
-
-    for field in form_values:
-        bool_comp = field['operator']
-        if bool_comp == 'NOT':
-            is_not = True
-        else:
-            is_not = False
-
-        # get element value
-        value = get_element_value(field)
-        # get comparison operator
-        comparison = get_element_comparison(field)
-
-        # get data structures for query
-        criteria_info = json.loads(map_criteria[field['id']])
-        element_info = json.loads(criteria_info['elementInfo']) if criteria_info['elementInfo'] is not None else None
-        query_info = json.loads(criteria_info['queryInfo']) if criteria_info['queryInfo'] is not None else None
-
-        element_type = element_info['type']
-        if element_type == "query":
-            query_value = query_info['displayed_query']
-            criteria = build_query_pretty_criteria(query_value, is_not)
-        elif element_type == "enum":
-            element_path = element_info['path']
-            element = element_path.split('.')[-1]
-            criteria = build_enum_pretty_criteria(element, value, is_not)
-        else:
-            element_path = element_info['path']
-            element = element_path.split('.')[-1]
-            criteria = build_pretty_criteria(element, comparison, value, is_not)
-
-        if bool_comp == 'OR':
-            query = build_or_pretty_criteria(query, criteria)
-        elif bool_comp == 'AND':
-            query = build_and_pretty_criteria(query, criteria)
-        else:
-            if form_values.index(field) == 0:
-                query += criteria
-            else:
-                query = build_and_pretty_criteria(query, criteria)
-
-    return query
 
 
 def _render_errors(errors):
@@ -612,7 +340,6 @@ def clear_criteria(request):
     Returns:
 
     """
-    request.session['mapCriteriaExplore'] = dict()
     new_form = render_initial_form()
     response_dict = {'queryForm': new_form}
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
@@ -670,93 +397,15 @@ def add_query_criteria(request):
     tag_id = request.POST['tagID']
     saved_query_id = request.POST['savedQueryID']
 
-    map_criteria = request.session['mapCriteriaExplore']
-
     # check if first criteria
-    is_first = True if len(map_criteria) == 0 else False
+    is_first = True if int(tag_id) == 1 else False
 
     # get saved query number from id
-    saved_query_id_number = saved_query_id[5:]
-    saved_query = saved_query_api.get_by_id(saved_query_id_number)
+    saved_query = saved_query_api.get_by_id(saved_query_id)
 
-    # build criteria id
-    criteria_id = 'crit' + str(tag_id)
-
-    # add query to list of criteria
-    criteria_info = CriteriaInfo()
-    criteria_info.queryInfo = QueryInfo(query=json.loads(saved_query.query),
-                                        displayed_query=saved_query.displayed_query)
-    criteria_info.elementInfo = ElementInfo("query")
-    map_criteria[criteria_id] = criteria_info.__to_json__()
-
-    request.session['mapCriteriaExplore'] = map_criteria
-
-    new_query_html = render_new_query(tag_id, saved_query.displayed_query, is_first)
+    new_query_html = render_new_query(tag_id, saved_query, is_first)
     response_dict = {'query': new_query_html, 'first': is_first}
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
-
-
-# @staticmethod
-@decorators.permission_required(content_type=rights.explore_example_content_type,
-                                permission=rights.explore_example_access,
-                                raise_exception=True)
-def fields_to_query(request, form_values, template_id):
-    """Takes values from the html tree and creates a query from them
-
-    Args:
-        request:
-        form_values:
-        template_id:
-
-    Returns:
-
-    """
-
-    map_criteria = request.session['mapCriteriaExplore']
-
-    query = dict()
-    for field in form_values:
-        bool_comp = field['operator']
-        is_not = bool_comp == 'NOT'
-
-        # get element value
-        value = get_element_value(field)
-        # get comparison operator
-        comparison = get_element_comparison(field)
-
-        # get data structures for query
-        criteria_info = json.loads(map_criteria[field['id']])
-        element_info = json.loads(criteria_info['elementInfo']) if criteria_info[
-                                                                       'elementInfo']is not None else None
-        query_info = json.loads(criteria_info['queryInfo']) if criteria_info[
-                                                                   'queryInfo'] is not None else None
-
-        element_type = element_info['type']
-        if element_type == "query":
-            query_value = query_info['query']
-            criteria = build_query_criteria(query_value, is_not)
-        elif element_type == "enum":
-            element = element_info['path']
-            criteria = build_enum_criteria(element, value, is_not)
-        else:
-            element = element_info['path']
-            template = template_api.get(template_id)
-            namespaces = get_namespaces(template.content)
-            default_prefix = get_default_prefix(namespaces)
-            criteria = build_criteria(element, comparison, value, element_type, default_prefix,
-                                      is_not)
-
-        if bool_comp == 'OR':
-            query = build_or_criteria(query, criteria)
-        elif bool_comp == 'AND':
-            query = build_and_criteria(query, criteria)
-        else:
-            if form_values.index(field) == 0:
-                query.update(criteria)
-            else:
-                query = build_and_criteria(query, criteria)
-
-    return query
 
 
 class GetQueryView(View):
@@ -783,13 +432,13 @@ class GetQueryView(View):
             query_form = request.POST['queryForm']
             request.session['savedQueryFormExplore'] = query_form
 
-            errors = check_query_form(request, form_values, template_id)
+            errors = check_query_form(form_values, template_id)
             query_object = query_api.get_by_id(query_id)
             if len(query_object.data_sources) == 0:
                 errors.append("Please select at least 1 data source.")
 
             if len(errors) == 0:
-                query_content = self.fields_to_query_func(request, form_values, template_id)
+                query_content = self.fields_to_query_func(form_values, template_id)
                 query_object.content = json.dumps(query_content)
                 query_api.upsert(query_object)
             else:
@@ -801,7 +450,7 @@ class GetQueryView(View):
 
 
 class SaveQueryView(View):
-    fields_to_query_func = fields_to_query
+    fields_to_query_func = None
 
     @method_decorator(decorators.
                       permission_required(content_type=rights.explore_example_content_type,
@@ -820,21 +469,18 @@ class SaveQueryView(View):
         template_id = request.POST['templateID']
 
         # Check that the user can save a query
-        errors = []
-        if '_auth_user_id' in request.session:
-            user_id = request.session['_auth_user_id']
-        else:
+        if '_auth_user_id' not in request.session:
             error = 'You have to login to save a query.'
             return HttpResponseBadRequest(error, content_type='application/javascript')
 
         # Check that the query is valid
-        errors = check_query_form(request, form_values, template_id)
+        errors = check_query_form(form_values, template_id)
         if len(errors) == 0:
-            query = self.fields_to_query_func(request, form_values, template_id)
-            displayed_query = fields_to_pretty_query(request, form_values)
+            query = self.fields_to_query_func(form_values, template_id)
+            displayed_query = fields_to_pretty_query(form_values)
 
             # save the query in the data base
-            saved_query = SavedQuery(user_id=str(user_id),
+            saved_query = SavedQuery(user_id=str(request.user.id),
                                      template=template_api.get(template_id),
                                      query=json.dumps(query),
                                      displayed_query=displayed_query)
