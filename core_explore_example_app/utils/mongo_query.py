@@ -126,7 +126,28 @@ def build_or_criteria(criteria1, criteria2):
     return or_criteria
 
 
+def build_wildcard_elem_match_criteria(criteria1, criteria2):
+    # FIXME: Wildcard method should be move to the example type app
+    # FIXME: Mongo_query could be an util class and be inherited as needed
+    """Builds a criteria that is the result of criteria1 elemMatch criteria2
+
+    Args:
+        criteria1:
+        criteria2:
+
+    Returns:
+
+    """
+    elem_match_criteria = dict()
+    elem_match_criteria["$elemMatch"] = {}
+    elem_match_criteria["$elemMatch"].update(criteria1)
+    elem_match_criteria["$elemMatch"].update(criteria2)
+    return {"list_content": elem_match_criteria}
+
+
 def build_wildcard_criteria(criteria):
+    # FIXME: Wildcard method should be move to the example type app
+    # FIXME: Mongo_query could be an util class and be inherited as needed
     """Build wildcard criteria, from criteria.
 
     Args:
@@ -138,7 +159,7 @@ def build_wildcard_criteria(criteria):
     key, value = criteria.popitem()
     criteria_key = {'path': "/.*{}/".format(key)}
     criteria_value = {'value': value}
-    return build_and_criteria(criteria_key, criteria_value)
+    return build_wildcard_elem_match_criteria(criteria_key, criteria_value)
 
 
 def build_criteria(element_path, comparison, value, element_type, default_prefix, is_not=False, use_wildcard=False):
