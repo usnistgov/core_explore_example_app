@@ -1,1 +1,1 @@
-var generateChoiceUrl = "{% url 'core_explore_example_generate_choice' %}";
+var generateChoiceUrl = "{% url data.generate_choice_url %}";

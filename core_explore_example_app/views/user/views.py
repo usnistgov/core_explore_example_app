@@ -82,6 +82,10 @@ class IndexView(View):
 
 class SelectFieldsView(View):
     build_query_url = 'core_explore_example_build_query'
+    load_form_url = 'core_explore_example_load_form'
+    generate_element_url = 'core_explore_example_generate_element'
+    remove_element_url = 'core_explore_example_remove_element'
+    generate_choice_url = 'core_explore_example_generate_choice'
 
     # TODO: form generation can take time
     @method_decorator(decorators.
@@ -154,7 +158,12 @@ class SelectFieldsView(View):
             # Set the context
             context = {
                 "template_id": template_id,
-                "build_query_url": self.build_query_url
+                "build_query_url": self.build_query_url,
+                "load_form_url": self.load_form_url,
+                "generate_element_url": self.generate_element_url,
+                "remove_element_url": self.remove_element_url,
+                "generate_choice_url": self.generate_choice_url,
+
             }
 
             return render(request,

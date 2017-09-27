@@ -1,2 +1,2 @@
-var generateElementUrl = "{% url 'core_explore_example_generate_element' %}";
-var removeElementUrl = "{% url 'core_explore_example_remove_element' %}";
+var generateElementUrl = "{% url data.generate_element_url %}";
+var removeElementUrl = "{% url data.remove_element_url %}";
