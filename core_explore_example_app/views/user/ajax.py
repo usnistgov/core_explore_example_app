@@ -46,7 +46,7 @@ def load_form(request):
         # get data structure
         data_structure = explore_data_structure_api.create_and_get_explore_data_structure(request,
                                                                                           template,
-                                                                                          request.user)
+                                                                                          request.user.id)
         root_element = data_structure.data_structure_element_root
 
         # renders the form

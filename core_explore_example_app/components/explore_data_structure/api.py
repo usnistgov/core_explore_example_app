@@ -31,20 +31,20 @@ def upsert(explore_data_structure):
 
 
 # FIXME: remove the request in parameter when the parser will not need session anymore
-def create_and_get_explore_data_structure(request, template, user):
+def create_and_get_explore_data_structure(request, template, user_id):
     """ Get Data structure from template and user, generate them if no exist
 
     Args:
         request:
         template:
-        user:
+        user_id:
 
     Returns: Explore Data structure
 
     """
     try:
         # get data structure
-        explore_data_structure = get_by_user_id_and_template_id(user_id=str(user.id),
+        explore_data_structure = get_by_user_id_and_template_id(user_id=str(user_id),
                                                                 template_id=template.id)
         # Need to update the session xmlDocTree
         # FIXME: remove session initialization once parser not using session anymore
@@ -53,7 +53,7 @@ def create_and_get_explore_data_structure(request, template, user):
         # generate the root element
         root_element = generate_form(request, template.content)
         # create explore data structure
-        explore_data_structure = ExploreDataStructure(user=str(user.id),
+        explore_data_structure = ExploreDataStructure(user=str(user_id),
                                                       template=template,
                                                       name=template.filename,
                                                       data_structure_element_root=root_element)
