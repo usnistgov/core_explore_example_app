@@ -364,9 +364,14 @@ def check_query_form(form_values, template_id):
 
     for field in form_values:
             element_value = get_element_value(field)
-            error = validate_element_value(field['name'], field['type'], element_value, default_prefix)
-            if error is not None:
-                errors.append(error)
+            element_name = field.get('name', "Unnamed field")
+            element_type = field.get('type', None)
+            # If there is a type to check
+            if element_type:
+                error = validate_element_value(element_name, element_type, element_value,
+                                               default_prefix)
+                if error is not None:
+                    errors.append(error)
 
     return errors
 
@@ -425,7 +430,7 @@ def _fields_to_query(form_values, template_id, get_dot_notation_to_element_func,
     for field in form_values:
         bool_comp = field['operator']
         is_not = bool_comp == 'NOT'
-        element_type = field['type']
+        element_type = field.get('type', None)
 
         # get element value
         value = get_element_value(field)

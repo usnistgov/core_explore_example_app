@@ -116,7 +116,7 @@ def fields_to_pretty_query(form_values):
         # get comparison operator
         comparison = get_element_comparison(field)
 
-        element_type = field['type']
+        element_type = field.get('type', None)
         if element_type == "query":
             criteria = build_query_pretty_criteria(field['name'], is_not)
         else:
