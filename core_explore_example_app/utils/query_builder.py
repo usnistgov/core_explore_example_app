@@ -1,13 +1,11 @@
 """Utils for the query builder
 """
-from django.template.context import Context
-from django.template import loader
 from os.path import join
 
-
-# Classes Definition
-from core_explore_example_app.utils.xml import get_enumerations
+from django.template import loader
 from xml_utils.xsd_types.xsd_types import get_xsd_numbers
+
+from core_explore_example_app.utils.xml import get_enumerations
 
 
 class BranchInfo:
@@ -247,9 +245,9 @@ def render_enum(enums):
     Returns:
 
     """
-    context = Context({
+    context = {
         'enums': enums,
-    })
+    }
     return _render_template(join('core_explore_example_app', 'user', 'query_builder', 'enum.html'), context)
 
 
@@ -264,11 +262,11 @@ def render_new_query(tag_id, query, is_first=False):
     Returns:
 
     """
-    context = Context({
+    context = {
         'tagID': tag_id,
         'query': query,
         'first': is_first
-    })
+    }
     return _render_template(join('core_explore_example_app', 'user', 'query_builder', 'new_query.html'), context)
 
 
@@ -281,9 +279,9 @@ def render_new_criteria(tag_id):
     Returns:
 
     """
-    context = Context({
+    context = {
         'tagID': tag_id,
-    })
+    }
     return _render_template(join('core_explore_example_app', 'user', 'query_builder', 'new_criteria.html'), context)
 
 
@@ -296,10 +294,10 @@ def render_sub_elements_query(parent_name, form_fields):
     Returns:
 
     """
-    context = Context({
+    context = {
         'parent_name': parent_name,
         'form_fields': form_fields,
-    })
+    }
     return _render_template(join('core_explore_example_app', 'user', 'query_builder', 'sub_elements_query.html'),
                             context)
 
@@ -368,6 +366,6 @@ def _render_template(template_path, context=None):
 
     """
     if context is None:
-        context = Context()
+        context = {}
     template = loader.get_template(template_path)
     return template.render(context)
