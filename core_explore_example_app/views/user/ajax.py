@@ -41,7 +41,7 @@ def load_form(request):
 
     """
     try:
-        template_id = request.POST['templateID']
+        template_id = request.GET['templateID']
         template = template_api.get(template_id)
         # get data structure
         data_structure = explore_data_structure_api.create_and_get_explore_data_structure(request,

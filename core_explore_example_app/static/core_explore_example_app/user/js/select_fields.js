@@ -57,7 +57,7 @@ var loadForm = function(){
 var load_form = function(template_id){
 	$.ajax({
         url : loadFormUrl,
-        type : "POST",
+        type : "GET",
         dataType: "json",
         data : {
         	templateID : template_id

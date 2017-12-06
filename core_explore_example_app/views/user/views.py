@@ -298,8 +298,12 @@ class BuildQueryView(View):
             template:
 
         """
+        # from the template, we get the version manager
+        template_version_manager = template_version_manager_api.get_by_version_id(str(template.id))
+        # from the version manager, we get all the version
+        template_ids = template_api.get_all_by_id_list(template_version_manager.versions)
         # create new query object
-        query = Query(user_id=str(user_id), templates=[template])
+        query = Query(user_id=str(user_id), templates=template_ids)
         return query_api.upsert(query)
 
     @staticmethod
