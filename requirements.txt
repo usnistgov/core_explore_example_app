@@ -3,6 +3,5 @@ Django==1.11.7
 # Installs: django-mongoengine==0.2.1
 https://github.com/MongoEngine/django-mongoengine/tarball/master#egg=django-mongoengine-0.2.1
 django-simple-menu==1.2.1
-lxml==4.1.1
 mock==2.0.0
 mongoengine==0.11.0
