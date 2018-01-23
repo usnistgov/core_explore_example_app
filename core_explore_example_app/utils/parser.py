@@ -26,11 +26,10 @@ def get_parser():
 
 
 # FIXME: refactor common code with core curate app (note: no xml_string here)
-def generate_form(request, xsd_string):
+def generate_form(xsd_string):
     """Generates the form using the parser, returns the root element
 
     Args:
-        request:
         xsd_string:
 
     Returns:
@@ -39,7 +38,7 @@ def generate_form(request, xsd_string):
     # build parser
     parser = get_parser()
     # generate form
-    root_element_id = parser.generate_form(request, xsd_string)
+    root_element_id = parser.generate_form(xsd_string)
     # get the root element
     root_element = data_structure_element_api.get_by_id(root_element_id)
 
@@ -64,33 +63,41 @@ def render_form(request, root_element):
     return xsd_form
 
 
-def generate_element_absent(request, element_id):
+def generate_element_absent(request, element_id, xsd_string):
     """ Generate an element absent from the form
 
     Args:
         request:
         element_id:
+        xsd_string:
 
     Returns:
 
     """
     xsd_parser = get_parser()
-    html_form = xsd_parser.generate_element_absent(request, element_id, renderer_class=CustomCheckboxRenderer)
+    html_form = xsd_parser.generate_element_absent(request,
+                                                   element_id,
+                                                   xsd_string,
+                                                   renderer_class=CustomCheckboxRenderer)
     return html_form
 
 
-def generate_choice_absent(request, element_id):
+def generate_choice_absent(request, element_id, xsd_string):
     """ Generate a choice branch absent from the form
 
     Args:
         request:
         element_id:
+        xsd_string:
 
     Returns:
 
     """
     xsd_parser = get_parser()
-    html_form = xsd_parser.generate_choice_absent(request, element_id, renderer_class=CustomCheckboxRenderer)
+    html_form = xsd_parser.generate_choice_absent(request,
+                                                  element_id,
+                                                  xsd_string,
+                                                  renderer_class=CustomCheckboxRenderer)
     return html_form
 
 

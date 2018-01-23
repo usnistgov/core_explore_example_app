@@ -3,20 +3,21 @@
 import json
 
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import View
 from django.utils.decorators import method_decorator
+from django.views.generic import View
 
+import core_explore_example_app.permissions.rights as rights
 import core_main_app.components.template_version_manager.api as template_version_manager_api
 import core_main_app.utils.decorators as decorators
 from core_explore_common_app.components.query import api as query_api
 from core_explore_common_app.components.query.models import Query
-from core_main_app.components.template import api as template_api
 from core_explore_example_app.components.explore_data_structure import api as explore_data_structure_api
-from core_main_app.utils.rendering import render
-from core_main_app.commons import exceptions as exceptions
-import core_explore_example_app.permissions.rights as rights
 from core_explore_example_app.components.saved_query import api as saved_query_api
 from core_explore_example_app.settings import INSTALLED_APPS
+from core_explore_example_app.utils.parser import render_form
+from core_main_app.commons import exceptions as exceptions
+from core_main_app.components.template import api as template_api
+from core_main_app.utils.rendering import render
 
 
 class IndexView(View):
@@ -87,7 +88,6 @@ class SelectFieldsView(View):
     remove_element_url = 'core_explore_example_remove_element'
     generate_choice_url = 'core_explore_example_generate_choice'
 
-    # TODO: form generation can take time
     @method_decorator(decorators.
                       permission_required(content_type=rights.explore_example_content_type,
                                           permission=rights.explore_example_access,
@@ -155,6 +155,15 @@ class SelectFieldsView(View):
                         'core_explore_example_app/user/css/style.css']
             }
 
+            template = template_api.get(template_id)
+            # get data structure
+            data_structure = explore_data_structure_api.create_and_get_explore_data_structure(template,
+                                                                                              request.user.id)
+            root_element = data_structure.data_structure_element_root
+
+            # renders the form
+            xsd_form = render_form(request, root_element)
+
             # Set the context
             context = {
                 "template_id": template_id,
@@ -163,7 +172,8 @@ class SelectFieldsView(View):
                 "generate_element_url": self.generate_element_url,
                 "remove_element_url": self.remove_element_url,
                 "generate_choice_url": self.generate_choice_url,
-
+                "data_structure_id": str(data_structure.id),
+                "xsd_form": xsd_form
             }
 
             return render(request,

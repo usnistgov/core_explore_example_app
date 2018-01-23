@@ -2,16 +2,14 @@
 """
 import json
 
-import core_main_app.utils.decorators as decorators
-from core_explore_common_app.components.query import api as query_api
-from core_main_app.components.template import api as template_api
-from core_parser_app.components.data_structure_element import api as data_structure_element_api
 from django.http import HttpResponse
 from django.http.response import HttpResponseBadRequest
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 
 import core_explore_example_app.permissions.rights as rights
+import core_main_app.utils.decorators as decorators
+from core_explore_common_app.components.query import api as query_api
 from core_explore_example_app.apps import ExploreExampleAppConfig
 from core_explore_example_app.components.explore_data_structure import api as explore_data_structure_api
 from core_explore_example_app.components.saved_query import api as saved_query_api
@@ -19,56 +17,32 @@ from core_explore_example_app.components.saved_query.models import SavedQuery
 from core_explore_example_app.utils.displayed_query import sub_elements_to_pretty_query, fields_to_pretty_query
 from core_explore_example_app.utils.mongo_query import get_parent_name, sub_elements_to_query, \
     check_query_form
-from core_explore_example_app.utils.parser import render_form, generate_element_absent, \
+from core_explore_example_app.utils.parser import generate_element_absent, \
     generate_choice_absent, remove_form_element
 from core_explore_example_app.utils.query_builder import render_initial_form, \
     render_new_query, render_new_criteria, render_sub_elements_query, prune_html_tree, get_user_inputs
+from core_main_app.components.template import api as template_api
+from core_parser_app.components.data_structure_element import api as data_structure_element_api
 from xml_utils.html_tree import parser as html_tree_parser
 from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default_prefix
 
 
 @decorators.permission_required(content_type=rights.explore_example_content_type,
                                 permission=rights.explore_example_access, raise_exception=True)
-def load_form(request):
-    """ Load the form
+def generate_element(request, explore_data_structure_id):
+    """ Generate an element absent from the form.
 
     Args:
         request:
-
-    Returns:
-
-    """
-    try:
-        template_id = request.GET['templateID']
-        template = template_api.get(template_id)
-        # get data structure
-        data_structure = explore_data_structure_api.create_and_get_explore_data_structure(request,
-                                                                                          template,
-                                                                                          request.user.id)
-        root_element = data_structure.data_structure_element_root
-
-        # renders the form
-        xsd_form = render_form(request, root_element)
-        response_dict = {'xsd_form': xsd_form}
-        return HttpResponse(json.dumps(response_dict), content_type='application/json')
-    except Exception, e:
-        return HttpResponseBadRequest("An error occurred while generating the form.")
-
-
-@decorators.permission_required(content_type=rights.explore_example_content_type,
-                                permission=rights.explore_example_access, raise_exception=True)
-def generate_element(request):
-    """Generate an element absent from the form.
-
-    Args:
-        request:
+        explore_data_structure_id:
 
     Returns:
 
     """
     try:
         element_id = request.POST['id']
-        html_form = generate_element_absent(request, element_id)
+        explore_data_structure = explore_data_structure_api.get_by_id(explore_data_structure_id)
+        html_form = generate_element_absent(request, element_id, explore_data_structure.template.content)
     except Exception, e:
         return HttpResponseBadRequest()
 
@@ -77,18 +51,20 @@ def generate_element(request):
 
 @decorators.permission_required(content_type=rights.explore_example_content_type,
                                 permission=rights.explore_example_access, raise_exception=True)
-def generate_choice(request):
+def generate_choice(request, explore_data_structure_id):
     """Generate a choice branch absent from the form.
 
     Args:
         request:
+        explore_data_structure_id:
 
     Returns:
 
     """
     try:
         element_id = request.POST['id']
-        html_form = generate_choice_absent(request, element_id)
+        explore_data_structure = explore_data_structure_api.get_by_id(explore_data_structure_id)
+        html_form = generate_choice_absent(request, element_id, explore_data_structure.template.content)
     except Exception, e:
         return HttpResponseBadRequest()
 
