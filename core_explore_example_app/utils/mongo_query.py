@@ -3,8 +3,10 @@
 import json
 import re
 
+from core_explore_example_app.commons.exceptions import MongoQueryException
 from core_explore_example_app.utils.query_builder import get_element_value, get_element_comparison
 from core_explore_example_app.utils.xml import validate_element_value
+from core_main_app.commons.exceptions import DoesNotExist
 from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default_prefix
 from xml_utils.xsd_types.xsd_types import get_xsd_numbers, get_xsd_floating_numbers
 
@@ -440,7 +442,10 @@ def _fields_to_query(form_values, template_id, get_dot_notation_to_element_func,
         element_id = field['id']
 
         if element_type == "query":
-            saved_query = saved_query_api.get_by_id(element_id)
+            try:
+                saved_query = saved_query_api.get_by_id(element_id)
+            except DoesNotExist:
+                raise MongoQueryException("The saved query does not exist anymore.")
             criteria = build_query_criteria(json.loads(saved_query.query), is_not)
         else:
             data_structure_element = data_structure_element_api.get_by_id(element_id)
