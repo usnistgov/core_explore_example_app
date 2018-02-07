@@ -11,6 +11,7 @@ import core_explore_example_app.permissions.rights as rights
 import core_main_app.utils.decorators as decorators
 from core_explore_common_app.components.query import api as query_api
 from core_explore_example_app.apps import ExploreExampleAppConfig
+from core_explore_example_app.commons.exceptions import MongoQueryException
 from core_explore_example_app.components.explore_data_structure import api as explore_data_structure_api
 from core_explore_example_app.components.saved_query import api as saved_query_api
 from core_explore_example_app.components.saved_query.models import SavedQuery
@@ -21,6 +22,7 @@ from core_explore_example_app.utils.parser import generate_element_absent, \
     generate_choice_absent, remove_form_element
 from core_explore_example_app.utils.query_builder import render_initial_form, \
     render_new_query, render_new_criteria, render_sub_elements_query, prune_html_tree, get_user_inputs
+from core_main_app.commons.exceptions import DoesNotExist
 from core_main_app.components.template import api as template_api
 from core_parser_app.components.data_structure_element import api as data_structure_element_api
 from xml_utils.html_tree import parser as html_tree_parser
@@ -351,9 +353,11 @@ def delete_query(request):
 
     """
     saved_query_id = request.POST['savedQueryID']
-    saved_query = saved_query_api.get_by_id(saved_query_id[5:])
+    try:
+        saved_query = saved_query_api.get_by_id(saved_query_id[5:])
+    except DoesNotExist:
+        return HttpResponseBadRequest("The saved query does not exist anymore.")
     saved_query_api.delete(saved_query)
-
     return HttpResponse(json.dumps({}), content_type='application/javascript')
 
 
@@ -375,7 +379,10 @@ def add_query_criteria(request):
     is_first = True if int(tag_id) == 1 else False
 
     # get saved query number from id
-    saved_query = saved_query_api.get_by_id(saved_query_id)
+    try:
+        saved_query = saved_query_api.get_by_id(saved_query_id)
+    except DoesNotExist:
+        return HttpResponseBadRequest("The saved query does not exist anymore.")
 
     new_query_html = render_new_query(tag_id, saved_query, is_first)
     response_dict = {'query': new_query_html, 'first': is_first}
@@ -387,7 +394,7 @@ class GetQueryView(View):
 
     @method_decorator(decorators.
                       permission_required(content_type=rights.explore_example_content_type,
-                                permission=rights.explore_example_access, raise_exception=True))
+                                          permission=rights.explore_example_access, raise_exception=True))
     def post(self, request):
         """Get a query
 
@@ -450,15 +457,20 @@ class SaveQueryView(View):
         # Check that the query is valid
         errors = check_query_form(form_values, template_id)
         if len(errors) == 0:
-            query = self.fields_to_query_func(form_values, template_id)
-            displayed_query = fields_to_pretty_query(form_values)
+            try:
+                query = self.fields_to_query_func(form_values, template_id)
+                displayed_query = fields_to_pretty_query(form_values)
 
-            # save the query in the data base
-            saved_query = SavedQuery(user_id=str(request.user.id),
-                                     template=template_api.get(template_id),
-                                     query=json.dumps(query),
-                                     displayed_query=displayed_query)
-            saved_query_api.upsert(saved_query)
+                # save the query in the data base
+                saved_query = SavedQuery(user_id=str(request.user.id),
+                                         template=template_api.get(template_id),
+                                         query=json.dumps(query),
+                                         displayed_query=displayed_query)
+                saved_query_api.upsert(saved_query)
+            except MongoQueryException, e:
+                errors = [e.message]
+                return HttpResponseBadRequest(_render_errors(errors),
+                                              content_type='application/javascript')
         else:
             return HttpResponseBadRequest(_render_errors(errors),
                                           content_type='application/javascript')
