@@ -32,37 +32,32 @@
 <div id="queries">
     <h3 class="title-text">Saved Queries</h3>
     <div id="queriesTable">
-        <table class="table table-bordered">
+        <table class="table">
             <thead>
                 <tr>
-                    <th class="th-15px">Add to Builder</th>
-                    <th>Queries</th>
-                    {% if user|has_perm:'core_explore_example_app.delete_query' %}
-                    <th class="th-15px">Delete</th>
-                    {%endif%}
+                    <th><b>Queries</b></th>
+                    <th class="col-md-2"><b>Actions</b></th>
                 </tr>
             </thead>
             <tbody>
             {% if data.queries %}
                 {% for query in data.queries %}
-                  <tr>
-                    <td>
-                        <span class="fa fa-arrow-circle-up text-success" onclick="addSavedQueryToForm('query{{ query.id }}')">
-                        </span>
-                    </td>
+                <tr>
                     <td>
                         {{ query.displayed_query|safe }}
                     </td>
-                    {% if user|has_perm:'core_explore_example_app.delete_query' %}
                     <td>
-                        <span class="fa fa-minus text-danger" onclick="deleteQuery('query{{ query.id }}')">
-                        </span>
+                        {% if user|has_perm:'core_explore_example_app.delete_query' %}
+                        <span class="btn btn-danger"
+                              onclick="deleteQuery('query{{ query.id }}')">Delete</span>
+                        {%endif%}
+                        <span class="btn btn-primary"
+                              onclick="addSavedQueryToForm('query{{ query.id }}')">Add to Query</span>
                     </td>
-                    {%endif%}
-                  </tr>
+                </tr>
                 {% endfor %}
             {% else %}
-                <tr><td colspan='3' class="text-danger">No Saved Queries for now.</td></tr>
+                <tr><td colspan='2' class="text-danger">No Saved Queries for now.</td></tr>
             {% endif %}
             </tbody>
         </table>
