@@ -4,55 +4,15 @@
 
 Select a {{ data.object_name }} from the following table. It will automatically load the appropriate form and display it on the next page.
 
-<!-- FIXME: HTML below common with core_curate_app/curate.html -->
-
 <div id="template_selection">
-    <div class="center-text"><h1 class="title-text">Global {{ data.object_name|title }}s</h1></div>
-
-<table class="table table-bordered">
-    <tr>
-        <th class="title-table">{{ data.object_name|title }} name</th>
-        <th class="title-table" style="width: 300px;">Actions</th>
-    </tr>
-    {% for global_object in data.global_objects %}
-        <tr>
-            <td templateID='{{global_object.current}}'>{{ global_object.title }}</td>
-            <td>
-                <a href="{% url data.select_object_redirect global_object.current %}"
-                   class="btn btn-primary" role="button">Select Query Fields</a>
-                <a href="{% url data.build_query_redirect global_object.current %}"
-                       class="btn btn-success" role="button">Go to Query Builder</a>
-            </td>
-        </tr>
-    {% endfor %}
-</table>
-
-{% if user.is_authenticated %}
-
-    <div class="center-text"><h3 class="title-text">User Defined {{data.object_name|title}}s</h3></div>
-
-    {% if data.user_objects %}
-    <table class="table table-bordered">
-        <tr>
-            <th class="title-table">{{data.object_name|title}} name</th>
-            <th class="title-table" style="width: 300px;">Actions</th>
-        </tr>
-        {% for user_object in data.user_objects %}
-            <tr>
-                <td templateID='{{user_object.id}}'>{{ user_object.title }}</td>
-                <td>
-                    <a href="{% url data.select_object_redirect user_object.current %}"
-                       class="btn btn-primary" role="button">Select Query Fields</a>
-                    <a href="{% url data.build_query_redirect user_object.current %}"
-                       class="btn btn-success" role="button">Go to Query Builder</a>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
+    <h3 class="text-center">Templates</h3>
+    {% if data.global_objects or data.user_objects %}
+        <table class="table">
+            {% include 'core_main_app/user/template/list_header.html' with object_type='Template' %}
+            {% include 'core_explore_example_app/user/list/list.html' with object_list=data.global_objects owner='Global' object_type='Template' %}
+            {% include 'core_explore_example_app/user/list/list.html' with object_list=data.user_objects owner=request.user object_type='Template' %}
+        </table>
     {% else %}
-        <div class="unavailable">
-            No user {{ data.object_name }}s available.
-        </div>
+        <p class="text-center">No template uploaded yet.</p>
     {% endif %}
-{% endif %}
 </div>

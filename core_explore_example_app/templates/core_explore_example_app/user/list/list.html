@@ -1,0 +1,8 @@
+{% extends 'core_main_app/user/template/list_body.html' %}
+
+{% block actions %}
+<a href="{% url data.select_object_redirect template.current %}"
+       class="btn btn-primary" role="button">Select Query Fields</a>
+<a href="{% url data.build_query_redirect template.current %}"
+       class="btn btn-success" role="button">Go to Query Builder</a>
+{% endblock %}
