@@ -1,4 +1,5 @@
-core_explore_example_app
+========================
+Core Explore Example App
 ========================
 
 Exploration by example for the curator core project.
