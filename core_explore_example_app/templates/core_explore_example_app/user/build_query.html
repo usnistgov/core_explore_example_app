@@ -48,10 +48,10 @@
                     </td>
                     <td>
                         {% if user|has_perm:'core_explore_example_app.delete_query' %}
-                        <span class="btn btn-danger"
+                        <span class="btn btn-danger delete-query"
                               onclick="deleteQuery('query{{ query.id }}')">Delete</span>
                         {%endif%}
-                        <span class="btn btn-primary"
+                        <span class="btn btn-primary add-query"
                               onclick="addSavedQueryToForm('query{{ query.id }}')">Add to Query</span>
                     </td>
                 </tr>
