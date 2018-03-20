@@ -1,7 +1,6 @@
 """ Url router for the explore example application
 """
-
-from django.conf.urls import url
+from django.conf.urls import url, include
 
 from core_explore_example_app.utils.mongo_query import fields_to_query
 from core_explore_example_app.views.user import views as user_views, ajax as user_ajax
@@ -9,6 +8,8 @@ from core_explore_example_app.views.user import views as user_views, ajax as use
 urlpatterns = [
     url(r'^$', user_views.IndexView.as_view(),
         name='core_explore_example_index'),
+
+    url(r'^rest/', include('core_explore_example_app.rest.urls')),
 
     url(r'^select-fields/(?P<template_id>\w+)$', user_views.SelectFieldsView.as_view(),
         name='core_explore_example_select_fields'),

@@ -15,6 +15,17 @@ class SavedQuery(Document):
     displayed_query = fields.StringField(blank=False)
 
     @staticmethod
+    def get_all():
+        """ Get all Saved Query.
+
+        Args:
+
+        Returns:
+
+        """
+        return SavedQuery.objects.all()
+
+    @staticmethod
     def get_by_id(query_id):
         """Get a saved query
 

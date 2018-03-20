@@ -3,6 +3,15 @@
 from core_explore_example_app.components.saved_query.models import SavedQuery
 
 
+def get_all():
+    """Get all Saved Query
+
+    Returns:
+
+    """
+    return SavedQuery.get_all()
+
+
 def get_by_id(query_id):
     """Get a Saved Query
 

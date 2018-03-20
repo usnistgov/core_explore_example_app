@@ -1,13 +1,13 @@
 """ Unit Test Explore Data Structure
 """
-from bson.objectid import ObjectId
-
-from core_explore_example_app.components.explore_data_structure.models import ExploreDataStructure
-from core_explore_example_app.components.explore_data_structure import api as explore_data_structure_api
-from core_main_app.components.template.models import Template
-from core_main_app.commons import exceptions
 from unittest.case import TestCase
+
+from bson.objectid import ObjectId
 from mock import patch
+
+from core_explore_example_app.components.explore_data_structure import api as explore_data_structure_api
+from core_explore_example_app.components.explore_data_structure.models import ExploreDataStructure
+from core_main_app.components.template.models import Template
 
 
 class TestExploreDataStructureInsert(TestCase):
