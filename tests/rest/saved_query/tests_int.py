@@ -5,7 +5,7 @@ from rest_framework import status
 
 import core_explore_example_app.rest.saved_query.views as saved_query_views
 from core_main_app.utils.integration_tests.integration_base_test_case import MongoIntegrationBaseTestCase
-from core_main_app.utils.tests_tools.MockUser import MockUser
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from tests.rest.saved_query.fixtures.fixtures import SavedQueryFixtures
 
@@ -20,7 +20,7 @@ class TestGetSavedQueryList(MongoIntegrationBaseTestCase):
 
     def test_get_all_returns_status_200_with_no_permission_needed(self):
         # Arrange
-        user = MockUser('1')
+        user = create_mock_user('1')
 
         # Act
         response = RequestMock.do_request_get(saved_query_views.SavedQueryList.as_view(),
@@ -39,7 +39,7 @@ class TestGetSavedQueryDetail(MongoIntegrationBaseTestCase):
 
     def test_get_returns_object_when_found(self):
         # Arrange
-        user = MockUser('0')
+        user = create_mock_user('0')
         self.param = {
             'pk': self.fixture.data_1.id
         }
@@ -55,7 +55,7 @@ class TestGetSavedQueryDetail(MongoIntegrationBaseTestCase):
 
     def test_get_raise_404_when_not_found(self):
         # Arrange
-        user = MockUser('0')
+        user = create_mock_user('0')
         self.param = {
             'pk': str(ObjectId())
         }
@@ -71,7 +71,7 @@ class TestGetSavedQueryDetail(MongoIntegrationBaseTestCase):
 
     def test_get_raise_500_sever_error_when_general_error_occurred(self):
         # Arrange
-        user = MockUser('0')
+        user = create_mock_user('0')
         self.param = {
             'pk': '0'
         }
@@ -95,7 +95,7 @@ class TestDeleteSavedQueryDetail(MongoIntegrationBaseTestCase):
 
     def test_delete_returns_403_status_when_user_is_unhautorized(self):
         # Arrange
-        user = MockUser('0')
+        user = create_mock_user('0')
         self.param = {
             'pk': self.fixture.data_1.id
         }
@@ -111,7 +111,7 @@ class TestDeleteSavedQueryDetail(MongoIntegrationBaseTestCase):
 
     def test_delete_returns_204_status_when_found(self):
         # Arrange
-        user = MockUser('1')
+        user = create_mock_user('1')
         self.param = {
             'pk': self.fixture.data_1.id
         }
@@ -127,7 +127,7 @@ class TestDeleteSavedQueryDetail(MongoIntegrationBaseTestCase):
 
     def test_delete_raise_404_when_not_found(self):
         # Arrange
-        user = MockUser('0')
+        user = create_mock_user('0')
         self.param = {
             'pk': str(ObjectId())
         }
