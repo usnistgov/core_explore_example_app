@@ -2,13 +2,16 @@
 """
 import json
 
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.http.response import HttpResponseBadRequest
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 
+import core_explore_common_app.components.abstract_persistent_query.api as abstract_persistent_query_api
 import core_explore_example_app.permissions.rights as rights
 import core_main_app.utils.decorators as decorators
+from core_explore_example_app.components.persistent_query_example.models import PersistentQueryExample
 from core_explore_common_app.components.query import api as query_api
 from core_explore_example_app.apps import ExploreExampleAppConfig
 from core_explore_example_app.commons.exceptions import MongoQueryException
@@ -387,6 +390,51 @@ def add_query_criteria(request):
     new_query_html = render_new_query(tag_id, saved_query, is_first)
     response_dict = {'query': new_query_html, 'first': is_first}
     return HttpResponse(json.dumps(response_dict), content_type='application/javascript')
+
+
+class CreatePersistentQueryUrlView(View):
+    """ Create the persistent url from a Query
+    """
+    view_to_reverse = "core_explore_example_results_redirect"
+
+    @method_decorator(decorators.
+                      permission_required(content_type=rights.explore_example_content_type,
+                                          permission=rights.explore_example_access, raise_exception=True))
+    def post(self, request):
+        """ Create a persistent query
+            Args:
+                request:
+
+            Returns:
+
+            """
+        try:
+            # get parameter
+            query_id = request.POST.get('queryId', None)
+
+            # get the matching query
+            try:
+                query = query_api.get_by_id(query_id)
+            except DoesNotExist:
+                return HttpResponseBadRequest("The query does not exist anymore.")
+
+            # create the persistent query
+            persistent_query = abstract_persistent_query_api.upsert(self._create_persistent_query(query))
+            # reverse to the url
+            url_reversed = request.build_absolute_uri(reverse(self.view_to_reverse,
+                                                              kwargs={'persistent_query_id': persistent_query.id}))
+            # context
+            return HttpResponse(json.dumps({'url': url_reversed}), content_type='application/javascript')
+        except Exception, e:
+            return HttpResponseBadRequest(e.message, content_type='application/javascript')
+
+    @staticmethod
+    def _create_persistent_query(query):
+        # create the persistent query
+        return PersistentQueryExample(user_id=query.user_id,
+                                      content=query.content,
+                                      templates=query.templates,
+                                      data_sources=query.data_sources)
 
 
 class GetQueryView(View):

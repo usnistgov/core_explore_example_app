@@ -3,11 +3,14 @@
 import json
 
 from django.core.urlresolvers import reverse_lazy
+from django.http import HttpResponseBadRequest
+from django.urls import reverse
 from django.utils.decorators import method_decorator
-from django.views.generic import View
+from django.views.generic import View, RedirectView
 
 import core_explore_example_app.permissions.rights as rights
 import core_main_app.components.template_version_manager.api as template_version_manager_api
+import core_explore_example_app.components.persistent_query_example.api as persistent_query_example_api
 import core_main_app.utils.decorators as decorators
 from core_explore_common_app.components.query import api as query_api
 from core_explore_common_app.components.query.models import Query
@@ -382,7 +385,8 @@ class ResultQueryView(View):
             'template_id': template_id,
             'query_id': query_id,
             'exporter_app': False,
-            'back_to_query_redirect': self.back_to_query_redirect
+            'back_to_query_redirect': self.back_to_query_redirect,
+            'get_shareable_link_url': reverse("core_explore_example_get_persistent_query_url")
         }
 
         assets = {
@@ -402,7 +406,11 @@ class ResultQueryView(View):
                 {
                     "path": 'core_main_app/common/js/modals/error_page_modal.js',
                     "is_raw": True
-                }
+                },
+                {
+                    "path": 'core_explore_common_app/user/js/button_persistent_query.js',
+                    "is_raw": False
+                },
             ],
             "css": ["core_explore_example_app/user/css/query_result.css",
                     "core_main_app/common/css/XMLTree.css",
@@ -410,7 +418,8 @@ class ResultQueryView(View):
         }
 
         modals = [
-            "core_main_app/common/modals/error_page_modal.html"
+            "core_main_app/common/modals/error_page_modal.html",
+            "core_explore_common_app/user/persistent_query/modals/persistent_query_modal.html"
         ]
 
         if 'core_exporters_app' in INSTALLED_APPS:
@@ -434,3 +443,34 @@ class ResultQueryView(View):
                       assets=assets,
                       modals=modals,
                       context=context)
+
+
+class ResultQueryRedirectView(RedirectView):
+
+    def get_redirect_url(self, *args, **kwargs):
+        try:
+            # here we receive a PersistentQueryExample id
+            persistent_query_example = self._get_persistent_query(kwargs['persistent_query_id'])
+
+            # from it we have to duplicate it to a Query with the new user_id
+            # we should probably add the query_id into the persistent query?
+            # to avoid to recreate this query each time we visit the persistent URL
+            query = Query(user_id=str(self.request.user.id),
+                          content=persistent_query_example.content,
+                          templates=persistent_query_example.templates,
+                          data_sources=persistent_query_example.data_sources)
+            query = query_api.upsert(query)
+
+            # then redirect to the result page core_explore_example_results with /<template_id>/<query_id>
+            return self._get_reversed_url(query)
+        except Exception, e:
+            return HttpResponseBadRequest(e.message, content_type='application/javascript')
+
+    @staticmethod
+    def _get_persistent_query(persistent_query_id):
+        return persistent_query_example_api.get_by_id(persistent_query_id)
+
+    @staticmethod
+    def _get_reversed_url(query):
+        return reverse("core_explore_example_results", kwargs={'template_id': query.templates[0].id,
+                                                               'query_id': query.id})
