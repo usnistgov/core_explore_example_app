@@ -397,9 +397,6 @@ class CreatePersistentQueryUrlView(View):
     """
     view_to_reverse = "core_explore_example_results_redirect"
 
-    @method_decorator(decorators.
-                      permission_required(content_type=rights.explore_example_content_type,
-                                          permission=rights.explore_example_access, raise_exception=True))
     def post(self, request):
         """ Create a persistent query
             Args:
