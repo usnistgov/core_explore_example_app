@@ -3,17 +3,17 @@
 import json
 
 from django.core.urlresolvers import reverse_lazy
-from django.http import HttpResponseBadRequest
 from django.urls import reverse
 from django.utils.decorators import method_decorator
-from django.views.generic import View, RedirectView
+from django.views.generic import View
 
+import core_explore_example_app.components.persistent_query_example.api as persistent_query_example_api
 import core_explore_example_app.permissions.rights as rights
 import core_main_app.components.template_version_manager.api as template_version_manager_api
-import core_explore_example_app.components.persistent_query_example.api as persistent_query_example_api
 import core_main_app.utils.decorators as decorators
 from core_explore_common_app.components.query import api as query_api
 from core_explore_common_app.components.query.models import Query
+from core_explore_common_app.views.user.views import ResultQueryRedirectView
 from core_explore_example_app.components.explore_data_structure import api as explore_data_structure_api
 from core_explore_example_app.components.saved_query import api as saved_query_api
 from core_explore_example_app.settings import INSTALLED_APPS
@@ -410,7 +410,7 @@ class ResultQueryView(View):
                     "is_raw": False
                 },
             ],
-            "css": ["core_explore_example_app/user/css/query_result.css",
+            "css": ["core_explore_common_app/user/css/query_result.css",
                     "core_main_app/common/css/XMLTree.css",
                     "core_explore_common_app/user/css/results.css"],
         }
@@ -443,26 +443,7 @@ class ResultQueryView(View):
                       context=context)
 
 
-class ResultQueryRedirectView(RedirectView):
-
-    def get_redirect_url(self, *args, **kwargs):
-        try:
-            # here we receive a PersistentQueryExample id
-            persistent_query_example = self._get_persistent_query(kwargs['persistent_query_id'])
-
-            # from it we have to duplicate it to a Query with the new user_id
-            # we should probably add the query_id into the persistent query?
-            # to avoid to recreate this query each time we visit the persistent URL
-            query = Query(user_id=str(self.request.user.id),
-                          content=persistent_query_example.content,
-                          templates=persistent_query_example.templates,
-                          data_sources=persistent_query_example.data_sources)
-            query = query_api.upsert(query)
-
-            # then redirect to the result page core_explore_example_results with /<template_id>/<query_id>
-            return self._get_reversed_url(query)
-        except Exception, e:
-            return HttpResponseBadRequest(e.message, content_type='application/javascript')
+class ResultQueryExampleRedirectView(ResultQueryRedirectView):
 
     @staticmethod
     def _get_persistent_query(persistent_query_id):

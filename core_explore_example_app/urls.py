@@ -57,8 +57,8 @@ urlpatterns = [
         fields_to_query_func=fields_to_query),
         name='core_explore_example_get_query'),
 
-    url(r'^get-persistent-query-url$', user_ajax.CreatePersistentQueryUrlView.as_view(),
+    url(r'^get-persistent-query-url$', user_ajax.CreatePersistentQueryExampleUrlView.as_view(),
         name='core_explore_example_get_persistent_query_url'),
-    url(r'^results-redirect/(?P<persistent_query_id>\w+)', user_views.ResultQueryRedirectView.as_view(),
+    url(r'^results-redirect/(?P<persistent_query_id>\w+)', user_views.ResultQueryExampleRedirectView.as_view(),
         name='core_explore_example_results_redirect'),
 ]
