@@ -453,3 +453,7 @@ class ResultQueryExampleRedirectView(ResultQueryRedirectView):
     def _get_reversed_url(query):
         return reverse("core_explore_example_results", kwargs={'template_id': query.templates[0].id,
                                                                'query_id': query.id})
+
+    @staticmethod
+    def _get_reversed_url_if_failed():
+        return reverse("core_explore_example_index")
