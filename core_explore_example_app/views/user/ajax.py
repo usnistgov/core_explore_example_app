@@ -24,6 +24,7 @@ from core_explore_example_app.utils.parser import generate_element_absent, \
     generate_choice_absent, remove_form_element
 from core_explore_example_app.utils.query_builder import render_initial_form, \
     render_new_query, render_new_criteria, render_sub_elements_query, prune_html_tree, get_user_inputs
+from core_main_app.commons import exceptions
 from core_main_app.commons.exceptions import DoesNotExist
 from core_main_app.components.template import api as template_api
 from core_parser_app.components.data_structure_element import api as data_structure_element_api
@@ -428,8 +429,10 @@ class GetQueryView(View):
                 return HttpResponseBadRequest(_render_errors(errors), content_type='application/javascript')
 
             return HttpResponse(json.dumps({}), content_type='application/javascript')
-        except Exception, e:
-            return HttpResponseBadRequest(e.message, content_type='application/javascript')
+        except exceptions.ModelError:
+            return HttpResponseBadRequest('Invalid input.', content_type='application/javascript')
+        except Exception:
+            return HttpResponseBadRequest('An unexpected error occurred.', content_type='application/javascript')
 
 
 class SaveQueryView(View):
