@@ -39,10 +39,10 @@ def build_pretty_criteria(element_name, comparison, value, is_not=False):
     elif comparison == "like":
         pretty_criteria += " like "
 
-    if value == "":
-        pretty_criteria += ' &ldquo;  &ldquo;'
-    else:
+    if value:
         pretty_criteria += value
+    else:
+        pretty_criteria += ' &ldquo;  &ldquo;'
 
     if is_not:
         pretty_criteria += ")"
