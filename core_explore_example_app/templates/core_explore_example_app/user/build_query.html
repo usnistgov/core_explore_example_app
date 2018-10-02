@@ -18,7 +18,7 @@
         <form>
             <button type="button" class="btn btn-danger" onclick="clearCriteria()">Clear</button>
             {% if user|has_perm:'core_explore_example_app.save_query' %}
-            <button type="button" class="btn btn-secondary" onclick="saveQuery()">Save Query</button>
+            <button type="button" class="btn btn-default" onclick="saveQuery()">Save Query</button>
             {%endif%}
             <button type="button" class="btn btn-primary" onclick="submit_query()">Submit Query</button>
         </form>
