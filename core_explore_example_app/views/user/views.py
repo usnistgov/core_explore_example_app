@@ -13,6 +13,8 @@ import core_main_app.components.template_version_manager.api as template_version
 import core_main_app.utils.decorators as decorators
 from core_explore_common_app.components.query import api as query_api
 from core_explore_common_app.components.query.models import Query
+from core_explore_common_app.utils.query.query import create_default_query
+from core_explore_common_app.views.user.ajax import add_local_data_source
 from core_explore_common_app.views.user.views import ResultQueryRedirectView
 from core_explore_example_app.components.explore_data_structure import api as explore_data_structure_api
 from core_explore_example_app.components.saved_query import api as saved_query_api
@@ -242,7 +244,7 @@ class BuildQueryView(View):
                 request.session['mapCriteriaExplore'] = dict()
                 request.session['savedQueryFormExplore'] = ""
                 # create new query object
-                query = self._create_new_query(request.user.id, template)
+                query = self._create_new_query(request, template)
             else:
                 # if not a new form and a query form is present in session
                 if 'savedQueryFormExplore' in request.session:
@@ -302,10 +304,10 @@ class BuildQueryView(View):
                           context={'errors': e.message})
 
     @staticmethod
-    def _create_new_query(user_id, template):
+    def _create_new_query(request, template):
         """ Create a new query
         Args:
-            user_id:
+            request:
             template:
 
         """
@@ -313,8 +315,9 @@ class BuildQueryView(View):
         template_version_manager = template_version_manager_api.get_by_version_id(str(template.id))
         # from the version manager, we get all the version
         template_ids = template_api.get_all_by_id_list(template_version_manager.versions)
-        # create new query object
-        query = Query(user_id=str(user_id), templates=template_ids)
+        # create query
+        query = create_default_query(request, template_ids)
+        # then upsert
         return query_api.upsert(query)
 
     @staticmethod
