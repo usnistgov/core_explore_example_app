@@ -25,9 +25,9 @@
 }
 
 #queryBuilder input{
-    height: 25px;
+    height: 2em;
     font-size: 0.9em;
-    padding: 0em;
+    padding: 0;
     display: inline;
 }
 
@@ -43,9 +43,9 @@
 }
 
 #subElementQueryBuilder .valueInput{
-    height: 25px;
-    width:150px;
+    height: 2em;
+    width: 150px;
     display: inline;
-    padding: 0em;
+    padding: 0;
 }
 
