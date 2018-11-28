@@ -13,19 +13,32 @@ from core_main_app.commons import exceptions
 class SavedQueryList(APIView):
     """ Get all SavedQuery
     """
-    def get(self, request):
-        """ Get all Save Query, can be filtered by owner and template
 
-        GET /rest/saved/query/
-        GET /rest/saved/query/?user_id=<id>
-        GET /rest/saved/query/?template_id=<id>
-        GET /rest/saved/query/?user_id=<id>&template_id=<id>
+    def get(self, request):
+        """ Get all SavedQuery, can be filtered by owner and template
+
+        Url Parameters:
+
+            template: template_id
+            user_id: document_title
+
+        Examples:
+
+            ../saved/query/
+            ../saved/query/?user_id=[id]
+            ../saved/query/?template_id=[id]
+            ../saved/query/?user_id=[id]&template_id=[id]
 
         Args:
-            request:
+
+            request: HTTP request
 
         Returns:
 
+            - code: 200
+              content: List of saved queries
+            - code: 500
+              content: Internal server error
         """
         try:
             saved_query_list = saved_query_api.get_all()
@@ -52,13 +65,15 @@ class SavedQueryDetail(APIView):
     """
 
     def get_object(self, pk):
-        """ Retrieve a saved query
+        """ Get SavedQuery from db
 
         Args:
-            pk:
+
+            pk: ObjectId
 
         Returns:
 
+            SavedQuery
         """
         try:
             return saved_query_api.get_by_id(pk)
@@ -66,16 +81,21 @@ class SavedQueryDetail(APIView):
             raise Http404
 
     def get(self, request, pk):
-        """ Get saved query by its id.
-
-        GET /rest/saved/query/pk
+        """ Retrieve a SavedQuery
 
         Args:
-            request:
-            pk:
+
+            request: HTTP request
+            pk: ObjectId
 
         Returns:
 
+            - code: 200
+              content: SavedQuery
+            - code: 404
+              content: Object was not found
+            - code: 500
+              content: Internal server error
         """
         try:
             # Get object
@@ -92,16 +112,21 @@ class SavedQueryDetail(APIView):
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, pk):
-        """ Delete Saved query by its id.
-
-        DELETE /rest/saved/query/pk
+        """ Delete a SavedQuery
 
         Args:
-            request:
-            pk:
+
+            request: HTTP request
+            pk: ObjectId
 
         Returns:
 
+            - code: 204
+              content: Deletion succeed
+            - code: 404
+              content: Object was not found
+            - code: 500
+              content: Internal server error
         """
         try:
             # Get object
