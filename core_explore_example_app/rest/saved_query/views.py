@@ -2,6 +2,7 @@
 """
 from django.http import Http404
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -13,6 +14,7 @@ from core_main_app.commons import exceptions
 class SavedQueryList(APIView):
     """ Get all SavedQuery
     """
+    permission_classes = (IsAuthenticated, )
 
     def get(self, request):
         """ Get all SavedQuery, can be filtered by owner and template
@@ -63,6 +65,7 @@ class SavedQueryList(APIView):
 class SavedQueryDetail(APIView):
     """" Get an SavedQuery
     """
+    permission_classes = (IsAuthenticated, )
 
     def get_object(self, pk):
         """ Get SavedQuery from db
@@ -132,7 +135,7 @@ class SavedQueryDetail(APIView):
             # Get object
             saved_query_object = self.get_object(pk)
             # if the user is owner or super user
-            if str(request.user.id) != saved_query_object.user_id and not request.user.is_superuser:
+            if str(request.user.id) != saved_query_object.user_id and not request.user.is_staff:
                 return Response(status=status.HTTP_403_FORBIDDEN)
             # Remove the saved query
             saved_query_api.delete(saved_query_object)
