@@ -110,12 +110,12 @@ var insert_sub_element_query = function(){
             $criteria.attr("element_name", data.prettyQuery);
             $criteria.attr("element_type", "query");
             // insert the pretty query in the query builder
-            $($criteria.children()[1]).attr("value", data.prettyQuery);
+            $($criteria.children()[1]).val(data.prettyQuery);
             var field = $criteria.children()[1];
             // replace the pretty by an encoded version
-            $(field).attr("value",$(field).html($(field).attr("value")).text());
+            $(field).val($(field).html($(field).val()).text());
             // set the class to query
-            $($criteria.children()[1]).attr("class","queryInput");
+            $($criteria.children()[1]).attr("class", "queryInput");
             // remove all other existing inputs
             $("#" +data.uiID).children().remove();
             // close the modal
