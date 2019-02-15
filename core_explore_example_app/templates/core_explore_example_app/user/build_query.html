@@ -16,11 +16,17 @@
             </div>
         {% endif %}
         <form>
-            <button type="button" class="btn btn-danger" onclick="clearCriteria()">Clear</button>
+            <button type="button" class="btn btn-danger" onclick="clearCriteria()">
+                <i class="fa fa-eraser"></i> Clear
+            </button>
             {% if user|has_perm:'core_explore_example_app.save_query' %}
-            <button type="button" class="btn btn-default" onclick="saveQuery()">Save Query</button>
+            <button type="button" class="btn btn-default" onclick="saveQuery()">
+                <i class="fa fa-floppy-o"></i> Save Query
+            </button>
             {%endif%}
-            <button type="button" class="btn btn-primary" onclick="submit_query()">Submit Query</button>
+            <button type="button" class="btn btn-primary" onclick="submit_query()">
+                <i class="fa fa-search"></i> Submit Query
+            </button>
         </form>
     </div>
     <div class="pull-right">
@@ -49,10 +55,14 @@
                     <td>
                         {% if user|has_perm:'core_explore_example_app.delete_query' %}
                         <span class="btn btn-danger delete-query"
-                              onclick="deleteQuery('query{{ query.id }}')">Delete</span>
+                              onclick="deleteQuery('query{{ query.id }}')">
+                            <i class="fa fa-trash"></i>  Delete
+                        </span>
                         {%endif%}
                         <span class="btn btn-primary add-query"
-                              onclick="addSavedQueryToForm('query{{ query.id }}')">Add to Query</span>
+                              onclick="addSavedQueryToForm('query{{ query.id }}')">
+                            <i class="fa fa-arrow-circle-up"></i> Add to Query
+                        </span>
                     </td>
                 </tr>
                 {% endfor %}
@@ -64,7 +74,9 @@
     </div>
     <form>
         {% if user|has_perm:'core_explore_example_app.delete_query' %}
-        <button type="button" class="btn btn-danger" onclick="clearQueries()" >Delete All</button>
+        <button type="button" class="btn btn-danger" onclick="clearQueries()">
+            <i class="fa fa-trash"></i> Delete All
+        </button>
         {%endif%}
     </form>
 </div>
