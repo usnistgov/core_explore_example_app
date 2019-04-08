@@ -12,9 +12,7 @@ import core_explore_example_app.permissions.rights as rights
 import core_main_app.components.template_version_manager.api as template_version_manager_api
 import core_main_app.utils.decorators as decorators
 from core_explore_common_app.components.query import api as query_api
-from core_explore_common_app.components.query.models import Query
 from core_explore_common_app.utils.query.query import create_default_query
-from core_explore_common_app.views.user.ajax import add_local_data_source
 from core_explore_common_app.views.user.views import ResultQueryRedirectView
 from core_explore_example_app.components.explore_data_structure import api as explore_data_structure_api
 from core_explore_example_app.components.saved_query import api as saved_query_api
@@ -438,6 +436,14 @@ class ResultQueryView(View):
 
             context['exporter_app'] = True
             context['templates_list'] = json.dumps([str(template.id) for template in query.templates])
+
+        if "core_file_preview_app" in INSTALLED_APPS:
+            assets["js"].append({
+                "path": 'core_file_preview_app/user/js/file_preview.js',
+                "is_raw": False
+            })
+            assets["css"].append("core_file_preview_app/user/css/file_preview.css")
+            modals.append("core_file_preview_app/user/file_preview_modal.html")
 
         return render(request,
                       'core_explore_example_app/user/results.html',
