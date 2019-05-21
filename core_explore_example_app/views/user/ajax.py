@@ -48,7 +48,7 @@ def generate_element(request, explore_data_structure_id):
         element_id = request.POST['id']
         explore_data_structure = explore_data_structure_api.get_by_id(explore_data_structure_id)
         html_form = generate_element_absent(request, element_id, explore_data_structure.template.content)
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest()
 
     return HttpResponse(html_form)
@@ -70,7 +70,7 @@ def generate_choice(request, explore_data_structure_id):
         element_id = request.POST['id']
         explore_data_structure = explore_data_structure_api.get_by_id(explore_data_structure_id)
         html_form = generate_choice_absent(request, element_id, explore_data_structure.template.content)
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest()
 
     return HttpResponse(html_form)
@@ -128,7 +128,7 @@ def save_fields(request):
         explore_data_structure_api.upsert(explore_data_structure)
 
         return HttpResponse(json.dumps({}), content_type='application/javascript')
-    except Exception, e:
+    except Exception as e:
         return HttpResponseBadRequest("An error occurred while saving the form.")
 
 
@@ -472,7 +472,7 @@ class SaveQueryView(View):
                                          query=json.dumps(query),
                                          displayed_query=displayed_query)
                 saved_query_api.upsert(saved_query)
-            except MongoQueryException, e:
+            except MongoQueryException as e:
                 errors = [e.message]
                 return HttpResponseBadRequest(_render_errors(errors),
                                               content_type='application/javascript')

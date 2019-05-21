@@ -183,7 +183,7 @@ class SelectFieldsView(View):
                           'core_explore_example_app/user/select_fields.html',
                           assets=assets,
                           context=context)
-        except Exception, e:
+        except Exception as e:
             return render(request,
                           'core_explore_example_app/user/errors.html',
                           assets={},
@@ -295,7 +295,7 @@ class BuildQueryView(View):
                           assets=assets,
                           context=context,
                           modals=modals)
-        except Exception, e:
+        except Exception as e:
             return render(request,
                           'core_explore_example_app/user/errors.html',
                           assets={},

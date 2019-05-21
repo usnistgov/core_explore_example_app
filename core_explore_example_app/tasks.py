@@ -28,5 +28,5 @@ def delete_temporary_saved_queries():
         for query in old_queries:
             logger.info("Periodic task: delete saved query {}.".format(str(query.id)))
             query.delete()
-    except Exception, e:
+    except Exception as e:
         logger.error("An error occurred while deleting temporary saved queries ({}).".format(e.message))

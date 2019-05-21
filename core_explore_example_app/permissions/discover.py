@@ -1,5 +1,6 @@
 """ Discover rules for core explore example app
 """
+from __future__ import print_function
 from core_main_app.permissions import rights as main_rights
 from core_explore_example_app.permissions import rights as explore_example_rights
 
@@ -26,5 +27,5 @@ def init_permissions(apps):
         default_group.permissions.add(explore_access_perm,
                                       explore_save_query_perm,
                                       explore_delete_query_perm)
-    except Exception, e:
+    except Exception as e:
         print('ERROR : Impossible to init the permissions : ' + e.message)
