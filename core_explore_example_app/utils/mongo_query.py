@@ -2,17 +2,17 @@
 """
 import json
 import re
+from builtins import range
 
 from core_explore_example_app.commons.exceptions import MongoQueryException
+from core_explore_example_app.components.saved_query import api as saved_query_api
 from core_explore_example_app.utils.query_builder import get_element_value, get_element_comparison
 from core_explore_example_app.utils.xml import validate_element_value
 from core_main_app.commons.exceptions import DoesNotExist
+from core_main_app.components.template import api as template_api
+from core_parser_app.components.data_structure_element import api as data_structure_element_api
 from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default_prefix
 from xml_utils.xsd_types.xsd_types import get_xsd_numbers, get_xsd_floating_numbers
-
-from core_parser_app.components.data_structure_element import api as data_structure_element_api
-from core_main_app.components.template import api as template_api
-from core_explore_example_app.components.saved_query import api as saved_query_api
 
 
 def build_query_criteria(query, is_not=False):
@@ -212,12 +212,12 @@ def invert_query(query):
     Returns:
 
     """
-    for key, value in query.iteritems():
+    for key, value in list(query.items()):
         if key == "$and" or key == "$or":
             # invert the query for the case value can be found at element:value or at element.#text:value
             # second case appends when the element has attributes or namespace information
-            if len(value) == 2 and len(value[0].keys()) == 1 and len(value[1].keys()) == 1 and \
-                            value[1].keys()[0] == "{}.#text".format(value[0].keys()[0]):
+            if len(value) == 2 and len(list(value[0].keys())) == 1 and len(list(value[1].keys())) == 1 and \
+                            list(value[1].keys())[0] == "{}.#text".format(list(value[0].keys())[0]):
                 # second query is the same as the first
                 if key == "$and":
                     return {"$or": [invert_query(value[0]), invert_query(value[1])]}
@@ -228,8 +228,8 @@ def invert_query(query):
         else:
             # lt, lte, =, gte, gt, not, ne
             if isinstance(value, dict):
-                if value.keys()[0] == "$not" or value.keys()[0] == "$ne":
-                    query[key] = (value[value.keys()[0]])
+                if list(value.keys())[0] == "$not" or list(value.keys())[0] == "$ne":
+                    query[key] = (value[list(value.keys())[0]])
                 else:
                     saved_value = value
                     query[key] = dict()
@@ -278,7 +278,7 @@ def xpath_to_dot_notation(xpath, namespaces):
     # remove indexes from xpath
     xpath = re.sub(r'\[[0-9]+\]', '', xpath)
     # remove namespaces
-    for prefix in namespaces.keys():
+    for prefix in list(namespaces.keys()):
         xpath = re.sub(r'{}:'.format(prefix), '', xpath)
     # replace / by .
     xpath = xpath.replace("/", ".")

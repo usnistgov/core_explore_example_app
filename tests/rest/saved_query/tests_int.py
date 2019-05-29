@@ -1,5 +1,7 @@
 """Integration tests for Saved Query rest api
 """
+from builtins import str
+
 from bson import ObjectId
 from rest_framework import status
 

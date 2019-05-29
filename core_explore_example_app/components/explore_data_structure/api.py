@@ -1,5 +1,7 @@
 """ Explore data Structure api
 """
+from builtins import str
+
 from core_explore_example_app.components.explore_data_structure.models import ExploreDataStructure
 from core_explore_example_app.utils.parser import generate_form
 

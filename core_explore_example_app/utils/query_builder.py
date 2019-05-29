@@ -1,5 +1,6 @@
 """Utils for the query builder
 """
+from builtins import object
 from os.path import join
 
 from django.template import loader
@@ -8,7 +9,7 @@ from core_explore_example_app.utils.xml import get_enumerations
 from xml_utils.xsd_types.xsd_types import get_xsd_numbers
 
 
-class BranchInfo:
+class BranchInfo(object):
     """ Store information about a branch from the xml schema while it is being processed for field selection
     """
     def __init__(self, keep_the_branch=False, selected_leaves=None):

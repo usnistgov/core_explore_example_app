@@ -1,6 +1,7 @@
 """ Explore Common App tasks
 """
 import logging
+from builtins import str
 from datetime import timedelta
 
 from celery.schedules import crontab

@@ -1,5 +1,7 @@
 """ Saved Query Serializers
 """
+from builtins import object
+
 from rest_framework_mongoengine.serializers import DocumentSerializer
 
 from core_explore_example_app.components.saved_query.models import SavedQuery
@@ -8,7 +10,7 @@ from core_explore_example_app.components.saved_query.models import SavedQuery
 class SavedQuerySerializer(DocumentSerializer):
     """ Saved Query serializer
     """
-    class Meta:
+    class Meta(object):
         """ Meta
         """
         model = SavedQuery
