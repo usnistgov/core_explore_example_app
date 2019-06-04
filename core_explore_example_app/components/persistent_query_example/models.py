@@ -23,6 +23,6 @@ class PersistentQueryExample(AbstractPersistentQuery):
         try:
             return PersistentQueryExample.objects().get(pk=query_id)
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as e:
-            raise exceptions.ModelError(e.message)
+            raise exceptions.ModelError(str(e))

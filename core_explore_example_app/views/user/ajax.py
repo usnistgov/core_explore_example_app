@@ -474,7 +474,7 @@ class SaveQueryView(View):
                                          displayed_query=displayed_query)
                 saved_query_api.upsert(saved_query)
             except MongoQueryException as e:
-                errors = [e.message]
+                errors = [str(e)]
                 return HttpResponseBadRequest(_render_errors(errors),
                                               content_type='application/javascript')
         else:

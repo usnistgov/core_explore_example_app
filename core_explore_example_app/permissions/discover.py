@@ -28,4 +28,4 @@ def init_permissions(apps):
                                       explore_save_query_perm,
                                       explore_delete_query_perm)
     except Exception as e:
-        print('ERROR : Impossible to init the permissions : ' + e.message)
+        print('ERROR : Impossible to init the permissions : ' + str(e))

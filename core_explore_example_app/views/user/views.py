@@ -188,7 +188,7 @@ class SelectFieldsView(View):
             return render(request,
                           'core_explore_example_app/user/errors.html',
                           assets={},
-                          context={'errors': e.message})
+                          context={'errors': str(e)})
 
 
 class BuildQueryView(View):
@@ -300,7 +300,7 @@ class BuildQueryView(View):
             return render(request,
                           'core_explore_example_app/user/errors.html',
                           assets={},
-                          context={'errors': e.message})
+                          context={'errors': str(e)})
 
     @staticmethod
     def _create_new_query(request, template):

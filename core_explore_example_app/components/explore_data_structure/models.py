@@ -25,9 +25,9 @@ class ExploreDataStructure(DataStructure):
         try:
             return ExploreDataStructure.objects.get(user=str(user_id), template=str(template_id))
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as e:
-            raise exceptions.ModelError(e.message)
+            raise exceptions.ModelError(str(e))
 
     @staticmethod
     def get_by_id(data_structure_id):
@@ -43,6 +43,6 @@ class ExploreDataStructure(DataStructure):
         try:
             return ExploreDataStructure.objects.get(pk=str(data_structure_id))
         except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(e.message)
+            raise exceptions.DoesNotExist(str(e))
         except Exception as ex:
-            raise exceptions.ModelError(ex.message)
+            raise exceptions.ModelError(str(ex))
