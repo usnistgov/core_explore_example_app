@@ -120,7 +120,9 @@ def save_fields(request):
         # if checkboxes were checked
         if any_checked:
             # save html form
-            explore_data_structure.selected_fields_html_tree = html_tree_parser.to_string(html_tree)
+            # by adding the encoding to unicode, we force to_string method to return a string rather than bytes
+            explore_data_structure.selected_fields_html_tree = html_tree_parser.to_string(html_tree,
+                                                                                          encoding="unicode")
         else:
             # otherwise, empty any previously saved html form
             explore_data_structure.selected_fields_html_tree = None
@@ -128,7 +130,7 @@ def save_fields(request):
         # update explore data structure
         explore_data_structure_api.upsert(explore_data_structure)
 
-        return HttpResponse(json.dumps({}), content_type='application/javascript')
+        return HttpResponse(json.dumps({}), content_type="application/javascript")
     except Exception as e:
         return HttpResponseBadRequest("An error occurred while saving the form.")
 
