@@ -2,7 +2,6 @@
 """
 import json
 import re
-from builtins import range
 
 from core_explore_example_app.commons.exceptions import MongoQueryException
 from core_explore_example_app.components.saved_query import api as saved_query_api

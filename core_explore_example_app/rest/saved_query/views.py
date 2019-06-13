@@ -1,6 +1,5 @@
 """ REST Views for Saved Queries
 """
-from builtins import str
 
 from django.http import Http404
 from rest_framework import status

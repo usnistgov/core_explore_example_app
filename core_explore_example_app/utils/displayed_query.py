@@ -1,6 +1,5 @@
 """Util to build user readable queries
 """
-from builtins import range
 
 from core_explore_example_app.utils.mongo_query import get_parent_name
 from core_explore_example_app.utils.query_builder import get_element_value, get_element_comparison

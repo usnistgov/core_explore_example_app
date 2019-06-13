@@ -1,6 +1,5 @@
 """Utils for the query builder
 """
-from builtins import object
 from os.path import join
 
 from django.template import loader

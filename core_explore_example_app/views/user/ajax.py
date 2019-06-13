@@ -1,7 +1,6 @@
 """Explore Example app Ajax views
 """
 import json
-from builtins import str
 
 from django.http import HttpResponse
 from django.http.response import HttpResponseBadRequest
