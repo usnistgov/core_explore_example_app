@@ -2,8 +2,8 @@
 """
 import logging
 
-from core_main_app.permissions import rights as main_rights
 from core_explore_example_app.permissions import rights as explore_example_rights
+from core_main_app.permissions import rights as main_rights
 
 logger = logging.getLogger(__name__)
 

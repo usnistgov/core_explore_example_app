@@ -1,7 +1,7 @@
 """ System API
 """
-from core_explore_example_app.components.saved_query.models import SavedQuery
 from core_explore_example_app.apps import ExploreExampleAppConfig
+from core_explore_example_app.components.saved_query.models import SavedQuery
 
 
 def get_saved_queries_created_by_app():

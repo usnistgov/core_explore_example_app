@@ -6,8 +6,8 @@ from bson.objectid import ObjectId
 from mock import patch
 from mock.mock import Mock
 
-from core_explore_example_app.components.saved_query.models import SavedQuery
 from core_explore_example_app.components.saved_query import api as saved_query_api
+from core_explore_example_app.components.saved_query.models import SavedQuery
 from core_main_app.commons import exceptions
 
 
