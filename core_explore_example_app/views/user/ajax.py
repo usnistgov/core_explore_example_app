@@ -412,23 +412,28 @@ class GetQueryView(View):
         try:
             template_id = request.POST['templateID']
             query_id = request.POST['queryID']
-            form_values = json.loads(request.POST['formValues'])
+            form_values = json.loads(request.POST['formValues']) if 'formValues' in request.POST else None
+            order_by_field = request.POST['orderByField'] if 'orderByField' in request.POST else ''
 
             # save current query builder in session to restore it when coming back to the page
-            query_form = request.POST['queryForm']
-            request.session['savedQueryFormExplore'] = query_form
+            if 'queryForm' in request.POST:
+                query_form = request.POST['queryForm']
+                request.session['savedQueryFormExplore'] = query_form
 
-            errors = check_query_form(form_values, template_id)
+            errors = []
             query_object = query_api.get_by_id(query_id)
+            query_object.order_by_field = order_by_field
             if len(query_object.data_sources) == 0:
                 errors.append("Please select at least 1 data source.")
 
-            if len(errors) == 0:
+            if len(errors) == 0 and form_values:
+                errors.append(check_query_form(form_values, template_id))
                 query_content = self.fields_to_query_func(form_values, template_id)
                 query_object.content = json.dumps(query_content)
-                query_api.upsert(query_object)
-            else:
+            elif len(errors) > 0:
                 return HttpResponseBadRequest(_render_errors(errors), content_type='application/javascript')
+
+            query_api.upsert(query_object)
 
             return HttpResponse(json.dumps({}), content_type='application/javascript')
         except exceptions.ModelError:
@@ -496,4 +501,5 @@ class CreatePersistentQueryExampleUrlView(CreatePersistentQueryUrlView):
         return PersistentQueryExample(user_id=query.user_id,
                                       content=query.content,
                                       templates=query.templates,
+                                      order_by_field=query.order_by_field,
                                       data_sources=query.data_sources)

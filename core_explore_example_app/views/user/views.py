@@ -21,6 +21,7 @@ from core_explore_example_app.utils.parser import render_form
 from core_main_app.commons import exceptions as exceptions
 from core_main_app.components.template import api as template_api
 from core_main_app.utils.rendering import render
+from core_main_app.settings import DATA_SORTING_FIELDS
 
 
 class IndexView(View):
@@ -267,6 +268,7 @@ class BuildQueryView(View):
                 'template_id': template_id,
                 'description': self.get_description(),
                 'title': self.get_title(),
+                'data_sorting_fields': ','.join(DATA_SORTING_FIELDS) if DATA_SORTING_FIELDS else '',
 
                 'custom_form': custom_form,
                 'query_form': saved_query_form,
@@ -364,7 +366,7 @@ class BuildQueryView(View):
 
 class ResultQueryView(View):
     back_to_query_redirect = 'core_explore_example_build_query'
-
+    get_query_url = 'core_explore_example_get_query'
     @method_decorator(decorators.
                       permission_required(content_type=rights.explore_example_content_type,
                                           permission=rights.explore_example_access,
@@ -380,12 +382,18 @@ class ResultQueryView(View):
         Returns:
 
         """
+
+        # get query
+        query = query_api.get_by_id(query_id)
+
         context = {
             'template_id': template_id,
             'query_id': query_id,
             'exporter_app': False,
             'back_to_query_redirect': self.back_to_query_redirect,
-            'get_shareable_link_url': reverse("core_explore_example_get_persistent_query_url")
+            'get_shareable_link_url': reverse("core_explore_example_get_persistent_query_url"),
+            "get_query_url": self.get_query_url,
+            'data_sorting_fields': query['order_by_field'] if 'order_by_field' in query else ''
         }
 
         assets = {
@@ -410,6 +418,18 @@ class ResultQueryView(View):
                     "path": 'core_explore_common_app/user/js/button_persistent_query.js',
                     "is_raw": False
                 },
+                {
+                    "path": "core_main_app/common/js/debounce.js",
+                    "is_raw": False
+                },
+                {
+                    "path": 'core_explore_example_app/user/js/refresh_sorting.raw.js',
+                    "is_raw": True
+                },
+                {
+                    "path": "core_explore_example_app/user/js/refresh_sorting.js",
+                    "is_raw": False
+                }
             ],
             "css": ["core_explore_common_app/user/css/query_result.css",
                     "core_main_app/common/css/XMLTree.css",

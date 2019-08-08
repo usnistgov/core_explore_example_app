@@ -473,7 +473,8 @@ var submit_query = function(){
             formValues: formValues,
         	queryForm: queryForm,
             templateID: templateID,
-            queryID: queryID
+            queryID: queryID,
+            orderByField: data_sorting_fields
         },
         success: function(data){
             window.location = resultsUrl;

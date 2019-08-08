@@ -1,0 +1,1 @@
+var getQueryUrl = "{% url data.get_query_url %}";
