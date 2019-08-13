@@ -22,7 +22,7 @@ $(document).ready(function() {
 function initListener() {
     $(".dropdown-menu.tools-menu.filter-dropdown-menu li").click(debounce(function() {
         update_query();
-    }, 1000));
+    }, 2000));
 }
 
 /**
