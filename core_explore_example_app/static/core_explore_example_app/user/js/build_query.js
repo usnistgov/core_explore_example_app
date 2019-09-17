@@ -28,8 +28,9 @@ var selectElement = function(event)
         },
 		success: function(data){
             var $criteriaTag = $("#" + criteriaID);
-            $($criteriaTag.children()[1]).val(data.elementName);
-            $($criteriaTag.children()[1]).attr("class","elementInput");
+            var criteriaInput = $criteriaTag.find('input');
+            criteriaInput.val(data.elementName);
+            criteriaInput.attr("class","elementInput");
             $($criteriaTag).attr("element_id", elementID);
             $($criteriaTag).attr("element_name", data.elementName);
             updateUserInputs(elementID, criteriaID.substring(4, criteriaID.length)); // crit0 -> 0
@@ -168,7 +169,7 @@ var update_user_inputs = function(elementID, criteriaID, templateID){
  */
 var getNextTagID = function(){
     // get last tag id
-	var lastTagID = $("#queryForm").find("p:last").attr('id');
+	var lastTagID = $("#queryForm").children().last().attr('id');
 	// tag id format: crit + n
 	var lastTagIDValue = parseInt(lastTagID.slice(4));
 	// get value of next tag id
@@ -205,7 +206,7 @@ var add_field = function(nextTagID){
             // add new criteria to form
             $queryForm.append(data.criteria);
 
-            var $first_criteria = $($queryForm.find("p:first"));
+            var $first_criteria = $($queryForm.children().first());
 
             if ($first_criteria.find(".remove").length == 0){
                 // clone existing button
@@ -223,7 +224,7 @@ var add_field = function(nextTagID){
 var removeField = function(event){
     // get criteria id
     var $target = $(event.target);
-    var $parent = $($target.parents("p"));
+    var $parent = $($target.parents("div[id^=crit]"));
     var criteriaID = $parent.attr('id');
 	var $queryForm = $("#queryForm");
     var $criteriaTag = $("#" + criteriaID);
@@ -244,9 +245,9 @@ var removeField = function(event){
     // remove all add buttons
     $queryForm.find(".add").remove();
     // give add button to last criteria
-    $queryForm.find("p:last").append(add_button);
+    $queryForm.find("div[id^=crit]").last().append(add_button);
     // give add button to last criteria
-    $queryForm.find("p:first").find("select.boolOperator").replaceWith(first_select);
+    $queryForm.find("div[id^=crit]").first().find("select.boolOperator").replaceWith(first_select);
 };
 
 
@@ -256,7 +257,7 @@ var removeField = function(event){
  */
 var getFormValues = function ($form) {
     var values = [];
-    $form.find("p").each(function(){
+    $form.find("div[id^=crit]").each(function(){
         var element_id = $(this).attr("element_id");
         if (typeof element_id !== typeof undefined && element_id !== false) {
             var formValue = Object();
@@ -427,15 +428,15 @@ var add_saved_query_to_form = function(tagID, savedQueryID){
                 // keep only one field if many empty added
                 $queryForm.find(":not(:first)").remove();
                 // replace first field with query
-                $queryForm.find("p:last").replaceWith(data.query);
+                $queryForm.find("div[id^=crit]").last().replaceWith(data.query);
             }else {
                 // remove all add buttons
                 $queryForm.find(".add").remove();
                 // set query
-                $queryForm.find("p:last").after(data.query);
+                $queryForm.find("div[id^=crit]").last().after(data.query);
 
                 // update buttons
-                var $first_criteria = $($queryForm.find("p:first"));
+                var $first_criteria = $($queryForm.find("div[id^=crit]").first());
 
                 if ($first_criteria.find(".remove").length == 0) {
                     // clone existing button

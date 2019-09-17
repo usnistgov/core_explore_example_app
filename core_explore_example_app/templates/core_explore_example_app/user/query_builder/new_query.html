@@ -1,4 +1,4 @@
-<p id='crit{{tagID}}' element_id="{{query.id}}" element_type="query" element_name="{{query.displayed_query}}">
+<div id='crit{{tagID}}' element_id="{{query.id}}" element_type="query" element_name="{{query.displayed_query}}">
     {% if first%}
         {% include 'core_explore_example_app/user/query_builder/yes_no.html'%}
     {% else %}
@@ -12,4 +12,4 @@
     {% include 'core_explore_example_app/user/query_builder/remove.html'%}
     {% endif %}
     {% include 'core_explore_example_app/user/query_builder/add.html'%}
-</p>
+</div>

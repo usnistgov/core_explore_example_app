@@ -1,3 +1,20 @@
+.input-group {
+    display: inline;
+}
+
+.input-group-btn {
+    display: inline;
+}
+
+.input-group-btn button {
+    height: 2.72em;
+    margin-right: -3px !important;
+    margin-top: -3px;
+    border-bottom: solid 1px #8c8c8c;
+    border-left: solid 1px #8c8c8c;
+    border-top: solid 1px #8c8c8c;
+}
+
 #queryBuilder
 {
 	z-index:0;
@@ -6,7 +23,7 @@
 
 #queryBuilder .elementInput
 {
-	width: 230px;
+	width: 190px;
 }
 
 #queryBuilder .queryInput
@@ -27,8 +44,9 @@
 #queryBuilder input{
     height: 2em;
     font-size: 0.9em;
-    padding: 0;
+    padding: 0 0 0 5px;
     display: inline;
+    border: solid 1px #8c8c8c;
 }
 
 #queryBuilder input[readonly]
@@ -36,10 +54,16 @@
 	cursor:pointer;
 }
 
-#queryBuilder p
+#queryBuilder div
 {
 	font-weight: bold;
-	margin: 1em;
+	margin: 0.5em;
+	margin-bottom: 25px;
+}
+
+#queryForm select {
+    height: 1.8em;
+    border-radius: 3px;
 }
 
 #subElementQueryBuilder .valueInput{
