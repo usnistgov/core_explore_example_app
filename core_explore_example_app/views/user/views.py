@@ -2,8 +2,7 @@
 """
 import json
 
-from django.core.urlresolvers import reverse_lazy
-from django.urls import reverse
+from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 
@@ -20,8 +19,8 @@ from core_explore_example_app.settings import INSTALLED_APPS
 from core_explore_example_app.utils.parser import render_form
 from core_main_app.commons import exceptions as exceptions
 from core_main_app.components.template import api as template_api
-from core_main_app.utils.rendering import render
 from core_main_app.settings import DATA_SORTING_FIELDS
+from core_main_app.utils.rendering import render
 
 
 class IndexView(View):
