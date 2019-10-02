@@ -31,6 +31,10 @@
     display: inline;
 }
 
+#queryBuilder input:hover {
+    background-color: #eaeaea;
+}
+
 #queryBuilder input[readonly]
 {
 	cursor:pointer;
