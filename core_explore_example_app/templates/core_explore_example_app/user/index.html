@@ -7,7 +7,11 @@ Select a {{ data.object_name }} from the following table. It will automatically 
 <div id="template_selection">
     <h3 class="text-center">Templates</h3>
     {% if data.global_objects or data.user_objects %}
-        <table class="table">
+        <table class="table fixed-table">
+            <colgroup>
+                <col class="col-width-75">
+                <col class="col-width-25">
+            </colgroup>
             {% include 'core_main_app/user/template/list_header.html' with object_type='Template' %}
             {% include 'core_explore_example_app/user/list/list.html' with object_list=data.global_objects owner='Global' object_type='Template' %}
             {% include 'core_explore_example_app/user/list/list.html' with object_list=data.user_objects owner=request.user object_type='Template' %}
