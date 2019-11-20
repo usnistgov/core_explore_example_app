@@ -46,7 +46,7 @@ def build_int_criteria(path, comparison, value):
     if comparison == "=":
         criteria[path] = int(value)
     else:
-        criteria[path] = json.loads('{{"${0}": {1} }}'.format(comparison, value))
+        criteria[path] = json.loads('{{"${0}": {1} }}'.format(comparison, int(value)))
 
     return criteria
 
@@ -67,7 +67,7 @@ def build_float_criteria(path, comparison, value):
     if comparison == "=":
         criteria[path] = float(value)
     else:
-        criteria[path] = json.loads('{{"${0}": {1} }}'.format(comparison, value))
+        criteria[path] = json.loads('{{"${0}": {1} }}'.format(comparison, float(value)))
 
     return criteria
 
