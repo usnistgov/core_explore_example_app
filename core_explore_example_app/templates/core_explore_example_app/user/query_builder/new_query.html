@@ -4,7 +4,7 @@
     {% else %}
         {% include 'core_explore_example_app/user/query_builder/and_or_not.html'%}
     {% endif %}
-    <input onclick="showCustomTree('crit{{tagID}}')" readonly="readonly" type="text" class="queryInput"
+    <input placeholder="Click to select an element" onclick="showCustomTree('crit{{tagID}}')" readonly="readonly" type="text" class="queryInput"
            value=" {{query.displayed_query|safe}} ">
     <span id="ui{{tagID}}">
     </span>

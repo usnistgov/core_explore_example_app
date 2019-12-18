@@ -1,6 +1,6 @@
 <p id='crit{{tagID}}'>
 {% include 'core_explore_example_app/user/query_builder/and_or_not.html'%}
-    <input onclick="showCustomTree('crit{{tagID}}')" readonly="readonly" type="text" class="elementInput">
+    {% include 'core_explore_example_app/user/query_builder/field_input.html' with tagID=tagID%}
     <span id='ui{{tagID}}'>
     </span>
     {% include 'core_explore_example_app/user/query_builder/remove.html' with tagID=tagID%}
