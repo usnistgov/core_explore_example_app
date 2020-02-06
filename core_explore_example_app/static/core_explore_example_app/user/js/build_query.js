@@ -474,7 +474,7 @@ var submit_query = function(){
         	queryForm: queryForm,
             templateID: templateID,
             queryID: queryID,
-            orderByField: data_sorting_fields
+            orderByField: dataSortingFields
         },
         success: function(data){
             window.location = resultsUrl;

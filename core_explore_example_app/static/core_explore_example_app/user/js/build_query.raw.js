@@ -11,4 +11,4 @@ var resultsUrl = "{% url data.results_url data.template_id data.query_id %}";
 var getSubElementsQueryBuilderUrl = "{% url 'core_explore_example_get_sub_elements_query_builder' %}";
 var insertSubElementsQueryUrl = "{% url 'core_explore_example_insert_sub_elements_query' %}";
 var reloadBuildQueryUrl = "{% url data.build_query_url data.template_id data.query_id %}";
-var data_sorting_fields = "{{ data.data_sorting_fields }}"
+var dataSortingFields = "{{ data.data_sorting_fields }}"
