@@ -11,6 +11,7 @@ import core_explore_example_app.permissions.rights as rights
 import core_main_app.components.template_version_manager.api as template_version_manager_api
 import core_main_app.utils.decorators as decorators
 from core_explore_common_app.components.query import api as query_api
+from core_explore_common_app.settings import DISPLAY_LAST_MODIFICATION_DATE
 from core_explore_common_app.utils.query.query import create_default_query
 from core_explore_common_app.views.user.views import ResultQueryRedirectView
 from core_explore_example_app.components.explore_data_structure import api as explore_data_structure_api
@@ -392,7 +393,8 @@ class ResultQueryView(View):
             'back_to_query_redirect': self.back_to_query_redirect,
             'get_shareable_link_url': reverse("core_explore_example_get_persistent_query_url"),
             "get_query_url": self.get_query_url,
-            'data_sorting_fields': query['order_by_field'] if 'order_by_field' in query else ''
+            'data_sorting_fields': query['order_by_field'] if 'order_by_field' in query else '',
+            'display_last_modification_date': 'true' if DISPLAY_LAST_MODIFICATION_DATE else 'false'
         }
 
         assets = {
@@ -432,6 +434,7 @@ class ResultQueryView(View):
             ],
             "css": ["core_explore_common_app/user/css/query_result.css",
                     "core_main_app/common/css/XMLTree.css",
+                    "core_explore_common_app/user/css/toggle.css",
                     "core_explore_common_app/user/css/results.css"],
         }
 
