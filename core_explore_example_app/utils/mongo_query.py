@@ -9,6 +9,7 @@ from core_explore_example_app.utils.query_builder import get_element_value, get_
 from core_explore_example_app.utils.xml import validate_element_value
 from core_main_app.commons.exceptions import DoesNotExist
 from core_main_app.components.template import api as template_api
+from core_main_app.utils.xml import xpath_to_dot_notation
 from core_parser_app.components.data_structure_element import api as data_structure_element_api
 from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default_prefix
 from xml_utils.xsd_types.xsd_types import get_xsd_numbers, get_xsd_floating_numbers
@@ -163,7 +164,8 @@ def build_wildcard_criteria(criteria):
     return build_wildcard_elem_match_criteria(criteria_key, criteria_value)
 
 
-def build_criteria(element_path, comparison, value, element_type, default_prefix, is_not=False, use_wildcard=False):
+def build_criteria(element_path, comparison, value, element_type, default_prefix,
+                   is_not=False, use_wildcard=False):
     """Looks at element type and route to the right function to build the criteria
 
     Args:
@@ -213,10 +215,12 @@ def invert_query(query):
     """
     for key, value in list(query.items()):
         if key == "$and" or key == "$or":
-            # invert the query for the case value can be found at element:value or at element.#text:value
-            # second case appends when the element has attributes or namespace information
-            if len(value) == 2 and len(list(value[0].keys())) == 1 and len(list(value[1].keys())) == 1 and \
-                            list(value[1].keys())[0] == "{}.#text".format(list(value[0].keys())[0]):
+            # Invert the query for the case value can be found at element:value or at
+            # element.#text:value. Second case happens when the element has attributes
+            # or namespace information.
+            if len(value) == 2 and len(list(value[0].keys())) == 1 and \
+                    len(list(value[1].keys())) == 1 and \
+                    list(value[1].keys())[0] == "{}.#text".format(list(value[0].keys())[0]):
                 # second query is the same as the first
                 if key == "$and":
                     return {"$or": [invert_query(value[0]), invert_query(value[1])]}
@@ -264,27 +268,6 @@ def is_regex(expr):
         return False
 
 
-def xpath_to_dot_notation(xpath, namespaces):
-    """Transforms XML xpath into dot notation
-
-    Args:
-        xpath:
-        namespaces:
-
-    Returns:
-
-    """
-    # remove indexes from xpath
-    xpath = re.sub(r'\[[0-9]+\]', '', xpath)
-    # remove namespaces
-    for prefix in list(namespaces.keys()):
-        xpath = re.sub(r'{}:'.format(prefix), '', xpath)
-    # replace / by .
-    xpath = xpath.replace("/", ".")
-
-    return xpath[1:]
-
-
 def get_dot_notation_to_element(data_structure_element, namespaces):
     """
 
@@ -316,7 +299,9 @@ def get_parent_name(data_structure_element_id, namespaces):
     # get the data structure element
     data_structure_element = data_structure_element_api.get_by_id(data_structure_element_id)
     # convert xml path to mongo dot notation
-    data_structure_element_dot_notation = get_dot_notation_to_element(data_structure_element, namespaces)
+    data_structure_element_dot_notation = get_dot_notation_to_element(
+        data_structure_element, namespaces
+    )
     # get parent name
     parent_name = data_structure_element_dot_notation.split(".")[-2]
 
@@ -336,7 +321,9 @@ def get_parent_path(data_structure_element_id, namespaces):
     # get the data structure element
     data_structure_element = data_structure_element_api.get_by_id(data_structure_element_id)
     # convert xml path to mongo dot notation
-    data_structure_element_dot_notation = get_dot_notation_to_element(data_structure_element, namespaces)
+    data_structure_element_dot_notation = get_dot_notation_to_element(
+        data_structure_element, namespaces
+    )
     # get path to parent element
     parent_path = ".".join(data_structure_element_dot_notation.split(".")[:-1])
 
@@ -364,15 +351,15 @@ def check_query_form(form_values, template_id):
         errors.append("The query is empty.")
 
     for field in form_values:
-            element_value = get_element_value(field)
-            element_name = field.get('name', "Unnamed field")
-            element_type = field.get('type', None)
-            # If there is a type to check
-            if element_type:
-                error = validate_element_value(element_name, element_type, element_value,
-                                               default_prefix)
-                if error is not None:
-                    errors.append(error)
+        element_value = get_element_value(field)
+        element_name = field.get('name', "Unnamed field")
+        element_type = field.get('type', None)
+        # If there is a type to check
+        if element_type:
+            error = validate_element_value(element_name, element_type, element_value,
+                                           default_prefix)
+            if error is not None:
+                errors.append(error)
 
     return errors
 
@@ -449,7 +436,10 @@ def _fields_to_query(form_values, template_id, get_dot_notation_to_element_func,
         else:
             data_structure_element = data_structure_element_api.get_by_id(element_id)
             element = get_dot_notation_to_element_func(data_structure_element, namespaces)
-            criteria = build_criteria(element, comparison, value, element_type, default_prefix, is_not, use_wildcard)
+            criteria = build_criteria(
+                element, comparison, value, element_type, default_prefix,
+                is_not, use_wildcard
+            )
 
         if bool_comp == 'OR':
             query = build_or_criteria(query, criteria)
@@ -495,7 +485,9 @@ def sub_elements_to_query(form_values, namespaces, default_prefix):
             value = get_element_value(field)
             comparison = get_element_comparison(field)
 
-            criteria = build_criteria(element_name, comparison, value, element_type, default_prefix, is_not)
+            criteria = build_criteria(
+                element_name, comparison, value, element_type, default_prefix, is_not
+            )
 
             elem_match.append(criteria)
 
