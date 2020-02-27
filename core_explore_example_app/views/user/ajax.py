@@ -413,7 +413,8 @@ class GetQueryView(View):
             template_id = request.POST['templateID']
             query_id = request.POST['queryID']
             form_values = json.loads(request.POST['formValues']) if 'formValues' in request.POST else None
-            order_by_field = request.POST['orderByField'] if 'orderByField' in request.POST else ''
+            order_by_field = request.POST['orderByField'].strip()
+            order_by_field_array = order_by_field.split(';')
 
             # save current query builder in session to restore it when coming back to the page
             if 'queryForm' in request.POST:
@@ -422,7 +423,11 @@ class GetQueryView(View):
 
             errors = []
             query_object = query_api.get_by_id(query_id)
-            query_object.order_by_field = order_by_field
+            # set the data-sources sorting value according to the POST request field
+            for data_sources_index in range(len(query_object.data_sources)):
+                # updating only the existing data-sources (the new data-source already got the default filter value)
+                if data_sources_index in range(0, len(order_by_field_array)):
+                    query_object.data_sources[data_sources_index].order_by_field = order_by_field_array[data_sources_index]
             if len(query_object.data_sources) == 0:
                 errors.append("Please select at least 1 data source.")
 
