@@ -11,7 +11,7 @@ import core_explore_example_app.permissions.rights as rights
 import core_main_app.components.template_version_manager.api as template_version_manager_api
 import core_main_app.utils.decorators as decorators
 from core_explore_common_app.components.query import api as query_api
-from core_explore_common_app.settings import DEFAULT_DATE_TOGGLE_VALUE
+from core_explore_common_app.settings import DEFAULT_DATE_TOGGLE_VALUE, SORTING_DISPLAY_TYPE
 from core_explore_common_app.utils.query.query import create_default_query
 from core_explore_common_app.views.user.views import ResultQueryRedirectView
 from core_explore_example_app.components.explore_data_structure import api as explore_data_structure_api
@@ -268,7 +268,7 @@ class BuildQueryView(View):
                 'template_id': template_id,
                 'description': self.get_description(),
                 'title': self.get_title(),
-                'data_sorting_fields': ','.join(DATA_SORTING_FIELDS),
+                'data_sorting_fields': build_sorting_context_array(query),
                 'default_data_sorting_fields': ','.join(DATA_SORTING_FIELDS),
 
                 'custom_form': custom_form,
@@ -395,7 +395,7 @@ class ResultQueryView(View):
             'get_shareable_link_url': reverse("core_explore_example_get_persistent_query_url"),
             "get_query_url": self.get_query_url,
             'default_date_toggle_value': DEFAULT_DATE_TOGGLE_VALUE,
-            'data_sorting_fields': self._build_sorting_context_array(query),
+            'data_sorting_fields': build_sorting_context_array(query),
             'default_data_sorting_fields': ','.join(DATA_SORTING_FIELDS)
         }
 
@@ -445,6 +445,11 @@ class ResultQueryView(View):
             "core_explore_common_app/user/persistent_query/modals/persistent_query_modal.html"
         ]
 
+        assets['js'].extend([{
+            "path": 'core_explore_common_app/user/js/sorting_{0}_criteria.js'.format(SORTING_DISPLAY_TYPE),
+            "is_raw": False
+        }])
+
         if 'core_exporters_app' in INSTALLED_APPS:
             # add all assets needed
             assets['js'].extend([{
@@ -477,17 +482,6 @@ class ResultQueryView(View):
                       modals=modals,
                       context=context)
 
-    def _build_sorting_context_array(self, query):
-        """ Get the query data-sources dans build the context sorting array for the JS
-
-        Returns:
-
-        """
-        context_array = []
-        for data_source in query.data_sources:
-            context_array.append(data_source.order_by_field)
-
-        return ';'.join(context_array)
 
 
 class ResultQueryExampleRedirectView(ResultQueryRedirectView):
@@ -504,3 +498,16 @@ class ResultQueryExampleRedirectView(ResultQueryRedirectView):
     @staticmethod
     def _get_reversed_url_if_failed():
         return reverse("core_explore_example_index")
+
+
+def build_sorting_context_array(query):
+    """ Get the query data-sources dans build the context sorting array for the JS
+
+    Returns:
+
+    """
+    context_array = []
+    for data_source in query.data_sources:
+        context_array.append(data_source.order_by_field)
+
+    return ';'.join(context_array)
