@@ -348,6 +348,7 @@ class BuildQueryView(View):
     @staticmethod
     def _get_css():
         return [
+            "core_explore_common_app/user/css/results.css",
             "core_explore_example_app/user/css/query_builder.css",
             "core_explore_example_app/user/css/xsd_form.css"
         ]

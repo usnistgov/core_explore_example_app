@@ -6,7 +6,7 @@
    {{ data.description }}
 </p>
 <div class="row">
-    <div id="queryBuilder">
+    <div id="queryBuilder" class="col-sm-8">
         <h3 class="title-text">{{ data.title }}</h3>
         {% if data.query_form%}
             {{data.query_form|safe}}
@@ -15,12 +15,12 @@
             {% include data.query_builder_interface|safe %}
             </div>
         {% endif %}
-        <form>
+        <form class="ml-4">
             <button type="button" class="btn btn-danger" onclick="clearCriteria()">
                 <i class="fa fa-eraser"></i> Clear
             </button>
             {% if user|has_perm:'core_explore_example_app.save_query' %}
-            <button type="button" class="btn btn-default" onclick="saveQuery()">
+            <button type="button" class="btn btn-secondary" onclick="saveQuery()">
                 <i class="fa fa-floppy-o"></i> Save Query
             </button>
             {%endif%}
@@ -29,10 +29,11 @@
             </button>
         </form>
     </div>
-    <div class="pull-right">
+    <div class="col-sm-4">
         {% include data.data_sources_selector_template %}
     </div>
 </div>
+
 {% if user.is_authenticated %}
 <hr>
 <div id="queries">
@@ -42,7 +43,7 @@
             <thead>
                 <tr>
                     <th><b>Queries</b></th>
-                    <th class="col-md-2"><b>Actions</b></th>
+                    <th class="w-25 p-3 action-min-width"><b>Actions</b></th>
                 </tr>
             </thead>
             <tbody>
