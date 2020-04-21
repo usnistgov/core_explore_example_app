@@ -1,5 +1,7 @@
 """ Apps file for setting core package when app is ready
 """
+import sys
+
 from django.apps import AppConfig
 
 import core_explore_example_app.permissions.discover as discover
@@ -16,4 +18,5 @@ class ExploreExampleAppConfig(AppConfig):
         Returns:
 
         """
-        discover.init_permissions(self.apps)
+        if 'migrate' not in sys.argv:
+            discover.init_permissions(self.apps)
