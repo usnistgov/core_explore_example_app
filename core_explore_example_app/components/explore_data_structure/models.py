@@ -22,7 +22,9 @@ class ExploreDataStructure(DataStructure):
 
         """
         try:
-            return ExploreDataStructure.objects.get(user=str(user_id), template=str(template_id))
+            return ExploreDataStructure.objects.get(
+                user=str(user_id), template=str(template_id)
+            )
         except mongoengine_errors.DoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as e:

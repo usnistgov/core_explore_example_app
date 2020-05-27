@@ -11,4 +11,3 @@ def get_saved_queries_created_by_app():
 
     """
     return SavedQuery.objects(user_id=ExploreExampleAppConfig.name).all()
-

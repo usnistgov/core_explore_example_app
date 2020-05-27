@@ -22,11 +22,19 @@ def delete_temporary_saved_queries():
     """
     try:
         # get older queries
-        old_queries = [query for query in get_saved_queries_created_by_app()
-                       if query.id.generation_time < timezone.now() - timedelta(days=QUERIES_MAX_DAYS_IN_DATABASE)]
+        old_queries = [
+            query
+            for query in get_saved_queries_created_by_app()
+            if query.id.generation_time
+            < timezone.now() - timedelta(days=QUERIES_MAX_DAYS_IN_DATABASE)
+        ]
         # remove old queries from database
         for query in old_queries:
             logger.info("Periodic task: delete saved query {}.".format(str(query.id)))
             query.delete()
     except Exception as e:
-        logger.error("An error occurred while deleting temporary saved queries ({}).".format(str(e)))
+        logger.error(
+            "An error occurred while deleting temporary saved queries ({}).".format(
+                str(e)
+            )
+        )

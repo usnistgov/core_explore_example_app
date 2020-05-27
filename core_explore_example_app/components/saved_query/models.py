@@ -11,6 +11,7 @@ from core_main_app.components.template.models import Template
 
 class SavedQuery(Document):
     """Represents a query saved by the user (Query by Example)"""
+
     user_id = fields.StringField(blank=False)
     template = fields.ReferenceField(Template)
     query = fields.StringField(blank=False)

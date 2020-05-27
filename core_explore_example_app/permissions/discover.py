@@ -19,7 +19,9 @@ def init_permissions(apps):
         permission = apps.get_model("auth", "Permission")
 
         # Get or Create the default group
-        default_group, created = group.objects.get_or_create(name=main_rights.default_group)
+        default_group, created = group.objects.get_or_create(
+            name=main_rights.default_group
+        )
 
         # Get explore example permissions
         explore_access_perm = permission.objects.get(
@@ -33,8 +35,8 @@ def init_permissions(apps):
         )
 
         # Add permissions to default group
-        default_group.permissions.add(explore_access_perm,
-                                      explore_save_query_perm,
-                                      explore_delete_query_perm)
+        default_group.permissions.add(
+            explore_access_perm, explore_save_query_perm, explore_delete_query_perm
+        )
     except Exception as e:
         logger.error("Impossible to init explore_example permissions: %s" % str(e))

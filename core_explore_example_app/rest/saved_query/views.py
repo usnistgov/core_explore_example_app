@@ -15,7 +15,8 @@ from core_main_app.commons import exceptions
 class SavedQueryList(APIView):
     """ Get all SavedQuery
     """
-    permission_classes = (IsAuthenticated, )
+
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         """ Get all SavedQuery, can be filtered by owner and template
@@ -47,10 +48,10 @@ class SavedQueryList(APIView):
             saved_query_list = saved_query_api.get_all()
 
             # Apply filters
-            user_id = self.request.query_params.get('user_id', None)
+            user_id = self.request.query_params.get("user_id", None)
             if user_id is not None:
                 saved_query_list = saved_query_list.filter(user_id=user_id)
-            template_id = self.request.query_params.get('template_id', None)
+            template_id = self.request.query_params.get("template_id", None)
             if template_id is not None:
                 saved_query_list = saved_query_list.filter(template=str(template_id))
 
@@ -59,14 +60,15 @@ class SavedQueryList(APIView):
             # Return response
             return Response(return_value.data)
         except Exception as api_exception:
-            content = {'message': str(api_exception)}
+            content = {"message": str(api_exception)}
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class SavedQueryDetail(APIView):
     """" Get an SavedQuery
     """
-    permission_classes = (IsAuthenticated, )
+
+    permission_classes = (IsAuthenticated,)
 
     def get_object(self, pk):
         """ Get SavedQuery from db
@@ -109,10 +111,10 @@ class SavedQueryDetail(APIView):
             # Return response
             return Response(return_value.data)
         except Http404:
-            content = {'message': 'Saved Query not found.'}
+            content = {"message": "Saved Query not found."}
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except Exception as api_exception:
-            content = {'message': str(api_exception)}
+            content = {"message": str(api_exception)}
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, pk):
@@ -136,15 +138,18 @@ class SavedQueryDetail(APIView):
             # Get object
             saved_query_object = self.get_object(pk)
             # if the user is owner or super user
-            if str(request.user.id) != saved_query_object.user_id and not request.user.is_staff:
+            if (
+                str(request.user.id) != saved_query_object.user_id
+                and not request.user.is_staff
+            ):
                 return Response(status=status.HTTP_403_FORBIDDEN)
             # Remove the saved query
             saved_query_api.delete(saved_query_object)
             # Return response
             return Response(status=status.HTTP_204_NO_CONTENT)
         except Http404:
-            content = {'message': 'Saved Query not found.'}
+            content = {"message": "Saved Query not found."}
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except Exception as api_exception:
-            content = {'message': str(api_exception)}
+            content = {"message": str(api_exception)}
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

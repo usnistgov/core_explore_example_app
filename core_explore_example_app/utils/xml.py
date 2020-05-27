@@ -45,7 +45,7 @@ def get_enumerations(data_structure_element):
     """
     # find child simple type
     try:
-        while data_structure_element.tag != 'simple_type':
+        while data_structure_element.tag != "simple_type":
             data_structure_element = data_structure_element.children[0]
         simple_type_element = data_structure_element.children[0]
     except:
@@ -53,6 +53,6 @@ def get_enumerations(data_structure_element):
 
     enums = []
     for enum_element in simple_type_element.children:
-        if enum_element.tag == 'enumeration':
+        if enum_element.tag == "enumeration":
             enums.append(enum_element.value)
     return enums

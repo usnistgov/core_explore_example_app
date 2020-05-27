@@ -1,8 +1,12 @@
 """Parser util for explore app
 """
 from core_explore_example_app.settings import PARSER_DOWNLOAD_DEPENDENCIES
-from core_explore_example_app.utils.custom_checkbox_renderer import CustomCheckboxRenderer
-from core_parser_app.components.data_structure_element import api as data_structure_element_api
+from core_explore_example_app.utils.custom_checkbox_renderer import (
+    CustomCheckboxRenderer,
+)
+from core_parser_app.components.data_structure_element import (
+    api as data_structure_element_api,
+)
 from core_parser_app.tools.parser.parser import XSDParser, remove_child_element
 
 
@@ -16,13 +20,15 @@ def get_parser():
 
     """
 
-    return XSDParser(min_tree=True,
-                     ignore_modules=True,
-                     collapse=True,
-                     auto_key_keyref=False,
-                     implicit_extension_base=False,
-                     download_dependencies=PARSER_DOWNLOAD_DEPENDENCIES,
-                     store_type=True)
+    return XSDParser(
+        min_tree=True,
+        ignore_modules=True,
+        collapse=True,
+        auto_key_keyref=False,
+        implicit_extension_base=False,
+        download_dependencies=PARSER_DOWNLOAD_DEPENDENCIES,
+        store_type=True,
+    )
 
 
 # FIXME: refactor common code with core curate app (note: no xml_string here)
@@ -75,10 +81,9 @@ def generate_element_absent(request, element_id, xsd_string):
 
     """
     xsd_parser = get_parser()
-    html_form = xsd_parser.generate_element_absent(request,
-                                                   element_id,
-                                                   xsd_string,
-                                                   renderer_class=CustomCheckboxRenderer)
+    html_form = xsd_parser.generate_element_absent(
+        request, element_id, xsd_string, renderer_class=CustomCheckboxRenderer
+    )
     return html_form
 
 
@@ -94,10 +99,9 @@ def generate_choice_absent(request, element_id, xsd_string):
 
     """
     xsd_parser = get_parser()
-    html_form = xsd_parser.generate_choice_absent(request,
-                                                  element_id,
-                                                  xsd_string,
-                                                  renderer_class=CustomCheckboxRenderer)
+    html_form = xsd_parser.generate_choice_absent(
+        request, element_id, xsd_string, renderer_class=CustomCheckboxRenderer
+    )
     return html_form
 
 
@@ -126,15 +130,16 @@ def remove_form_element(request, element_id):
     # number of children after deletion
     children_number = len(data_structure_element.children) - 1
 
-    data_structure_element = remove_child_element(data_structure_element,
-                                                  data_structure_element_to_pull)
+    data_structure_element = remove_child_element(
+        data_structure_element, data_structure_element_to_pull
+    )
 
     code = 0
     html_form = ""
 
-    if children_number <= data_structure_element.options['min']:
+    if children_number <= data_structure_element.options["min"]:
         # len(schema_element.children) == schema_element.options['min']
-        if data_structure_element.options['min'] != 0:
+        if data_structure_element.options["min"] != 0:
             code = 1
         else:  # schema_element.options['min'] == 0
             code = 2

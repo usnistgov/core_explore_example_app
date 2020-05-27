@@ -5,5 +5,5 @@ from django.urls import re_path
 from core_explore_example_app import urls as core_explore_example_app_urls
 
 urlpatterns = [
-    re_path(r'^admin/', include(admin.site.urls)),
+    re_path(r"^admin/", include(admin.site.urls)),
 ] + core_explore_example_app_urls.urlpatterns

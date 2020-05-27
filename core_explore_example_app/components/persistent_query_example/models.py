@@ -2,7 +2,9 @@
 """
 from mongoengine import errors as mongoengine_errors
 
-from core_explore_common_app.components.abstract_persistent_query.models import AbstractPersistentQuery
+from core_explore_common_app.components.abstract_persistent_query.models import (
+    AbstractPersistentQuery,
+)
 from core_main_app.commons import exceptions
 
 

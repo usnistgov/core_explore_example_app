@@ -5,12 +5,17 @@ import re
 
 from core_explore_example_app.commons.exceptions import MongoQueryException
 from core_explore_example_app.components.saved_query import api as saved_query_api
-from core_explore_example_app.utils.query_builder import get_element_value, get_element_comparison
+from core_explore_example_app.utils.query_builder import (
+    get_element_value,
+    get_element_comparison,
+)
 from core_explore_example_app.utils.xml import validate_element_value
 from core_main_app.commons.exceptions import DoesNotExist
 from core_main_app.components.template import api as template_api
 from core_main_app.utils.xml import xpath_to_dot_notation
-from core_parser_app.components.data_structure_element import api as data_structure_element_api
+from core_parser_app.components.data_structure_element import (
+    api as data_structure_element_api,
+)
 from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default_prefix
 from xml_utils.xsd_types.xsd_types import get_xsd_numbers, get_xsd_floating_numbers
 
@@ -159,13 +164,20 @@ def build_wildcard_criteria(criteria):
 
     """
     key, value = criteria.popitem()
-    criteria_key = {'path': "/.*{}/".format(key)}
-    criteria_value = {'value': value}
+    criteria_key = {"path": "/.*{}/".format(key)}
+    criteria_value = {"value": value}
     return build_wildcard_elem_match_criteria(criteria_key, criteria_value)
 
 
-def build_criteria(element_path, comparison, value, element_type, default_prefix,
-                   is_not=False, use_wildcard=False):
+def build_criteria(
+    element_path,
+    comparison,
+    value,
+    element_type,
+    default_prefix,
+    is_not=False,
+    use_wildcard=False,
+):
     """Looks at element type and route to the right function to build the criteria
 
     Args:
@@ -184,13 +196,19 @@ def build_criteria(element_path, comparison, value, element_type, default_prefix
     # second case appends when the element has attributes or namespace information
     if element_type in get_xsd_numbers(default_prefix):
         element_query = build_int_criteria(element_path, comparison, value)
-        attribute_query = build_int_criteria("{}.#text".format(element_path), comparison, value)
+        attribute_query = build_int_criteria(
+            "{}.#text".format(element_path), comparison, value
+        )
     elif element_type in get_xsd_floating_numbers(default_prefix):
         element_query = build_float_criteria(element_path, comparison, value)
-        attribute_query = build_float_criteria("{}.#text".format(element_path), comparison, value)
+        attribute_query = build_float_criteria(
+            "{}.#text".format(element_path), comparison, value
+        )
     else:
         element_query = build_string_criteria(element_path, comparison, value)
-        attribute_query = build_string_criteria("{}.#text".format(element_path), comparison, value)
+        attribute_query = build_string_criteria(
+            "{}.#text".format(element_path), comparison, value
+        )
 
     if use_wildcard:
         element_query = build_wildcard_criteria(element_query)
@@ -218,9 +236,13 @@ def invert_query(query):
             # Invert the query for the case value can be found at element:value or at
             # element.#text:value. Second case happens when the element has attributes
             # or namespace information.
-            if len(value) == 2 and len(list(value[0].keys())) == 1 and \
-                    len(list(value[1].keys())) == 1 and \
-                    list(value[1].keys())[0] == "{}.#text".format(list(value[0].keys())[0]):
+            if (
+                len(value) == 2
+                and len(list(value[0].keys())) == 1
+                and len(list(value[1].keys())) == 1
+                and list(value[1].keys())[0]
+                == "{}.#text".format(list(value[0].keys())[0])
+            ):
                 # second query is the same as the first
                 if key == "$and":
                     return {"$or": [invert_query(value[0]), invert_query(value[1])]}
@@ -232,7 +254,7 @@ def invert_query(query):
             # lt, lte, =, gte, gt, not, ne
             if isinstance(value, dict):
                 if list(value.keys())[0] == "$not" or list(value.keys())[0] == "$ne":
-                    query[key] = (value[list(value.keys())[0]])
+                    query[key] = value[list(value.keys())[0]]
                 else:
                     saved_value = value
                     query[key] = dict()
@@ -260,7 +282,7 @@ def is_regex(expr):
     if isinstance(expr, re._pattern_type):
         return True
     try:
-        if expr.startswith('/') and expr.endswith('/'):
+        if expr.startswith("/") and expr.endswith("/"):
             return True
         else:
             return False
@@ -279,7 +301,7 @@ def get_dot_notation_to_element(data_structure_element, namespaces):
 
     """
     # get data structure element's xml xpath
-    xml_xpath = data_structure_element.options['xpath']['xml']
+    xml_xpath = data_structure_element.options["xpath"]["xml"]
     # transform xml xpath to dot notation
     dot_notation = xpath_to_dot_notation(xml_xpath, namespaces)
 
@@ -297,7 +319,9 @@ def get_parent_name(data_structure_element_id, namespaces):
 
     """
     # get the data structure element
-    data_structure_element = data_structure_element_api.get_by_id(data_structure_element_id)
+    data_structure_element = data_structure_element_api.get_by_id(
+        data_structure_element_id
+    )
     # convert xml path to mongo dot notation
     data_structure_element_dot_notation = get_dot_notation_to_element(
         data_structure_element, namespaces
@@ -319,7 +343,9 @@ def get_parent_path(data_structure_element_id, namespaces):
 
     """
     # get the data structure element
-    data_structure_element = data_structure_element_api.get_by_id(data_structure_element_id)
+    data_structure_element = data_structure_element_api.get_by_id(
+        data_structure_element_id
+    )
     # convert xml path to mongo dot notation
     data_structure_element_dot_notation = get_dot_notation_to_element(
         data_structure_element, namespaces
@@ -352,20 +378,22 @@ def check_query_form(form_values, template_id):
 
     for field in form_values:
         element_value = get_element_value(field)
-        element_name = field.get('name', "Unnamed field")
-        element_type = field.get('type', None)
+        element_name = field.get("name", "Unnamed field")
+        element_type = field.get("type", None)
         # If there is a type to check
         if element_type:
-            error = validate_element_value(element_name, element_type, element_value,
-                                           default_prefix)
+            error = validate_element_value(
+                element_name, element_type, element_value, default_prefix
+            )
             if error is not None:
                 errors.append(error)
 
     return errors
 
 
-def fields_to_query_custom_dot_notation(form_values, template_id,
-                                        get_dot_notation_to_element_func, use_wildcard=False):
+def fields_to_query_custom_dot_notation(
+    form_values, template_id, get_dot_notation_to_element_func, use_wildcard=False
+):
     """Takes values from the html tree and creates a query from them.
     Can configure the get_dot_notation_to_element function to use.
 
@@ -378,8 +406,9 @@ def fields_to_query_custom_dot_notation(form_values, template_id,
     Returns:
 
     """
-    return _fields_to_query(form_values, template_id, get_dot_notation_to_element_func,
-                            use_wildcard)
+    return _fields_to_query(
+        form_values, template_id, get_dot_notation_to_element_func, use_wildcard
+    )
 
 
 def fields_to_query(form_values, template_id, use_wildcard=False):
@@ -392,10 +421,14 @@ def fields_to_query(form_values, template_id, use_wildcard=False):
     Returns:
 
     """
-    return _fields_to_query(form_values, template_id, get_dot_notation_to_element, use_wildcard)
+    return _fields_to_query(
+        form_values, template_id, get_dot_notation_to_element, use_wildcard
+    )
 
 
-def _fields_to_query(form_values, template_id, get_dot_notation_to_element_func, use_wildcard):
+def _fields_to_query(
+    form_values, template_id, get_dot_notation_to_element_func, use_wildcard
+):
     """Takes values from the html tree and creates a query from them
 
     Args:
@@ -416,16 +449,16 @@ def _fields_to_query(form_values, template_id, get_dot_notation_to_element_func,
 
     query = dict()
     for field in form_values:
-        bool_comp = field['operator']
-        is_not = bool_comp == 'NOT'
-        element_type = field.get('type', None)
+        bool_comp = field["operator"]
+        is_not = bool_comp == "NOT"
+        element_type = field.get("type", None)
 
         # get element value
         value = get_element_value(field)
         # get comparison operator
         comparison = get_element_comparison(field)
 
-        element_id = field['id']
+        element_id = field["id"]
 
         if element_type == "query":
             try:
@@ -435,15 +468,22 @@ def _fields_to_query(form_values, template_id, get_dot_notation_to_element_func,
             criteria = build_query_criteria(json.loads(saved_query.query), is_not)
         else:
             data_structure_element = data_structure_element_api.get_by_id(element_id)
-            element = get_dot_notation_to_element_func(data_structure_element, namespaces)
+            element = get_dot_notation_to_element_func(
+                data_structure_element, namespaces
+            )
             criteria = build_criteria(
-                element, comparison, value, element_type, default_prefix,
-                is_not, use_wildcard
+                element,
+                comparison,
+                value,
+                element_type,
+                default_prefix,
+                is_not,
+                use_wildcard,
             )
 
-        if bool_comp == 'OR':
+        if bool_comp == "OR":
             query = build_or_criteria(query, criteria)
-        elif bool_comp == 'AND':
+        elif bool_comp == "AND":
             query = build_and_criteria(query, criteria)
         else:
             if form_values.index(field) == 0:
@@ -468,20 +508,20 @@ def sub_elements_to_query(form_values, namespaces, default_prefix):
     elem_match = []
 
     # get the parent path using the first element of the list
-    parent_path = get_parent_path(form_values[0]['id'], namespaces)
+    parent_path = get_parent_path(form_values[0]["id"], namespaces)
 
     for i in range(0, len(form_values)):
         field = form_values[i]
-        if field['selected'] is True:
-            bool_comp = field['operator']
-            if bool_comp == 'NOT':
+        if field["selected"] is True:
+            bool_comp = field["operator"]
+            if bool_comp == "NOT":
                 is_not = True
             else:
                 is_not = False
 
-            data_structure_element = data_structure_element_api.get_by_id(field['id'])
-            element_type = data_structure_element.options['type']
-            element_name = data_structure_element.options['name']
+            data_structure_element = data_structure_element_api.get_by_id(field["id"])
+            element_type = data_structure_element.options["type"]
+            element_name = data_structure_element.options["name"]
             value = get_element_value(field)
             comparison = get_element_comparison(field)
 

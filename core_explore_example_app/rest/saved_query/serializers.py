@@ -9,9 +9,11 @@ from core_explore_example_app.components.saved_query.models import SavedQuery
 class SavedQuerySerializer(DocumentSerializer):
     """ Saved Query serializer
     """
+
     class Meta(object):
         """ Meta
         """
+
         model = SavedQuery
         fields = "__all__"
-        read_only_fields = ('user_id', 'displayed_query')
+        read_only_fields = ("user_id", "displayed_query")

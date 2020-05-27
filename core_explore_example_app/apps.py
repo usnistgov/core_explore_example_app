@@ -10,7 +10,8 @@ import core_explore_example_app.permissions.discover as discover
 class ExploreExampleAppConfig(AppConfig):
     """ Core application settings
     """
-    name = 'core_explore_example_app'
+
+    name = "core_explore_example_app"
 
     def ready(self):
         """ Runs when the app is ready
@@ -18,5 +19,5 @@ class ExploreExampleAppConfig(AppConfig):
         Returns:
 
         """
-        if 'migrate' not in sys.argv:
+        if "migrate" not in sys.argv:
             discover.init_permissions(self.apps)

@@ -11,6 +11,7 @@ from xml_utils.xsd_types.xsd_types import get_xsd_numbers
 class BranchInfo(object):
     """ Store information about a branch from the xml schema while it is being processed for field selection
     """
+
     def __init__(self, keep_the_branch=False, selected_leaves=None):
         self.keep_the_branch = keep_the_branch
         self.selected_leaves = selected_leaves if selected_leaves is not None else []
@@ -21,6 +22,7 @@ class BranchInfo(object):
 
 
 # Util functions
+
 
 def prune_html_tree(html_tree):
     """ Create a custom HTML tree from fields chosen by the user
@@ -62,16 +64,16 @@ def prune_ul(ul):
 
     checkbox = ul.find("./input[@type='checkbox']")
     if checkbox is not None:
-        if 'value' in checkbox.attrib and checkbox.attrib['value'] == 'true':
+        if "value" in checkbox.attrib and checkbox.attrib["value"] == "true":
             # set element class
             parent_li = ul.getparent()
-            element_id = parent_li.attrib['class']
-            add_selection_attributes(parent_li, 'element', element_id)
+            element_id = parent_li.attrib["class"]
+            add_selection_attributes(parent_li, "element", element_id)
             # tells to keep this branch until this leaf
             branch_info.add_selected_leaf(element_id)
 
     if not branch_info.keep_the_branch:
-        add_selection_attributes(ul, 'none')
+        add_selection_attributes(ul, "none")
 
     return branch_info
 
@@ -99,24 +101,24 @@ def prune_li(li):
         # sub element queries available when more than one selected elements under the same element
         if len(selected_leaves) > 1:
             # not for the choices
-            if li[0].tag != 'select':
+            if li[0].tag != "select":
                 # TODO: check if test useful
-                if 'select_class' not in li.attrib:
-                    leaves_id = ' '.join(selected_leaves)
-                    add_selection_attributes(li, 'parent', leaves_id)
+                if "select_class" not in li.attrib:
+                    leaves_id = " ".join(selected_leaves)
+                    add_selection_attributes(li, "parent", leaves_id)
         if not branch_info.keep_the_branch:
-            add_selection_attributes(li, 'none')
+            add_selection_attributes(li, "none")
 
         return branch_info
     else:
         try:
             checkbox = li.find("./input[@type='checkbox']")
-            if checkbox.attrib['value'] == 'false':
-                add_selection_attributes(li, 'none')
+            if checkbox.attrib["value"] == "false":
+                add_selection_attributes(li, "none")
                 return branch_info
             else:
-                element_id = li.attrib['class']
-                add_selection_attributes(li, 'element', element_id)
+                element_id = li.attrib["class"]
+                add_selection_attributes(li, "element", element_id)
                 # tells to keep this branch until this leaf
                 branch_info.add_selected_leaf(element_id)
                 return branch_info
@@ -135,13 +137,13 @@ def sub_element_query_li(li, selected_leaves):
 
     """
     # not for the choices
-    if li[0].tag != 'select':
+    if li[0].tag != "select":
         # TODO: check if test useful
-        if 'select_class' not in li.attrib:
-            leaves_id = ' '.join(selected_leaves)
+        if "select_class" not in li.attrib:
+            leaves_id = " ".join(selected_leaves)
             # set element class
-            li.attrib['select_class'] = 'parent'
-            li.attrib['select_id'] = leaves_id
+            li.attrib["select_class"] = "parent"
+            li.attrib["select_id"] = leaves_id
 
 
 def add_selection_attributes(element, select_class, select_id=None):
@@ -155,9 +157,9 @@ def add_selection_attributes(element, select_class, select_id=None):
     Returns:
 
     """
-    element.attrib['select_class'] = select_class
+    element.attrib["select_class"] = select_class
     if select_id is not None:
-        element.attrib['select_id'] = select_id
+        element.attrib["select_id"] = select_id
 
 
 # Rendering functions
@@ -169,7 +171,9 @@ def render_yes_or_not():
     Returns:
 
     """
-    return _render_template(join('core_explore_example_app', 'user', 'query_builder', 'yes_no.html'))
+    return _render_template(
+        join("core_explore_example_app", "user", "query_builder", "yes_no.html")
+    )
 
 
 def render_and_or_not():
@@ -178,7 +182,9 @@ def render_and_or_not():
     Returns:
 
     """
-    return _render_template(join('core_explore_example_app', 'user', 'query_builder', 'and_or_not.html'))
+    return _render_template(
+        join("core_explore_example_app", "user", "query_builder", "and_or_not.html")
+    )
 
 
 def render_numeric_select():
@@ -187,7 +193,9 @@ def render_numeric_select():
     Returns:
 
     """
-    return _render_template(join('core_explore_example_app', 'user', 'query_builder', 'numeric_select.html'))
+    return _render_template(
+        join("core_explore_example_app", "user", "query_builder", "numeric_select.html")
+    )
 
 
 def render_value_input():
@@ -196,7 +204,9 @@ def render_value_input():
     Returns:
 
     """
-    return _render_template(join('core_explore_example_app', 'user', 'query_builder', 'input.html'))
+    return _render_template(
+        join("core_explore_example_app", "user", "query_builder", "input.html")
+    )
 
 
 def render_string_select():
@@ -205,7 +215,9 @@ def render_string_select():
     Returns:
 
     """
-    return _render_template(join('core_explore_example_app', 'user', 'query_builder', 'string_select.html'))
+    return _render_template(
+        join("core_explore_example_app", "user", "query_builder", "string_select.html")
+    )
 
 
 def render_initial_form():
@@ -214,7 +226,9 @@ def render_initial_form():
     Returns:
 
     """
-    return _render_template(join('core_explore_example_app', 'user', 'query_builder', 'initial_form.html'))
+    return _render_template(
+        join("core_explore_example_app", "user", "query_builder", "initial_form.html")
+    )
 
 
 def render_remove_button():
@@ -223,7 +237,9 @@ def render_remove_button():
     Returns:
 
     """
-    return _render_template(join('core_explore_example_app', 'user', 'query_builder', 'remove.html'))
+    return _render_template(
+        join("core_explore_example_app", "user", "query_builder", "remove.html")
+    )
 
 
 def render_add_button():
@@ -232,7 +248,9 @@ def render_add_button():
     Returns:
 
     """
-    return _render_template(join('core_explore_example_app', 'user', 'query_builder', 'add.html'))
+    return _render_template(
+        join("core_explore_example_app", "user", "query_builder", "add.html")
+    )
 
 
 def render_enum(enums):
@@ -245,9 +263,11 @@ def render_enum(enums):
 
     """
     context = {
-        'enums': enums,
+        "enums": enums,
     }
-    return _render_template(join('core_explore_example_app', 'user', 'query_builder', 'enum.html'), context)
+    return _render_template(
+        join("core_explore_example_app", "user", "query_builder", "enum.html"), context
+    )
 
 
 def render_new_query(tag_id, query, is_first=False):
@@ -261,12 +281,11 @@ def render_new_query(tag_id, query, is_first=False):
     Returns:
 
     """
-    context = {
-        'tagID': tag_id,
-        'query': query,
-        'first': is_first
-    }
-    return _render_template(join('core_explore_example_app', 'user', 'query_builder', 'new_query.html'), context)
+    context = {"tagID": tag_id, "query": query, "first": is_first}
+    return _render_template(
+        join("core_explore_example_app", "user", "query_builder", "new_query.html"),
+        context,
+    )
 
 
 def render_new_criteria(tag_id):
@@ -279,9 +298,12 @@ def render_new_criteria(tag_id):
 
     """
     context = {
-        'tagID': tag_id,
+        "tagID": tag_id,
     }
-    return _render_template(join('core_explore_example_app', 'user', 'query_builder', 'new_criteria.html'), context)
+    return _render_template(
+        join("core_explore_example_app", "user", "query_builder", "new_criteria.html"),
+        context,
+    )
 
 
 def render_sub_elements_query(parent_name, form_fields):
@@ -294,11 +316,18 @@ def render_sub_elements_query(parent_name, form_fields):
 
     """
     context = {
-        'parent_name': parent_name,
-        'form_fields': form_fields,
+        "parent_name": parent_name,
+        "form_fields": form_fields,
     }
-    return _render_template(join('core_explore_example_app', 'user', 'query_builder', 'sub_elements_query.html'),
-                            context)
+    return _render_template(
+        join(
+            "core_explore_example_app",
+            "user",
+            "query_builder",
+            "sub_elements_query.html",
+        ),
+        context,
+    )
 
 
 def get_element_value(element_field):
@@ -310,7 +339,7 @@ def get_element_value(element_field):
     Returns:
 
     """
-    return element_field['value'] if 'value' in element_field else None
+    return element_field["value"] if "value" in element_field else None
 
 
 def get_element_comparison(element_field):
@@ -322,7 +351,7 @@ def get_element_comparison(element_field):
     Returns:
 
     """
-    return element_field['comparison'] if 'comparison' in element_field else 'is'
+    return element_field["comparison"] if "comparison" in element_field else "is"
 
 
 def get_user_inputs(element_type, data_structure_element, default_prefix):
@@ -337,7 +366,9 @@ def get_user_inputs(element_type, data_structure_element, default_prefix):
 
     """
     try:
-        if element_type is not None and element_type.startswith("{0}:".format(default_prefix)):
+        if element_type is not None and element_type.startswith(
+            "{0}:".format(default_prefix)
+        ):
             # numeric
             if element_type in get_xsd_numbers(default_prefix):
                 user_inputs = render_numeric_select() + render_value_input()

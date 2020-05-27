@@ -1,7 +1,9 @@
 """ Explore data Structure api
 """
 
-from core_explore_example_app.components.explore_data_structure.models import ExploreDataStructure
+from core_explore_example_app.components.explore_data_structure.models import (
+    ExploreDataStructure,
+)
 from core_explore_example_app.utils.parser import generate_form
 
 
@@ -42,16 +44,19 @@ def create_and_get_explore_data_structure(template, user_id):
     """
     try:
         # get data structure
-        explore_data_structure = get_by_user_id_and_template_id(user_id=str(user_id),
-                                                                template_id=template.id)
+        explore_data_structure = get_by_user_id_and_template_id(
+            user_id=str(user_id), template_id=template.id
+        )
     except:
         # generate the root element
         root_element = generate_form(template.content)
         # create explore data structure
-        explore_data_structure = ExploreDataStructure(user=str(user_id),
-                                                      template=template,
-                                                      name=template.filename,
-                                                      data_structure_element_root=root_element)
+        explore_data_structure = ExploreDataStructure(
+            user=str(user_id),
+            template=template,
+            name=template.filename,
+            data_structure_element_root=root_element,
+        )
 
         # save the data structure
         upsert(explore_data_structure)
