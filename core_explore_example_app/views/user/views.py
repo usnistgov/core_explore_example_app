@@ -11,12 +11,12 @@ import core_explore_example_app.permissions.rights as rights
 import core_main_app.components.template_version_manager.api as template_version_manager_api
 import core_main_app.utils.decorators as decorators
 from core_explore_common_app.components.query import api as query_api
-from core_explore_common_app.settings import (
-    DEFAULT_DATE_TOGGLE_VALUE,
-    SORTING_DISPLAY_TYPE,
-)
+from core_explore_common_app.settings import DEFAULT_DATE_TOGGLE_VALUE
 from core_explore_common_app.utils.query.query import create_default_query
-from core_explore_common_app.views.user.views import ResultQueryRedirectView
+from core_explore_common_app.views.user.views import (
+    ResultQueryRedirectView,
+    ResultsView,
+)
 from core_explore_example_app.components.explore_data_structure import (
     api as explore_data_structure_api,
 )
@@ -363,12 +363,15 @@ class BuildQueryView(View):
 
     @staticmethod
     def get_description():
+        # FIXME should be in template
         return (
             "Click on a field of the Query Builder to add an element to your query. "
-            "The elements selected in the previous step will appear and you will be able to insert "
-            "them in the query builder. Click on plus/minus icons to add/remove criteria. "
-            "You can save queries to build more complex queries and you will retrieve them on your next connection."
-            " When your query is done, please click on Submit Query to get XML documents that match the criteria."
+            "The elements selected in the previous step will appear and you will be "
+            "able to insert them in the query builder. Click on plus/minus icons to "
+            "add/remove criteria. You can save queries to build more complex queries "
+            "and you will retrieve them on your next connection. When your query is "
+            "done, please click on Submit Query to get XML documents that match the "
+            "criteria."
         )
 
     @staticmethod
@@ -376,7 +379,7 @@ class BuildQueryView(View):
         return "Query Builder"
 
 
-class ResultQueryView(View):
+class ResultQueryView(ResultsView):
     back_to_query_redirect = "core_explore_example_build_query"
     get_query_url = "core_explore_example_get_query"
 
@@ -407,32 +410,32 @@ class ResultQueryView(View):
             "query_id": query_id,
             "exporter_app": False,
             "back_to_query_redirect": self.back_to_query_redirect,
-            "get_shareable_link_url": reverse(
-                "core_explore_example_get_persistent_query_url"
-            ),
             "get_query_url": self.get_query_url,
             "default_date_toggle_value": DEFAULT_DATE_TOGGLE_VALUE,
-            "data_sorting_fields": build_sorting_context_array(query),
+            "data_sorting_fields": super().build_sorting_context_array(query),
             "default_data_sorting_fields": ",".join(DATA_SORTING_FIELDS),
         }
 
-        assets = {
+        if "core_exporters_app" in INSTALLED_APPS:
+            query = query_api.get_by_id(query_id)
+
+            context["exporter_app"] = True
+            context["templates_list"] = json.dumps(
+                [str(template.id) for template in query.templates]
+            )
+
+        return render(
+            request,
+            "core_explore_example_app/user/results.html",
+            assets=self.assets,
+            modals=self.modals,
+            context=context,
+        )
+
+    def _load_assets(self):
+        assets = super()._load_assets()
+        extra_assets = {
             "js": [
-                {"path": "core_explore_common_app/user/js/results.js", "is_raw": False},
-                {
-                    "path": "core_explore_common_app/user/js/results.raw.js",
-                    "is_raw": True,
-                },
-                {"path": "core_main_app/common/js/XMLTree.js", "is_raw": False},
-                {
-                    "path": "core_main_app/common/js/modals/error_page_modal.js",
-                    "is_raw": True,
-                },
-                {
-                    "path": "core_explore_common_app/user/js/button_persistent_query.js",
-                    "is_raw": False,
-                },
-                {"path": "core_main_app/common/js/debounce.js", "is_raw": False},
                 {
                     "path": "core_explore_example_app/user/js/refresh_sorting.raw.js",
                     "is_raw": True,
@@ -441,74 +444,26 @@ class ResultQueryView(View):
                     "path": "core_explore_example_app/user/js/refresh_sorting.js",
                     "is_raw": False,
                 },
+                {
+                    "path": "core_explore_example_app/user/js/persistent_query.raw.js",
+                    "is_raw": True,
+                },
             ],
-            "css": [
-                "core_explore_common_app/user/css/query_result.css",
-                "core_main_app/common/css/XMLTree.css",
-                "core_explore_common_app/user/css/results.css",
-                "core_explore_common_app/user/css/toggle.css",
-            ],
+            "css": [],
         }
 
-        modals = [
-            "core_main_app/common/modals/error_page_modal.html",
-            "core_explore_common_app/user/persistent_query/modals/persistent_query_modal.html",
-        ]
+        assets["js"].extend(extra_assets["js"])
+        assets["css"].extend(extra_assets["css"])
 
-        assets["js"].extend(
-            [
-                {
-                    "path": "core_explore_common_app/user/js/sorting_{0}_criteria.js".format(
-                        SORTING_DISPLAY_TYPE
-                    ),
-                    "is_raw": False,
-                }
-            ]
-        )
+        return assets
 
-        if "core_exporters_app" in INSTALLED_APPS:
-            # add all assets needed
-            assets["js"].extend(
-                [
-                    {
-                        "path": "core_exporters_app/user/js/exporters/list/modals/list_exporters_selector.js",
-                        "is_raw": False,
-                    }
-                ]
-            )
-            # add the modal
-            modals.extend(
-                [
-                    "core_exporters_app/user/exporters/list/modals/list_exporters_selector.html"
-                ]
-            )
-            # the modal need all selected template
-            query = query_api.get_by_id(query_id)
+    def _load_modals(self):
+        """ Return modals structure
 
-            context["exporter_app"] = True
-            context["templates_list"] = json.dumps(
-                [str(template.id) for template in query.templates]
-            )
+        Returns:
 
-        if "core_file_preview_app" in INSTALLED_APPS:
-            assets["js"].extend(
-                [
-                    {
-                        "path": "core_file_preview_app/user/js/file_preview.js",
-                        "is_raw": False,
-                    }
-                ]
-            )
-            assets["css"].append("core_file_preview_app/user/css/file_preview.css")
-            modals.append("core_file_preview_app/user/file_preview_modal.html")
-
-        return render(
-            request,
-            "core_explore_example_app/user/results.html",
-            assets=assets,
-            modals=modals,
-            context=context,
-        )
+        """
+        return super()._load_modals()
 
 
 class ResultQueryExampleRedirectView(ResultQueryRedirectView):
@@ -528,6 +483,7 @@ class ResultQueryExampleRedirectView(ResultQueryRedirectView):
         return reverse("core_explore_example_index")
 
 
+# FIXME duplicate code in core_explore_common_app
 def build_sorting_context_array(query):
     """ Get the query data-sources dans build the context sorting array for the JS
 

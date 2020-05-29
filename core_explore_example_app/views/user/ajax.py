@@ -160,8 +160,8 @@ def save_fields(request):
 
         # if checkboxes were checked
         if any_checked:
-            # save html form
-            # by adding the encoding to unicode, we force to_string method to return a string rather than bytes
+            # save html form by adding the encoding to unicode, we force to_string
+            # method to return a string rather than bytes.
             explore_data_structure.selected_fields_html_tree = html_tree_parser.to_string(
                 html_tree, encoding="unicode"
             )
@@ -532,7 +532,8 @@ class GetQueryView(View):
             query_object = query_api.get_by_id(query_id)
             # set the data-sources sorting value according to the POST request field
             for data_sources_index in range(len(query_object.data_sources)):
-                # updating only the existing data-sources (the new data-source already got the default filter value)
+                # updating only the existing data-sources (the new data-source already got
+                # the default filter value)
                 if data_sources_index in range(0, len(order_by_field_array)):
                     query_object.data_sources[
                         data_sources_index
@@ -630,6 +631,5 @@ class CreatePersistentQueryExampleUrlView(CreatePersistentQueryUrlView):
             user_id=query.user_id,
             content=query.content,
             templates=query.templates,
-            order_by_field=query.order_by_field,
             data_sources=query.data_sources,
         )
