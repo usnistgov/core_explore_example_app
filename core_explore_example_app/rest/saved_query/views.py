@@ -13,13 +13,12 @@ from core_main_app.commons import exceptions
 
 
 class SavedQueryList(APIView):
-    """ Get all SavedQuery
-    """
+    """Get all SavedQuery"""
 
     permission_classes = (IsAuthenticated,)
 
     def get(self, request):
-        """ Get all SavedQuery, can be filtered by owner and template
+        """Get all SavedQuery, can be filtered by owner and template
 
         Url Parameters:
 
@@ -65,13 +64,12 @@ class SavedQueryList(APIView):
 
 
 class SavedQueryDetail(APIView):
-    """" Get an SavedQuery
-    """
+    """ " Get an SavedQuery"""
 
     permission_classes = (IsAuthenticated,)
 
     def get_object(self, pk):
-        """ Get SavedQuery from db
+        """Get SavedQuery from db
 
         Args:
 
@@ -87,7 +85,7 @@ class SavedQueryDetail(APIView):
             raise Http404
 
     def get(self, request, pk):
-        """ Retrieve a SavedQuery
+        """Retrieve a SavedQuery
 
         Args:
 
@@ -118,7 +116,7 @@ class SavedQueryDetail(APIView):
             return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, pk):
-        """ Delete a SavedQuery
+        """Delete a SavedQuery
 
         Args:
 

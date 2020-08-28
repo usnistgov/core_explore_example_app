@@ -59,7 +59,7 @@ from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default
     raise_exception=True,
 )
 def generate_element(request, explore_data_structure_id):
-    """ Generate an element absent from the form.
+    """Generate an element absent from the form.
 
     Args:
         request:
@@ -154,16 +154,18 @@ def save_fields(request):
         any_checked = prune_html_tree(html_tree)
 
         # get explore data structure
-        explore_data_structure = explore_data_structure_api.get_by_user_id_and_template_id(
-            str(request.user.id), template_id
+        explore_data_structure = (
+            explore_data_structure_api.get_by_user_id_and_template_id(
+                str(request.user.id), template_id
+            )
         )
 
         # if checkboxes were checked
         if any_checked:
             # save html form by adding the encoding to unicode, we force to_string
             # method to return a string rather than bytes.
-            explore_data_structure.selected_fields_html_tree = html_tree_parser.to_string(
-                html_tree, encoding="unicode"
+            explore_data_structure.selected_fields_html_tree = (
+                html_tree_parser.to_string(html_tree, encoding="unicode")
             )
         else:
             # otherwise, empty any previously saved html form
@@ -619,8 +621,7 @@ class SaveQueryView(View):
 
 
 class CreatePersistentQueryExampleUrlView(CreatePersistentQueryUrlView):
-    """ Create the persistent url from a Query
-    """
+    """Create the persistent url from a Query"""
 
     view_to_reverse = "core_explore_example_results_redirect"
 

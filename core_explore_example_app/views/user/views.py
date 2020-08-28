@@ -44,7 +44,7 @@ class IndexView(View):
         )
     )
     def get(self, request, *args, **kwargs):
-        """ Page that allows to select a template to start exploring data
+        """Page that allows to select a template to start exploring data
 
         Args:
             request:
@@ -68,7 +68,7 @@ class IndexView(View):
         return render(request, self.get_redirect, assets=assets, context=context)
 
     def get_global_active_list(self):
-        """ Get all global version managers.
+        """Get all global version managers.
 
         Args:
 
@@ -79,7 +79,7 @@ class IndexView(View):
         return self.api.get_active_global_version_manager()
 
     def get_user_active_list(self, user_id):
-        """ Get all active version managers with given user id.
+        """Get all active version managers with given user id.
 
         Args:
             user_id:
@@ -154,8 +154,10 @@ class SelectFieldsView(View):
 
             template = template_api.get(template_id)
             # get data structure
-            data_structure = explore_data_structure_api.create_and_get_explore_data_structure(
-                template, request.user.id
+            data_structure = (
+                explore_data_structure_api.create_and_get_explore_data_structure(
+                    template, request.user.id
+                )
             )
             root_element = data_structure.data_structure_element_root
 
@@ -239,8 +241,10 @@ class BuildQueryView(View):
             saved_query_form = ""
 
             try:
-                explore_data_structure = explore_data_structure_api.get_by_user_id_and_template_id(
-                    str(request.user.id), template_id
+                explore_data_structure = (
+                    explore_data_structure_api.get_by_user_id_and_template_id(
+                        str(request.user.id), template_id
+                    )
                 )
                 # If custom fields form present, set it
                 custom_form = explore_data_structure.selected_fields_html_tree
@@ -315,7 +319,7 @@ class BuildQueryView(View):
 
     @staticmethod
     def _create_new_query(request, template):
-        """ Create a new query
+        """Create a new query
         Args:
             request:
             template:
@@ -458,7 +462,7 @@ class ResultQueryView(ResultsView):
         return assets
 
     def _load_modals(self):
-        """ Return modals structure
+        """Return modals structure
 
         Returns:
 
@@ -485,7 +489,7 @@ class ResultQueryExampleRedirectView(ResultQueryRedirectView):
 
 # FIXME duplicate code in core_explore_common_app
 def build_sorting_context_array(query):
-    """ Get the query data-sources dans build the context sorting array for the JS
+    """Get the query data-sources dans build the context sorting array for the JS
 
     Returns:
 

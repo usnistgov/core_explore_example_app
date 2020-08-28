@@ -8,7 +8,7 @@ from core_explore_example_app.utils.parser import generate_form
 
 
 def get_by_user_id_and_template_id(user_id, template_id):
-    """ Returns object with the given user id and template id
+    """Returns object with the given user id and template id
 
     Args:
         user_id:
@@ -33,7 +33,7 @@ def upsert(explore_data_structure):
 
 
 def create_and_get_explore_data_structure(template, user_id):
-    """ Get Data structure from template and user, generate them if no exist
+    """Get Data structure from template and user, generate them if no exist
 
     Args:
         template:
@@ -66,7 +66,7 @@ def create_and_get_explore_data_structure(template, user_id):
 
 
 def get_by_id(explore_data_structure_id):
-    """ Return the explore data structure with the given id
+    """Return the explore data structure with the given id
 
     Args:
         explore_data_structure_id:

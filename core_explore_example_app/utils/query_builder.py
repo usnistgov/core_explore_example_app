@@ -9,8 +9,7 @@ from xml_utils.xsd_types.xsd_types import get_xsd_numbers
 
 
 class BranchInfo(object):
-    """ Store information about a branch from the xml schema while it is being processed for field selection
-    """
+    """Store information about a branch from the xml schema while it is being processed for field selection"""
 
     def __init__(self, keep_the_branch=False, selected_leaves=None):
         self.keep_the_branch = keep_the_branch
@@ -25,7 +24,7 @@ class BranchInfo(object):
 
 
 def prune_html_tree(html_tree):
-    """ Create a custom HTML tree from fields chosen by the user
+    """Create a custom HTML tree from fields chosen by the user
 
     Args:
         html_tree:
@@ -45,7 +44,7 @@ def prune_html_tree(html_tree):
 
 
 def prune_ul(ul):
-    """ Process the ul element of an HTML list
+    """Process the ul element of an HTML list
 
     Args:
         ul:
@@ -79,7 +78,7 @@ def prune_ul(ul):
 
 
 def prune_li(li):
-    """ Process the li element of an HTML list
+    """Process the li element of an HTML list
 
     Args:
         li:
@@ -127,7 +126,7 @@ def prune_li(li):
 
 
 def sub_element_query_li(li, selected_leaves):
-    """ Update li with sub-element query attributes
+    """Update li with sub-element query attributes
 
     Args:
         li:
@@ -147,7 +146,7 @@ def sub_element_query_li(li, selected_leaves):
 
 
 def add_selection_attributes(element, select_class, select_id=None):
-    """ Add css attribute to selected element
+    """Add css attribute to selected element
 
     Args:
         element:
@@ -166,7 +165,7 @@ def add_selection_attributes(element, select_class, select_id=None):
 
 
 def render_yes_or_not():
-    """ Return a string that represents an html select with yes or not options
+    """Return a string that represents an html select with yes or not options
 
     Returns:
 
@@ -177,7 +176,7 @@ def render_yes_or_not():
 
 
 def render_and_or_not():
-    """ Return a string that represents an html select with AND, OR, NOT options
+    """Return a string that represents an html select with AND, OR, NOT options
 
     Returns:
 
@@ -188,7 +187,7 @@ def render_and_or_not():
 
 
 def render_numeric_select():
-    """ Return a string that represents an html select with numeric comparisons
+    """Return a string that represents an html select with numeric comparisons
 
     Returns:
 
@@ -199,7 +198,7 @@ def render_numeric_select():
 
 
 def render_value_input():
-    """ Return an input to type a value
+    """Return an input to type a value
 
     Returns:
 
@@ -210,7 +209,7 @@ def render_value_input():
 
 
 def render_string_select():
-    """ Return an input to type a value
+    """Return an input to type a value
 
     Returns:
 
@@ -221,7 +220,7 @@ def render_string_select():
 
 
 def render_initial_form():
-    """ Render the initial Query Builder
+    """Render the initial Query Builder
 
     Returns:
 
@@ -232,7 +231,7 @@ def render_initial_form():
 
 
 def render_remove_button():
-    """ Return html of a remove button
+    """Return html of a remove button
 
     Returns:
 
@@ -243,7 +242,7 @@ def render_remove_button():
 
 
 def render_add_button():
-    """ Return html of an add button
+    """Return html of an add button
 
     Returns:
 
@@ -254,7 +253,7 @@ def render_add_button():
 
 
 def render_enum(enums):
-    """ Return html select from an enumeration
+    """Return html select from an enumeration
 
     Args:
         enums:
@@ -271,7 +270,7 @@ def render_enum(enums):
 
 
 def render_new_query(tag_id, query, is_first=False):
-    """ Return an html string for a new query
+    """Return an html string for a new query
 
     Args:
         tag_id:
@@ -289,7 +288,7 @@ def render_new_query(tag_id, query, is_first=False):
 
 
 def render_new_criteria(tag_id):
-    """ Return an html string for a new query
+    """Return an html string for a new query
 
     Args:
         tag_id:
@@ -307,7 +306,7 @@ def render_new_criteria(tag_id):
 
 
 def render_sub_elements_query(parent_name, form_fields):
-    """ Return an html string for a query on sub-elements
+    """Return an html string for a query on sub-elements
 
     Args:
 
@@ -331,7 +330,7 @@ def render_sub_elements_query(parent_name, form_fields):
 
 
 def get_element_value(element_field):
-    """ Get value from field
+    """Get value from field
 
     Args:
         element_field:
@@ -343,7 +342,7 @@ def get_element_value(element_field):
 
 
 def get_element_comparison(element_field):
-    """ Get comparison operator from field
+    """Get comparison operator from field
 
     Args:
         element_field:
@@ -355,7 +354,7 @@ def get_element_comparison(element_field):
 
 
 def get_user_inputs(element_type, data_structure_element, default_prefix):
-    """ Get user inputs from element type
+    """Get user inputs from element type
 
     Args:
         element_type:
@@ -387,7 +386,7 @@ def get_user_inputs(element_type, data_structure_element, default_prefix):
 
 
 def _render_template(template_path, context=None):
-    """ Return an HTML string rendered from the template
+    """Return an HTML string rendered from the template
 
     Args:
         template_path:

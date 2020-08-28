@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 def init_permissions(apps):
-    """ Initialization of groups and permissions.
+    """Initialization of groups and permissions.
 
     Args:
         apps (Apps): List of applications to init

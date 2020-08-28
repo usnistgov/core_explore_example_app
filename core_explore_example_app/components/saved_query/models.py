@@ -19,7 +19,7 @@ class SavedQuery(Document):
 
     @staticmethod
     def get_all():
-        """ Get all Saved Query.
+        """Get all Saved Query.
 
         Args:
 

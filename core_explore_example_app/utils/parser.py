@@ -70,7 +70,7 @@ def render_form(request, root_element):
 
 
 def generate_element_absent(request, element_id, xsd_string):
-    """ Generate an element absent from the form
+    """Generate an element absent from the form
 
     Args:
         request:
@@ -88,7 +88,7 @@ def generate_element_absent(request, element_id, xsd_string):
 
 
 def generate_choice_absent(request, element_id, xsd_string):
-    """ Generate a choice branch absent from the form
+    """Generate a choice branch absent from the form
 
     Args:
         request:
@@ -107,7 +107,7 @@ def generate_choice_absent(request, element_id, xsd_string):
 
 # TODO: need to be reworked + similar as code in curate app
 def remove_form_element(request, element_id):
-    """ Remove an element from the form.
+    """Remove an element from the form.
 
     Args:
         request:

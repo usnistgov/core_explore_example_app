@@ -6,7 +6,7 @@ from core_explore_example_app.components.persistent_query_example.models import 
 
 
 def get_by_id(persistent_query_example_id):
-    """ Return the Persistent Query Example with the given id
+    """Return the Persistent Query Example with the given id
 
     Args:
         persistent_query_example_id:

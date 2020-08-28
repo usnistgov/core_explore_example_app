@@ -7,12 +7,10 @@ from core_explore_example_app.components.saved_query.models import SavedQuery
 
 
 class SavedQuerySerializer(DocumentSerializer):
-    """ Saved Query serializer
-    """
+    """Saved Query serializer"""
 
     class Meta(object):
-        """ Meta
-        """
+        """Meta"""
 
         model = SavedQuery
         fields = "__all__"

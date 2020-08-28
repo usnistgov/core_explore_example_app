@@ -9,14 +9,13 @@ from core_parser_app.components.data_structure.models import DataStructure
 
 
 class ExploreDataStructure(DataStructure):
-    """ Explore data structure
-    """
+    """Explore data structure"""
 
     selected_fields_html_tree = fields.StringField(blank=True, default=None)
 
     @staticmethod
     def get_by_user_id_and_template_id(user_id, template_id):
-        """ Return explore data structure given its id and template id
+        """Return explore data structure given its id and template id
 
         Returns:
 
@@ -32,7 +31,7 @@ class ExploreDataStructure(DataStructure):
 
     @staticmethod
     def get_by_id(data_structure_id):
-        """ Return the object with the given id.
+        """Return the object with the given id.
 
         Args:
             data_structure_id:

@@ -4,8 +4,7 @@ from core_parser_app.tools.parser.renderer.checkbox import CheckboxRenderer
 
 
 class CustomCheckboxRenderer(CheckboxRenderer):
-    """Custom Checkbox renderer, makes elements selectable and allows only one occurrence of each element
-    """
+    """Custom Checkbox renderer, makes elements selectable and allows only one occurrence of each element"""
 
     def render_element(self, element):
         return super(CustomCheckboxRenderer, self).render_element(
@@ -29,7 +28,7 @@ class CustomCheckboxRenderer(CheckboxRenderer):
 
 
 def _restrict_occurs(element):
-    """ Restrict the number of occurrences to 1
+    """Restrict the number of occurrences to 1
 
     Args:
         element:
