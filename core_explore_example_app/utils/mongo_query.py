@@ -17,7 +17,11 @@ from core_parser_app.components.data_structure_element import (
     api as data_structure_element_api,
 )
 from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default_prefix
-from xml_utils.xsd_types.xsd_types import get_xsd_numbers, get_xsd_floating_numbers
+from xml_utils.xsd_types.xsd_types import (
+    get_xsd_numbers,
+    get_xsd_floating_numbers,
+    get_xsd_gregorian_types,
+)
 
 
 def build_query_criteria(query, is_not=False):
@@ -99,56 +103,59 @@ def build_string_criteria(path, comparison, value):
     return criteria
 
 
-def build_and_criteria(criteria1, criteria2):
-    """Builds a criteria that is the result of criteria1 and criteria2
+def build_and_criteria(*criteria_list):
+    """Builds a criteria that is the result of and operator for N criteria
 
     Args:
-        criteria1:
-        criteria2:
+        criteria_list:
 
     Returns:
 
     """
     and_criteria = dict()
     and_criteria["$and"] = []
-    and_criteria["$and"].append(criteria1)
-    and_criteria["$and"].append(criteria2)
+
+    for criteria in criteria_list:
+        and_criteria["$and"].append(criteria)
+
     return and_criteria
 
 
-def build_or_criteria(criteria1, criteria2):
-    """Builds a criteria that is the result of criteria1 or criteria2
+def build_or_criteria(*criteria_list):
+    """Builds a criteria that is the result of or operator for N criteria
 
     Args:
-        criteria1:
-        criteria2:
+        criteria_list:
 
     Returns:
 
     """
     or_criteria = dict()
     or_criteria["$or"] = []
-    or_criteria["$or"].append(criteria1)
-    or_criteria["$or"].append(criteria2)
+
+    for criteria in criteria_list:
+        or_criteria["$or"].append(criteria)
+
     return or_criteria
 
 
-def build_wildcard_elem_match_criteria(criteria1, criteria2):
+def build_wildcard_elem_match_criteria(*criteria_list):
     # FIXME: Wildcard method should be move to the example type app
     # FIXME: Mongo_query could be an util class and be inherited as needed
-    """Builds a criteria that is the result of criteria1 elemMatch criteria2
+    """Builds a criteria that is the result of N criteria elemMatch
 
     Args:
-        criteria1:
-        criteria2:
+        criteria_list:
 
     Returns:
 
     """
     elem_match_criteria = dict()
     elem_match_criteria["$elemMatch"] = {}
-    elem_match_criteria["$elemMatch"].update(criteria1)
-    elem_match_criteria["$elemMatch"].update(criteria2)
+
+    for criteria in criteria_list:
+        elem_match_criteria["$elemMatch"].update(criteria)
+
     return {"list_content": elem_match_criteria}
 
 
@@ -192,29 +199,50 @@ def build_criteria(
     Returns:
 
     """
+    element_query = []
+    attribute_query = []
     # build the query: value can be found at element:value or at element.#text:value
     # second case appends when the element has attributes or namespace information
     if element_type in get_xsd_numbers(default_prefix):
-        element_query = build_int_criteria(element_path, comparison, value)
-        attribute_query = build_int_criteria(
-            "{}.#text".format(element_path), comparison, value
+        element_query.append(build_int_criteria(element_path, comparison, value))
+        attribute_query.append(
+            build_int_criteria("{}.#text".format(element_path), comparison, value)
         )
     elif element_type in get_xsd_floating_numbers(default_prefix):
-        element_query = build_float_criteria(element_path, comparison, value)
-        attribute_query = build_float_criteria(
-            "{}.#text".format(element_path), comparison, value
+        element_query.append(build_float_criteria(element_path, comparison, value))
+        attribute_query.append(
+            build_float_criteria("{}.#text".format(element_path), comparison, value)
         )
+    elif element_type in get_xsd_gregorian_types(default_prefix):
+        # before creating the int query check if the value type is int
+        try:
+            int_value = int(value)
+            # if the format is number perform a strict match
+            attribute_query.append(
+                build_int_criteria("{}.#text".format(element_path), "=", int_value)
+            )
+            element_query.append(build_int_criteria(element_path, "=", int_value))
+        except Exception:
+            pass
+
+        # string query
+        element_query.append(build_string_criteria(element_path, comparison, value))
+        attribute_query.append(
+            build_string_criteria("{}.#text".format(element_path), comparison, value)
+        )
+
     else:
-        element_query = build_string_criteria(element_path, comparison, value)
-        attribute_query = build_string_criteria(
-            "{}.#text".format(element_path), comparison, value
+        element_query.append(build_string_criteria(element_path, comparison, value))
+        attribute_query.append(
+            build_string_criteria("{}.#text".format(element_path), comparison, value)
         )
 
     if use_wildcard:
-        element_query = build_wildcard_criteria(element_query)
-        attribute_query = build_wildcard_criteria(attribute_query)
+        element_query.append(build_wildcard_criteria(element_query))
+        attribute_query.append(build_wildcard_criteria(attribute_query))
 
-    criteria = build_or_criteria(element_query, attribute_query)
+    # add a $or operator
+    criteria = build_or_criteria(*(element_query + attribute_query))
 
     if is_not:
         return invert_query(criteria)

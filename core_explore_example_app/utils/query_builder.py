@@ -5,7 +5,7 @@ from os.path import join
 from django.template import loader
 
 from core_explore_example_app.utils.xml import get_enumerations
-from xml_utils.xsd_types.xsd_types import get_xsd_numbers
+from xml_utils.xsd_types.xsd_types import get_xsd_numbers, get_xsd_gregorian_types
 
 
 class BranchInfo(object):
@@ -208,6 +208,22 @@ def render_value_input():
     )
 
 
+def render_gregorian_strict_match():
+    """Return an input to type a value
+
+    Returns:
+
+    """
+    return _render_template(
+        join(
+            "core_explore_example_app",
+            "user",
+            "query_builder",
+            "gregorian_strict_match.html",
+        )
+    )
+
+
 def render_string_select():
     """Return an input to type a value
 
@@ -371,6 +387,9 @@ def get_user_inputs(element_type, data_structure_element, default_prefix):
             # numeric
             if element_type in get_xsd_numbers(default_prefix):
                 user_inputs = render_numeric_select() + render_value_input()
+            # gregorian date
+            elif element_type in get_xsd_gregorian_types(default_prefix):
+                user_inputs = render_gregorian_strict_match() + render_value_input()
             # string
             else:
                 user_inputs = render_string_select() + render_value_input()
