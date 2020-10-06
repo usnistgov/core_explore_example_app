@@ -262,7 +262,7 @@ class BuildQueryView(View):
                 # if not a new form and a query form is present in session
                 if "savedQueryFormExplore" in request.session:
                     saved_query_form = request.session["savedQueryFormExplore"]
-                query = query_api.get_by_id(query_id)
+                query = query_api.get_by_id(query_id, request.user)
 
             # Get saved queries of a user
             if "_auth_user_id" in request.session:
@@ -336,7 +336,7 @@ class BuildQueryView(View):
         # create query
         query = create_default_query(request, template_ids)
         # then upsert
-        return query_api.upsert(query)
+        return query_api.upsert(query, request.user)
 
     @staticmethod
     def _get_js():
@@ -407,7 +407,7 @@ class ResultQueryView(ResultsView):
         """
 
         # get query
-        query = query_api.get_by_id(query_id)
+        query = query_api.get_by_id(query_id, request.user)
 
         context = {
             "template_id": template_id,
@@ -421,7 +421,7 @@ class ResultQueryView(ResultsView):
         }
 
         if "core_exporters_app" in INSTALLED_APPS:
-            query = query_api.get_by_id(query_id)
+            query = query_api.get_by_id(query_id, request.user)
 
             context["exporter_app"] = True
             context["templates_list"] = json.dumps(

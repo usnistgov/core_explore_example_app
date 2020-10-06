@@ -531,7 +531,7 @@ class GetQueryView(View):
                 request.session["savedQueryFormExplore"] = query_form
 
             errors = []
-            query_object = query_api.get_by_id(query_id)
+            query_object = query_api.get_by_id(query_id, request.user)
             # set the data-sources sorting value according to the POST request field
             for data_sources_index in range(len(query_object.data_sources)):
                 # updating only the existing data-sources (the new data-source already got
@@ -552,7 +552,7 @@ class GetQueryView(View):
                     _render_errors(errors), content_type="application/javascript"
                 )
 
-            query_api.upsert(query_object)
+            query_api.upsert(query_object, request.user)
 
             return HttpResponse(json.dumps({}), content_type="application/javascript")
         except exceptions.ModelError:
