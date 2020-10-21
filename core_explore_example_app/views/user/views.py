@@ -471,6 +471,18 @@ class ResultQueryView(ResultsView):
 
 
 class ResultQueryExampleRedirectView(ResultQueryRedirectView):
+    @method_decorator(
+        decorators.permission_required(
+            content_type=rights.explore_example_content_type,
+            permission=rights.explore_example_access,
+            login_url=reverse_lazy("core_main_app_login"),
+        )
+    )
+    def get(self, request, *args, **kwargs):
+        return super(ResultQueryExampleRedirectView, self).get(
+            self, request, *args, **kwargs
+        )
+
     @staticmethod
     def _get_persistent_query(persistent_query_id):
         return persistent_query_example_api.get_by_id(persistent_query_id)
