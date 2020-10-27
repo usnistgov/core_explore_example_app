@@ -420,35 +420,6 @@ def check_query_form(form_values, template_id, request=None):
     return errors
 
 
-def fields_to_query_custom_dot_notation(
-    form_values,
-    template_id,
-    get_dot_notation_to_element_func,
-    use_wildcard=False,
-    request=None,
-):
-    """Takes values from the html tree and creates a query from them.
-    Can configure the get_dot_notation_to_element function to use.
-
-    Args:
-        form_values:
-        template_id:
-        use_wildcard:
-        get_dot_notation_to_element_func:
-        request:
-
-    Returns:
-
-    """
-    return _fields_to_query(
-        form_values,
-        template_id,
-        get_dot_notation_to_element_func,
-        use_wildcard,
-        request=request,
-    )
-
-
 def fields_to_query(form_values, template_id, use_wildcard=False, request=None):
     """Takes values from the html tree and creates a query from them
 
@@ -457,34 +428,6 @@ def fields_to_query(form_values, template_id, use_wildcard=False, request=None):
         template_id:
         use_wildcard:
         request:
-    Returns:
-
-    """
-    return _fields_to_query(
-        form_values,
-        template_id,
-        get_dot_notation_to_element,
-        use_wildcard,
-        request=request,
-    )
-
-
-def _fields_to_query(
-    form_values,
-    template_id,
-    get_dot_notation_to_element_func,
-    use_wildcard,
-    request=None,
-):
-    """Takes values from the html tree and creates a query from them
-
-    Args:
-        form_values:
-        template_id:
-        use_wildcard:
-        get_dot_notation_to_element_func:
-        request:
-
     Returns:
 
     """
@@ -516,9 +459,7 @@ def _fields_to_query(
             criteria = build_query_criteria(json.loads(saved_query.query), is_not)
         else:
             data_structure_element = data_structure_element_api.get_by_id(element_id)
-            element = get_dot_notation_to_element_func(
-                data_structure_element, namespaces
-            )
+            element = get_dot_notation_to_element(data_structure_element, namespaces)
             criteria = build_criteria(
                 element,
                 comparison,
