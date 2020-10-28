@@ -27,3 +27,20 @@ class PersistentQueryExample(AbstractPersistentQuery):
             raise exceptions.DoesNotExist(str(e))
         except Exception as e:
             raise exceptions.ModelError(str(e))
+
+    @staticmethod
+    def get_by_name(query_name):
+        """Get a persistent query example
+
+        Args:
+            query_name:
+
+        Returns:
+
+        """
+        try:
+            return PersistentQueryExample.objects().get(name=query_name)
+        except mongoengine_errors.DoesNotExist as e:
+            raise exceptions.DoesNotExist(str(e))
+        except Exception as e:
+            raise exceptions.ModelError(str(e))
