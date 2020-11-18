@@ -384,17 +384,18 @@ def get_parent_path(data_structure_element_id, namespaces):
     return parent_path
 
 
-def check_query_form(form_values, template_id):
+def check_query_form(form_values, template_id, request=None):
     """Checks that values entered by the user match each element type
 
     Args:
         form_values:
         template_id:
+        request:
 
     Returns:
 
     """
-    template = template_api.get(template_id)
+    template = template_api.get(template_id, request=request)
     namespaces = get_namespaces(template.content)
     default_prefix = get_default_prefix(namespaces)
 
@@ -420,7 +421,11 @@ def check_query_form(form_values, template_id):
 
 
 def fields_to_query_custom_dot_notation(
-    form_values, template_id, get_dot_notation_to_element_func, use_wildcard=False
+    form_values,
+    template_id,
+    get_dot_notation_to_element_func,
+    use_wildcard=False,
+    request=None,
 ):
     """Takes values from the html tree and creates a query from them.
     Can configure the get_dot_notation_to_element function to use.
@@ -430,32 +435,46 @@ def fields_to_query_custom_dot_notation(
         template_id:
         use_wildcard:
         get_dot_notation_to_element_func:
+        request:
 
     Returns:
 
     """
     return _fields_to_query(
-        form_values, template_id, get_dot_notation_to_element_func, use_wildcard
+        form_values,
+        template_id,
+        get_dot_notation_to_element_func,
+        use_wildcard,
+        request=request,
     )
 
 
-def fields_to_query(form_values, template_id, use_wildcard=False):
+def fields_to_query(form_values, template_id, use_wildcard=False, request=None):
     """Takes values from the html tree and creates a query from them
 
     Args:
         form_values:
         template_id:
         use_wildcard:
+        request:
     Returns:
 
     """
     return _fields_to_query(
-        form_values, template_id, get_dot_notation_to_element, use_wildcard
+        form_values,
+        template_id,
+        get_dot_notation_to_element,
+        use_wildcard,
+        request=request,
     )
 
 
 def _fields_to_query(
-    form_values, template_id, get_dot_notation_to_element_func, use_wildcard
+    form_values,
+    template_id,
+    get_dot_notation_to_element_func,
+    use_wildcard,
+    request=None,
 ):
     """Takes values from the html tree and creates a query from them
 
@@ -464,12 +483,13 @@ def _fields_to_query(
         template_id:
         use_wildcard:
         get_dot_notation_to_element_func:
+        request:
 
     Returns:
 
     """
     # get template
-    template = template_api.get(template_id)
+    template = template_api.get(template_id, request=request)
     # get namespaces
     namespaces = get_namespaces(template.content)
     # get default prefix

@@ -13,7 +13,7 @@ from core_parser_app.tools.parser.parser import XSDParser, remove_child_element
 # TODO: the form renders 'add' buttons based on maxOccurs attributes, but we don't need more than one of each element
 
 
-def get_parser():
+def get_parser(request=None):
     """Returns parser
 
     Returns:
@@ -28,23 +28,25 @@ def get_parser():
         implicit_extension_base=False,
         download_dependencies=PARSER_DOWNLOAD_DEPENDENCIES,
         store_type=True,
+        request=request,
     )
 
 
 # FIXME: refactor common code with core curate app (note: no xml_string here)
-def generate_form(xsd_string):
+def generate_form(xsd_string, request=None):
     """Generates the form using the parser, returns the root element
 
     Args:
         xsd_string:
+        request:
 
     Returns:
 
     """
     # build parser
-    parser = get_parser()
+    parser = get_parser(request=request)
     # generate form
-    root_element_id = parser.generate_form(xsd_string)
+    root_element_id = parser.generate_form(xsd_string, request=request)
     # get the root element
     root_element = data_structure_element_api.get_by_id(root_element_id)
 
@@ -80,7 +82,7 @@ def generate_element_absent(request, element_id, xsd_string):
     Returns:
 
     """
-    xsd_parser = get_parser()
+    xsd_parser = get_parser(request=request)
     html_form = xsd_parser.generate_element_absent(
         request, element_id, xsd_string, renderer_class=CustomCheckboxRenderer
     )
@@ -98,7 +100,7 @@ def generate_choice_absent(request, element_id, xsd_string):
     Returns:
 
     """
-    xsd_parser = get_parser()
+    xsd_parser = get_parser(request=request)
     html_form = xsd_parser.generate_choice_absent(
         request, element_id, xsd_string, renderer_class=CustomCheckboxRenderer
     )

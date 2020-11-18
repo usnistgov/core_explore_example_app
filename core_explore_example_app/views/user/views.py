@@ -54,8 +54,8 @@ class IndexView(View):
         """
         assets = {"css": ["core_explore_example_app/user/css/style.css"]}
 
-        global_active_template_list = self.get_global_active_list()
-        user_active_template_list = self.get_user_active_list(request.user.id)
+        global_active_template_list = self.get_global_active_list(request=request)
+        user_active_template_list = self.get_user_active_list(request=request)
 
         context = {
             "global_objects": global_active_template_list,
@@ -67,28 +67,29 @@ class IndexView(View):
 
         return render(request, self.get_redirect, assets=assets, context=context)
 
-    def get_global_active_list(self):
+    def get_global_active_list(self, request):
         """Get all global version managers.
 
         Args:
+            request:
 
         Returns:
             List of all global version managers
 
         """
-        return self.api.get_active_global_version_manager()
+        return self.api.get_active_global_version_manager(request=request)
 
-    def get_user_active_list(self, user_id):
+    def get_user_active_list(self, request):
         """Get all active version managers with given user id.
 
         Args:
-            user_id:
+            request:
 
         Returns:
             List of all global version managers with given user.
 
         """
-        return self.api.get_active_version_manager_by_user_id(user_id)
+        return self.api.get_active_version_manager_by_user_id(request=request)
 
 
 class SelectFieldsView(View):
@@ -152,11 +153,11 @@ class SelectFieldsView(View):
                 ],
             }
 
-            template = template_api.get(template_id)
+            template = template_api.get(template_id, request=request)
             # get data structure
             data_structure = (
                 explore_data_structure_api.create_and_get_explore_data_structure(
-                    template, request.user.id
+                    template, request
                 )
             )
             root_element = data_structure.data_structure_element_root
@@ -224,7 +225,7 @@ class BuildQueryView(View):
 
         """
         try:
-            template = template_api.get(template_id)
+            template = template_api.get(template_id, request=request)
             if template is None:
                 return render(
                     request,
@@ -327,11 +328,11 @@ class BuildQueryView(View):
         """
         # from the template, we get the version manager
         template_version_manager = template_version_manager_api.get_by_version_id(
-            str(template.id)
+            str(template.id), request=request
         )
         # from the version manager, we get all the version
-        template_ids = template_api.get_all_by_id_list(
-            template_version_manager.versions
+        template_ids = template_api.get_all_accessible_by_id_list(
+            template_version_manager.versions, request=request
         )
         # create query
         query = create_default_query(request, template_ids)

@@ -32,12 +32,12 @@ def upsert(explore_data_structure):
     return explore_data_structure.save()
 
 
-def create_and_get_explore_data_structure(template, user_id):
+def create_and_get_explore_data_structure(template, request):
     """Get Data structure from template and user, generate them if no exist
 
     Args:
         template:
-        user_id:
+        request:
 
     Returns: Explore Data structure
 
@@ -45,14 +45,14 @@ def create_and_get_explore_data_structure(template, user_id):
     try:
         # get data structure
         explore_data_structure = get_by_user_id_and_template_id(
-            user_id=str(user_id), template_id=template.id
+            user_id=str(request.user.id), template_id=template.id
         )
     except:
         # generate the root element
-        root_element = generate_form(template.content)
+        root_element = generate_form(template.content, request=request)
         # create explore data structure
         explore_data_structure = ExploreDataStructure(
-            user=str(user_id),
+            user=str(request.user.id),
             template=template,
             name=template.filename,
             data_structure_element_root=root_element,

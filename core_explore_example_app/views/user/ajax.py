@@ -73,9 +73,10 @@ def generate_element(request, explore_data_structure_id):
         explore_data_structure = explore_data_structure_api.get_by_id(
             explore_data_structure_id
         )
-        html_form = generate_element_absent(
-            request, element_id, explore_data_structure.template.content
+        template = template_api.get(
+            str(explore_data_structure.template.id), request=request
         )
+        html_form = generate_element_absent(request, element_id, template.content)
     except Exception as e:
         return HttpResponseBadRequest()
 
@@ -102,9 +103,10 @@ def generate_choice(request, explore_data_structure_id):
         explore_data_structure = explore_data_structure_api.get_by_id(
             explore_data_structure_id
         )
-        html_form = generate_choice_absent(
-            request, element_id, explore_data_structure.template.content
+        template = template_api.get(
+            str(explore_data_structure.template.id), request=request
         )
+        html_form = generate_choice_absent(request, element_id, template.content)
     except Exception as e:
         return HttpResponseBadRequest()
 
@@ -230,7 +232,7 @@ def get_sub_elements_query_builder(request):
     list_leaves_id = leaves_id.split(" ")
 
     # get template
-    template = template_api.get(template_id)
+    template = template_api.get(template_id, request=request)
 
     # get template namespaces
     namespaces = get_namespaces(template.content)
@@ -286,7 +288,7 @@ def insert_sub_elements_query(request):
     criteria_id = request.POST["criteriaID"]
 
     # get template
-    template = template_api.get(template_id)
+    template = template_api.get(template_id, request=request)
 
     # get template namespaces
     namespaces = get_namespaces(template.content)
@@ -295,7 +297,7 @@ def insert_sub_elements_query(request):
 
     # keep only selected fields
     form_values = [field for field in form_values if field["selected"] is True]
-    errors = check_query_form(form_values, template_id)
+    errors = check_query_form(form_values, template_id, request=request)
 
     if len(errors) == 0:
         query = sub_elements_to_query(form_values, namespaces, default_prefix)
@@ -344,7 +346,7 @@ def update_user_input(request):
     # get schema element
     data_structure_element = data_structure_element_api.get_by_id(from_element_id)
     # get template
-    template = template_api.get(template_id)
+    template = template_api.get(template_id, request=request)
 
     # convert xml path to mongo dot notation
     namespaces = get_namespaces(template.content)
@@ -544,8 +546,12 @@ class GetQueryView(View):
                 errors.append("Please select at least 1 data source.")
 
             if len(errors) == 0 and form_values:
-                errors.append(check_query_form(form_values, template_id))
-                query_content = self.fields_to_query_func(form_values, template_id)
+                errors.append(
+                    check_query_form(form_values, template_id, request=request)
+                )
+                query_content = self.fields_to_query_func(
+                    form_values, template_id, request=request
+                )
                 query_object.content = json.dumps(query_content)
             elif len(errors) > 0:
                 return HttpResponseBadRequest(
@@ -593,16 +599,18 @@ class SaveQueryView(View):
             return HttpResponseBadRequest(error, content_type="application/javascript")
 
         # Check that the query is valid
-        errors = check_query_form(form_values, template_id)
+        errors = check_query_form(form_values, template_id, request=request)
         if len(errors) == 0:
             try:
-                query = self.fields_to_query_func(form_values, template_id)
+                query = self.fields_to_query_func(
+                    form_values, template_id, request=request
+                )
                 displayed_query = fields_to_pretty_query(form_values)
 
                 # save the query in the data base
                 saved_query = SavedQuery(
                     user_id=str(request.user.id),
-                    template=template_api.get(template_id),
+                    template=template_api.get(template_id, request=request),
                     query=json.dumps(query),
                     displayed_query=displayed_query,
                 )
