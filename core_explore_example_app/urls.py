@@ -108,7 +108,7 @@ urlpatterns = [
         name="core_explore_example_get_persistent_query_url",
     ),
     re_path(
-        r"^results-redirect/(?P<persistent_query_id>\w+)",
+        r"^results-redirect",
         user_views.ResultQueryExampleRedirectView.as_view(),
         name="core_explore_example_results_redirect",
     ),

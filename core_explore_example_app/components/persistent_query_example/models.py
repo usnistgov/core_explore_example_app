@@ -44,3 +44,25 @@ class PersistentQueryExample(AbstractPersistentQuery):
             raise exceptions.DoesNotExist(str(e))
         except Exception as e:
             raise exceptions.ModelError(str(e))
+
+    @staticmethod
+    def get_all():
+        """Return all persistent query example.
+
+        Returns:
+
+        """
+        return PersistentQueryExample.objects.all()
+
+    @staticmethod
+    def get_all_by_user(user_id):
+        """Return all persistent query example by user.
+
+
+        Args:
+            user_id:
+
+        Returns:
+
+        """
+        return PersistentQueryExample.objects(user_id=str(user_id))
