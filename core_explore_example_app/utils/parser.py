@@ -10,7 +10,8 @@ from core_parser_app.components.data_structure_element import (
 from core_parser_app.tools.parser.parser import XSDParser, remove_child_element
 
 
-# TODO: the form renders 'add' buttons based on maxOccurs attributes, but we don't need more than one of each element
+# TODO: the form renders 'add' buttons based on maxOccurs attributes, but we
+#  don't need more than one of each element
 
 
 def get_parser(request=None):
@@ -84,7 +85,7 @@ def generate_element_absent(request, element_id, xsd_string):
     """
     xsd_parser = get_parser(request=request)
     html_form = xsd_parser.generate_element_absent(
-        request, element_id, xsd_string, renderer_class=CustomCheckboxRenderer
+        element_id, xsd_string, renderer_class=CustomCheckboxRenderer
     )
     return html_form
 
@@ -102,7 +103,7 @@ def generate_choice_absent(request, element_id, xsd_string):
     """
     xsd_parser = get_parser(request=request)
     html_form = xsd_parser.generate_choice_absent(
-        request, element_id, xsd_string, renderer_class=CustomCheckboxRenderer
+        element_id, xsd_string, renderer_class=CustomCheckboxRenderer
     )
     return html_form
 
@@ -118,7 +119,7 @@ def remove_form_element(request, element_id):
     Returns:
 
     """
-    element_list = data_structure_element_api.get_all_by_child_id(element_id)
+    element_list = data_structure_element_api.get_all_by_child_id(element_id, request)
 
     if len(element_list) == 0:
         raise ValueError("No Data Structure Element found")
@@ -127,13 +128,15 @@ def remove_form_element(request, element_id):
 
     # Removing the element from the data structure
     data_structure_element = element_list[0]
-    data_structure_element_to_pull = data_structure_element_api.get_by_id(element_id)
+    data_structure_element_to_pull = data_structure_element_api.get_by_id(
+        element_id, request
+    )
 
     # number of children after deletion
     children_number = len(data_structure_element.children) - 1
 
     data_structure_element = remove_child_element(
-        data_structure_element, data_structure_element_to_pull
+        data_structure_element, data_structure_element_to_pull, request
     )
 
     code = 0

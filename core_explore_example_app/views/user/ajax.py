@@ -1,10 +1,12 @@
 """Explore Example app Ajax views
 """
 import json
+import logging
 
 from django.http import HttpResponse
 from django.http.response import HttpResponseBadRequest
 from django.utils.decorators import method_decorator
+from django.utils.html import escape
 from django.views.generic import View
 
 import core_explore_example_app.permissions.rights as rights
@@ -52,6 +54,8 @@ from core_parser_app.components.data_structure_element import (
 from xml_utils.html_tree import parser as html_tree_parser
 from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default_prefix
 
+logger = logging.getLogger(__name__)
+
 
 @decorators.permission_required(
     content_type=rights.explore_example_content_type,
@@ -78,7 +82,10 @@ def generate_element(request, explore_data_structure_id):
         )
         html_form = generate_element_absent(request, element_id, template.content)
     except Exception as e:
-        return HttpResponseBadRequest()
+        return HttpResponseBadRequest(
+            "An unexpected error occurred: %s" % escape(str(e)),
+            content_type="application/javascript",
+        )
 
     return HttpResponse(html_form)
 
@@ -108,7 +115,10 @@ def generate_choice(request, explore_data_structure_id):
         )
         html_form = generate_choice_absent(request, element_id, template.content)
     except Exception as e:
-        return HttpResponseBadRequest()
+        return HttpResponseBadRequest(
+            "An unexpected error occurred: %s" % escape(str(e)),
+            content_type="application/javascript",
+        )
 
     return HttpResponse(html_form)
 
@@ -178,6 +188,7 @@ def save_fields(request):
 
         return HttpResponse(json.dumps({}), content_type="application/javascript")
     except Exception as e:
+        logger.error(escape(str(e)))
         return HttpResponseBadRequest("An error occurred while saving the form.")
 
 
@@ -199,7 +210,7 @@ def select_element(request):
     element_id = request.POST["elementID"]
 
     # get schema element
-    schema_element = data_structure_element_api.get_by_id(element_id)
+    schema_element = data_structure_element_api.get_by_id(element_id, request)
 
     response_dict = {
         "elementName": schema_element.options["label"],
@@ -240,11 +251,11 @@ def get_sub_elements_query_builder(request):
     default_prefix = get_default_prefix(namespaces)
 
     # get the parent name using the first schema element of the list
-    parent_name = get_parent_name(list_leaves_id[0], namespaces)
+    parent_name = get_parent_name(list_leaves_id[0], namespaces, request)
 
     form_fields = []
     for leaf_id in list_leaves_id:
-        data_structure_element = data_structure_element_api.get_by_id(leaf_id)
+        data_structure_element = data_structure_element_api.get_by_id(leaf_id, request)
         element_type = data_structure_element.options["type"]
         element_name = data_structure_element.options["name"]
 
@@ -300,8 +311,8 @@ def insert_sub_elements_query(request):
     errors = check_query_form(form_values, template_id, request=request)
 
     if len(errors) == 0:
-        query = sub_elements_to_query(form_values, namespaces, default_prefix)
-        displayed_query = sub_elements_to_pretty_query(form_values, namespaces)
+        query = sub_elements_to_query(form_values, namespaces, default_prefix, request)
+        displayed_query = sub_elements_to_pretty_query(form_values, namespaces, request)
         ui_id = "ui" + criteria_id[4:]
         temporary_query = SavedQuery(
             user_id=ExploreExampleAppConfig.name,
@@ -332,7 +343,8 @@ def insert_sub_elements_query(request):
     raise_exception=True,
 )
 def update_user_input(request):
-    """Updates the user input of the query builder according to the type of the selected element
+    """Updates the user input of the query builder according to the type of the
+    selected element
 
     Args:
         request:
@@ -344,7 +356,9 @@ def update_user_input(request):
     template_id = request.POST["templateID"]
 
     # get schema element
-    data_structure_element = data_structure_element_api.get_by_id(from_element_id)
+    data_structure_element = data_structure_element_api.get_by_id(
+        from_element_id, request
+    )
     # get template
     template = template_api.get(template_id, request=request)
 
@@ -527,7 +541,8 @@ class GetQueryView(View):
             order_by_field = request.POST["orderByField"].strip()
             order_by_field_array = order_by_field.split(";")
 
-            # save current query builder in session to restore it when coming back to the page
+            # save current query builder in session to restore it when coming
+            # back to the page
             if "queryForm" in request.POST:
                 query_form = request.POST["queryForm"]
                 request.session["savedQueryFormExplore"] = query_form
@@ -565,9 +580,10 @@ class GetQueryView(View):
             return HttpResponseBadRequest(
                 "Invalid input.", content_type="application/javascript"
             )
-        except Exception:
+        except Exception as e:
             return HttpResponseBadRequest(
-                "An unexpected error occurred.", content_type="application/javascript"
+                "An unexpected error occurred: %s" % escape(str(e)),
+                content_type="application/javascript",
             )
 
 

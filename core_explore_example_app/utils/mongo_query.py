@@ -2,6 +2,7 @@
 """
 import json
 import re
+from typing import List, Any
 
 from core_explore_example_app.commons.exceptions import MongoQueryException
 from core_explore_example_app.components.saved_query import api as saved_query_api
@@ -199,8 +200,8 @@ def build_criteria(
     Returns:
 
     """
-    element_query = []
-    attribute_query = []
+    element_query: List[Any] = []
+    attribute_query: List[Any] = []
     # build the query: value can be found at element:value or at element.#text:value
     # second case appends when the element has attributes or namespace information
     if element_type in get_xsd_numbers(default_prefix):
@@ -336,19 +337,20 @@ def get_dot_notation_to_element(data_structure_element, namespaces):
     return dot_notation
 
 
-def get_parent_name(data_structure_element_id, namespaces):
+def get_parent_name(data_structure_element_id, namespaces, request):
     """
 
     Args:
         data_structure_element_id:
         namespaces:
+        request:
 
     Returns:
 
     """
     # get the data structure element
     data_structure_element = data_structure_element_api.get_by_id(
-        data_structure_element_id
+        data_structure_element_id, request
     )
     # convert xml path to mongo dot notation
     data_structure_element_dot_notation = get_dot_notation_to_element(
@@ -360,19 +362,20 @@ def get_parent_name(data_structure_element_id, namespaces):
     return parent_name
 
 
-def get_parent_path(data_structure_element_id, namespaces):
+def get_parent_path(data_structure_element_id, namespaces, request):
     """
 
     Args:
         data_structure_element_id:
         namespaces:
+        request:
 
     Returns:
 
     """
     # get the data structure element
     data_structure_element = data_structure_element_api.get_by_id(
-        data_structure_element_id
+        data_structure_element_id, request
     )
     # convert xml path to mongo dot notation
     data_structure_element_dot_notation = get_dot_notation_to_element(
@@ -458,7 +461,9 @@ def fields_to_query(form_values, template_id, use_wildcard=False, request=None):
                 raise MongoQueryException("The saved query does not exist anymore.")
             criteria = build_query_criteria(json.loads(saved_query.query), is_not)
         else:
-            data_structure_element = data_structure_element_api.get_by_id(element_id)
+            data_structure_element = data_structure_element_api.get_by_id(
+                element_id, request
+            )
             element = get_dot_notation_to_element(data_structure_element, namespaces)
             criteria = build_criteria(
                 element,
@@ -483,13 +488,14 @@ def fields_to_query(form_values, template_id, use_wildcard=False, request=None):
     return query
 
 
-def sub_elements_to_query(form_values, namespaces, default_prefix):
+def sub_elements_to_query(form_values, namespaces, default_prefix, request):
     """Transforms HTML fields in a query on sub-elements
 
     Args:
         form_values:
         namespaces:
         default_prefix:
+        request:
 
     Returns:
 
@@ -497,7 +503,7 @@ def sub_elements_to_query(form_values, namespaces, default_prefix):
     elem_match = []
 
     # get the parent path using the first element of the list
-    parent_path = get_parent_path(form_values[0]["id"], namespaces)
+    parent_path = get_parent_path(form_values[0]["id"], namespaces, request)
 
     for i in range(0, len(form_values)):
         field = form_values[i]
@@ -508,7 +514,9 @@ def sub_elements_to_query(form_values, namespaces, default_prefix):
             else:
                 is_not = False
 
-            data_structure_element = data_structure_element_api.get_by_id(field["id"])
+            data_structure_element = data_structure_element_api.get_by_id(
+                field["id"], request
+            )
             element_type = data_structure_element.options["type"]
             element_name = data_structure_element.options["name"]
             value = get_element_value(field)

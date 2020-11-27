@@ -6,9 +6,7 @@ from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 
-import core_explore_example_app.components.persistent_query_example.api as persistent_query_example_api
 import core_explore_example_app.permissions.rights as rights
-import core_main_app.components.template_version_manager.api as template_version_manager_api
 import core_main_app.utils.decorators as decorators
 from core_explore_common_app.components.query import api as query_api
 from core_explore_common_app.settings import DEFAULT_DATE_TOGGLE_VALUE
@@ -20,11 +18,17 @@ from core_explore_common_app.views.user.views import (
 from core_explore_example_app.components.explore_data_structure import (
     api as explore_data_structure_api,
 )
+from core_explore_example_app.components.persistent_query_example import (
+    api as persistent_query_example_api,
+)
 from core_explore_example_app.components.saved_query import api as saved_query_api
 from core_explore_example_app.settings import INSTALLED_APPS
 from core_explore_example_app.utils.parser import render_form
 from core_main_app.commons import exceptions as exceptions
 from core_main_app.components.template import api as template_api
+from core_main_app.components.template_version_manager import (
+    api as template_version_manager_api,
+)
 from core_main_app.settings import DATA_SORTING_FIELDS
 from core_main_app.utils.rendering import render
 

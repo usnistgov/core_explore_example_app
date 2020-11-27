@@ -141,18 +141,19 @@ def fields_to_pretty_query(form_values):
     return query
 
 
-def sub_elements_to_pretty_query(form_values, namespaces):
+def sub_elements_to_pretty_query(form_values, namespaces, request):
     """Transforms HTML fields in a user readable query
 
     Args:
         form_values:
         namespaces:
+        request:
 
     Returns:
 
     """
     # get the parent path using the first element of the list
-    parent_name = get_parent_name(form_values[0]["id"], namespaces)
+    parent_name = get_parent_name(form_values[0]["id"], namespaces, request)
 
     list_criteria = []
     for i in range(0, len(form_values)):
@@ -164,7 +165,9 @@ def sub_elements_to_pretty_query(form_values, namespaces):
             else:
                 is_not = False
 
-            data_structure_element = data_structure_element_api.get_by_id(field["id"])
+            data_structure_element = data_structure_element_api.get_by_id(
+                field["id"], request
+            )
             element_name = data_structure_element.options["name"]
             value = get_element_value(field)
             comparison = get_element_comparison(field)
