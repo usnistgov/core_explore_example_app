@@ -49,7 +49,9 @@ def generate_form(xsd_string, request=None):
     # generate form
     root_element_id = parser.generate_form(xsd_string, request=request)
     # get the root element
-    root_element = data_structure_element_api.get_by_id(root_element_id)
+    root_element = data_structure_element_api.get_by_id(
+        root_element_id, request=request
+    )
 
     return root_element
 
