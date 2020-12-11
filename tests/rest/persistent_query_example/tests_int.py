@@ -157,12 +157,7 @@ class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
         )
 
         # Assert
-        if CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT:
-            self.assertEqual(
-                response.data["name"], self.fixture.persistent_query_example_1.name
-            )
-        else:
-            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_wrong_id_returns_http_404(self):
         # Arrange
@@ -328,12 +323,7 @@ class TestPersistentQueryExampleByName(MongoIntegrationBaseTestCase):
         )
 
         # Assert
-        if CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT:
-            self.assertEqual(
-                response.data["name"], self.fixture.persistent_query_example_1.name
-            )
-        else:
-            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_wrong_name_returns_http_404(self):
         # Arrange

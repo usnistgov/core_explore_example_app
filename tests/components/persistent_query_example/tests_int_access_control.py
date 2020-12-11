@@ -254,6 +254,64 @@ class TestPersistentQueryExampleUpdate(MongoIntegrationBaseTestCase):
             )
 
 
+class TestPersistentQueryExampleCreate(MongoIntegrationBaseTestCase):
+    fixture = fixture_persistent_query_example
+
+    def test_create_others_persistent_query_example_as_superuser_creates_persistent_query_example(
+        self,
+    ):
+        # Arrange
+        persistent_query_example = PersistentQueryExample(
+            name="new_persistent_query_example", user_id="0"
+        )
+        mock_user = create_mock_user("0", is_staff=True, is_superuser=True)
+        # Act
+        result = persistent_query_example_api.upsert(
+            persistent_query_example, mock_user
+        )
+        # Assert
+        self.assertTrue(isinstance(result, PersistentQueryExample))
+        self.assertTrue(result.name, "new_persistent_query_example")
+
+    def test_create_persistent_query_example_as_user_creates_persistent_query_example(
+        self,
+    ):
+        # Arrange
+        persistent_query_example = PersistentQueryExample(
+            name="new_persistent_query_example", user_id="1"
+        )
+        mock_user = create_mock_user("1")
+
+        # Act
+        result = persistent_query_example_api.upsert(
+            persistent_query_example, mock_user
+        )
+        # Assert
+        self.assertTrue(isinstance(result, PersistentQueryExample))
+        self.assertTrue(result.name, "new_persistent_query_example")
+
+    def test_create_persistent_query_example_as_anonymous_user(self):
+        # Arrange
+        persistent_query_example = PersistentQueryExample(
+            name="new_persistent_query_example", user_id="None"
+        )
+
+        # Act
+        if CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT:
+            result = persistent_query_example_api.upsert(
+                persistent_query_example, AnonymousUser()
+            )
+            # Assert
+            self.assertTrue(isinstance(result, PersistentQueryExample))
+            self.assertTrue(result.name, "new_persistent_query_example")
+
+        else:
+            with self.assertRaises(AccessControlError):
+                persistent_query_example_api.upsert(
+                    persistent_query_example, AnonymousUser()
+                )
+
+
 class TestPersistentQueryExampleGetAll(MongoIntegrationBaseTestCase):
     fixture = fixture_persistent_query_example
 
@@ -306,9 +364,3 @@ class TestPersistentQueryExampleGetAllByUser(MongoIntegrationBaseTestCase):
 
         # Assert
         self.assertTrue(len(result), 1)
-
-    def test_get_all_as_anonymous_user_raises_error(self):
-
-        # Assert
-        with self.assertRaises(AccessControlError):
-            persistent_query_example_api.get_all_by_user(AnonymousUser())
