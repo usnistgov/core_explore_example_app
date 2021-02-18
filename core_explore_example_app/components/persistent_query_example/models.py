@@ -66,3 +66,12 @@ class PersistentQueryExample(AbstractPersistentQuery):
 
         """
         return PersistentQueryExample.objects(user_id=str(user_id))
+
+    @staticmethod
+    def get_none():
+        """Return None object, used by data.
+
+        Returns:
+
+        """
+        return PersistentQueryExample.objects().none()
