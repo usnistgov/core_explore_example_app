@@ -21,6 +21,9 @@ from core_explore_example_app.components.explore_data_structure import (
 from core_explore_example_app.components.persistent_query_example import (
     api as persistent_query_example_api,
 )
+from core_explore_example_app.components.persistent_query_example.models import (
+    PersistentQueryExample,
+)
 from core_explore_example_app.components.saved_query import api as saved_query_api
 from core_explore_example_app.settings import INSTALLED_APPS
 from core_explore_example_app.utils.parser import render_form
@@ -476,6 +479,10 @@ class ResultQueryView(ResultsView):
 
 
 class ResultQueryExampleRedirectView(ResultQueryRedirectView):
+    model_name = PersistentQueryExample.__name__
+    object_name = "persistent_query_example"
+    redirect_url = "core_explore_example_results"
+
     @method_decorator(
         decorators.permission_required(
             content_type=rights.explore_example_content_type,
@@ -497,9 +504,16 @@ class ResultQueryExampleRedirectView(ResultQueryRedirectView):
         return persistent_query_example_api.get_by_name(persistent_query_name, user)
 
     @staticmethod
+    def get_url_path():
+        return reverse(
+            ResultQueryExampleRedirectView.redirect_url,
+            kwargs={"template_id": "template_id", "query_id": "query_id"},
+        ).split("results")[0]
+
+    @staticmethod
     def _get_reversed_url(query):
         return reverse(
-            "core_explore_example_results",
+            ResultQueryExampleRedirectView.redirect_url,
             kwargs={"template_id": query.templates[0].id, "query_id": query.id},
         )
 
