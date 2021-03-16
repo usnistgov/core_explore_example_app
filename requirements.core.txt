@@ -1,4 +1,4 @@
 core-explore-common-app==1.15.*
 core-main-app==1.15.*
 core-parser-app==1.15.*
-xml-utils==1.12.*
+xml-utils==1.13.*
