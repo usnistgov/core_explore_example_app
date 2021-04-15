@@ -496,7 +496,7 @@ $(document).ready(function() {
     // set on click on elements
     $xsdForm.find("li[select_class=element]").each(function () {
         var $select_id = $(this).attr("select_id");
-        var $add = $("<span select_id='"+ $select_id + "' class='can_click fa fa-arrow-right'/>");
+        var $add = $("<span select_id='"+ $select_id + "' class='can_click fas fa-arrow-right'/>");
         $add.on("click", selectElement);
 		$(this).find("input:first").before($add);
     });
@@ -504,7 +504,7 @@ $(document).ready(function() {
     // set on click on parents
     $xsdForm.find("li[select_class=parent]").each(function () {
         var $select_id = $(this).attr("select_id");
-        var $add = $("<span select_id='"+ $select_id + "' class='can_click fa fa-arrow-right'/>");
+        var $add = $("<span select_id='"+ $select_id + "' class='can_click fas fa-arrow-right'/>");
         $add.on("click", selectParent);
 		$(this).find("ul:first").before($add);
     });

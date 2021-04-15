@@ -17,15 +17,15 @@
         {% endif %}
         <form class="ml-4">
             <button type="button" class="btn btn-danger" onclick="clearCriteria()">
-                <i class="fa fa-eraser"></i> Clear
+                <i class="fas fa-eraser"></i> Clear
             </button>
             {% if user|has_perm:'core_explore_example_app.save_query' %}
             <button type="button" class="btn btn-secondary" onclick="saveQuery()">
-                <i class="fa fa-save"></i> Save Query
+                <i class="fas fa-save"></i> Save Query
             </button>
             {%endif%}
             <button type="button" class="btn btn-primary" onclick="submit_query()">
-                <i class="fa fa-search"></i> Submit Query
+                <i class="fas fa-search"></i> Submit Query
             </button>
         </form>
     </div>
@@ -57,12 +57,12 @@
                         {% if user|has_perm:'core_explore_example_app.delete_query' %}
                         <span class="btn btn-danger delete-query"
                               onclick="deleteQuery('query{{ query.id }}')">
-                            <i class="fa fa-trash"></i>  Delete
+                            <i class="fas fa-trash"></i>  Delete
                         </span>
                         {%endif%}
                         <span class="btn btn-primary add-query"
                               onclick="addSavedQueryToForm('query{{ query.id }}')">
-                            <i class="fa fa-arrow-circle-up"></i> Add to Query
+                            <i class="fas fa-arrow-circle-up"></i> Add to Query
                         </span>
                     </td>
                 </tr>
@@ -76,7 +76,7 @@
     <form>
         {% if user|has_perm:'core_explore_example_app.delete_query' %}
         <button type="button" class="btn btn-danger" onclick="clearQueries()">
-            <i class="fa fa-trash"></i> Delete All
+            <i class="fas fa-trash"></i> Delete All
         </button>
         {%endif%}
     </form>
