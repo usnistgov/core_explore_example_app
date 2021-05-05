@@ -204,15 +204,15 @@ def build_criteria(
     attribute_query: List[Any] = []
     # build the query: value can be found at element:value or at element.#text:value
     # second case appends when the element has attributes or namespace information
-    if element_type in get_xsd_numbers(default_prefix):
-        element_query.append(build_int_criteria(element_path, comparison, value))
-        attribute_query.append(
-            build_int_criteria("{}.#text".format(element_path), comparison, value)
-        )
-    elif element_type in get_xsd_floating_numbers(default_prefix):
+    if element_type in get_xsd_floating_numbers(default_prefix):
         element_query.append(build_float_criteria(element_path, comparison, value))
         attribute_query.append(
             build_float_criteria("{}.#text".format(element_path), comparison, value)
+        )
+    elif element_type in get_xsd_numbers(default_prefix):
+        element_query.append(build_int_criteria(element_path, comparison, value))
+        attribute_query.append(
+            build_int_criteria("{}.#text".format(element_path), comparison, value)
         )
     elif element_type in get_xsd_gregorian_types(default_prefix):
         # before creating the int query check if the value type is int
