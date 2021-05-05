@@ -34,11 +34,12 @@ def get_parser(request=None):
 
 
 # FIXME: refactor common code with core curate app (note: no xml_string here)
-def generate_form(xsd_string, request=None):
+def generate_form(xsd_string, data_structure=None, request=None):
     """Generates the form using the parser, returns the root element
 
     Args:
         xsd_string:
+        data_structure:
         request:
 
     Returns:
@@ -47,7 +48,9 @@ def generate_form(xsd_string, request=None):
     # build parser
     parser = get_parser(request=request)
     # generate form
-    root_element_id = parser.generate_form(xsd_string, request=request)
+    root_element_id = parser.generate_form(
+        xsd_string, data_structure=data_structure, request=request
+    )
     # get the root element
     root_element = data_structure_element_api.get_by_id(
         root_element_id, request=request
@@ -72,42 +75,6 @@ def render_form(request, root_element):
     xsd_form = renderer.render()
 
     return xsd_form
-
-
-def generate_element_absent(request, element_id, xsd_string):
-    """Generate an element absent from the form
-
-    Args:
-        request:
-        element_id:
-        xsd_string:
-
-    Returns:
-
-    """
-    xsd_parser = get_parser(request=request)
-    html_form = xsd_parser.generate_element_absent(
-        element_id, xsd_string, renderer_class=CustomCheckboxRenderer
-    )
-    return html_form
-
-
-def generate_choice_absent(request, element_id, xsd_string):
-    """Generate a choice branch absent from the form
-
-    Args:
-        request:
-        element_id:
-        xsd_string:
-
-    Returns:
-
-    """
-    xsd_parser = get_parser(request=request)
-    html_form = xsd_parser.generate_choice_absent(
-        element_id, xsd_string, renderer_class=CustomCheckboxRenderer
-    )
-    return html_form
 
 
 # TODO: need to be reworked + similar as code in curate app

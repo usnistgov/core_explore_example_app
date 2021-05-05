@@ -4,6 +4,7 @@
 from django_mongoengine import fields
 from mongoengine import errors as mongoengine_errors
 
+from core_explore_example_app.permissions import rights
 from core_main_app.commons import exceptions as exceptions
 from core_parser_app.components.data_structure.models import DataStructure
 
@@ -12,6 +13,10 @@ class ExploreDataStructure(DataStructure):
     """Explore data structure"""
 
     selected_fields_html_tree = fields.StringField(blank=True, default=None)
+
+    @staticmethod
+    def get_permission():
+        return f"{rights.explore_example_content_type}.{rights.explore_example_data_structure_access}"
 
     @staticmethod
     def get_by_user_id_and_template_id(user_id, template_id):

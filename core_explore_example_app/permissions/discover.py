@@ -33,10 +33,16 @@ def init_permissions(apps):
         explore_delete_query_perm = permission.objects.get(
             codename=explore_example_rights.explore_example_delete_query
         )
+        explore_example_data_structure_access_perm = permission.objects.get(
+            codename=explore_example_rights.explore_example_data_structure_access
+        )
 
         # Add permissions to default group
         default_group.permissions.add(
-            explore_access_perm, explore_save_query_perm, explore_delete_query_perm
+            explore_access_perm,
+            explore_save_query_perm,
+            explore_delete_query_perm,
+            explore_example_data_structure_access_perm,
         )
     except Exception as e:
         logger.error("Impossible to init explore_example permissions: %s" % str(e))

@@ -48,17 +48,18 @@ def create_and_get_explore_data_structure(template, request):
             user_id=str(request.user.id), template_id=template.id
         )
     except:
-        # generate the root element
-        root_element = generate_form(template.content, request=request)
         # create explore data structure
         explore_data_structure = ExploreDataStructure(
             user=str(request.user.id),
             template=template,
             name=template.filename,
-            data_structure_element_root=root_element,
         )
-
-        # save the data structure
+        upsert(explore_data_structure)
+        # generate the root element
+        root_element = generate_form(
+            template.content, data_structure=explore_data_structure, request=request
+        )
+        explore_data_structure.data_structure_element_root = root_element
         upsert(explore_data_structure)
 
     # Return the data structure

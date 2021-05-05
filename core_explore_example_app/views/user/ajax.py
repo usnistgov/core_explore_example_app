@@ -23,6 +23,9 @@ from core_explore_example_app.components.persistent_query_example.models import 
 )
 from core_explore_example_app.components.saved_query import api as saved_query_api
 from core_explore_example_app.components.saved_query.models import SavedQuery
+from core_explore_example_app.utils.custom_checkbox_renderer import (
+    CustomCheckboxRenderer,
+)
 from core_explore_example_app.utils.displayed_query import (
     sub_elements_to_pretty_query,
     fields_to_pretty_query,
@@ -32,11 +35,7 @@ from core_explore_example_app.utils.mongo_query import (
     sub_elements_to_query,
     check_query_form,
 )
-from core_explore_example_app.utils.parser import (
-    generate_element_absent,
-    generate_choice_absent,
-    remove_form_element,
-)
+from core_explore_example_app.utils.parser import remove_form_element, get_parser
 from core_explore_example_app.utils.query_builder import (
     render_initial_form,
     render_new_query,
@@ -80,7 +79,13 @@ def generate_element(request, explore_data_structure_id):
         template = template_api.get(
             str(explore_data_structure.template.id), request=request
         )
-        html_form = generate_element_absent(request, element_id, template.content)
+        xsd_parser = get_parser(request=request)
+        html_form = xsd_parser.generate_element_absent(
+            element_id,
+            template.content,
+            data_structure=explore_data_structure,
+            renderer_class=CustomCheckboxRenderer,
+        )
     except Exception as e:
         return HttpResponseBadRequest(
             "An unexpected error occurred: %s" % escape(str(e)),
@@ -113,7 +118,13 @@ def generate_choice(request, explore_data_structure_id):
         template = template_api.get(
             str(explore_data_structure.template.id), request=request
         )
-        html_form = generate_choice_absent(request, element_id, template.content)
+        xsd_parser = get_parser(request=request)
+        html_form = xsd_parser.generate_choice_absent(
+            element_id,
+            template.content,
+            data_structure=explore_data_structure,
+            renderer_class=CustomCheckboxRenderer,
+        )
     except Exception as e:
         return HttpResponseBadRequest(
             "An unexpected error occurred: %s" % escape(str(e)),

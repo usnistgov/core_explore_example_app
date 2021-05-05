@@ -24,4 +24,8 @@ class ExploreExample(models.Model):
                 rights.explore_example_delete_query,
                 get_formatted_name(rights.explore_example_delete_query),
             ),
+            (
+                rights.explore_example_data_structure_access,
+                get_formatted_name(rights.explore_example_data_structure_access),
+            ),
         )
