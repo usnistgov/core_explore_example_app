@@ -308,13 +308,11 @@ def is_regex(expr):
     Returns:
 
     """
-    if isinstance(expr, re._pattern_type):
+    if isinstance(expr, re.Pattern):
         return True
+
     try:
-        if expr.startswith("/") and expr.endswith("/"):
-            return True
-        else:
-            return False
+        return expr.startswith("/") and expr.endswith("/")
     except:
         return False
 
