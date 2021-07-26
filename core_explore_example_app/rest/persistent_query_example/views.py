@@ -113,7 +113,7 @@ class AdminPersistentQueryExampleList(APIView):
 
 
 class PersistentQueryExampleList(APIView):
-    """List all persistent query example or create one """
+    """List all persistent query example or create one"""
 
     permission_classes = (IsAuthenticated,)
     serializer = PersistentQueryExampleSerializer
