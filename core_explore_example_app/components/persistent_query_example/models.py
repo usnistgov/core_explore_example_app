@@ -1,6 +1,6 @@
 """ Persistent Query Example model
 """
-from mongoengine import errors as mongoengine_errors
+from django.core.exceptions import ObjectDoesNotExist
 
 from core_explore_common_app.components.abstract_persistent_query.models import (
     AbstractPersistentQuery,
@@ -22,8 +22,8 @@ class PersistentQueryExample(AbstractPersistentQuery):
 
         """
         try:
-            return PersistentQueryExample.objects().get(pk=query_id)
-        except mongoengine_errors.DoesNotExist as e:
+            return PersistentQueryExample.objects.get(pk=query_id)
+        except ObjectDoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as e:
             raise exceptions.ModelError(str(e))
@@ -39,8 +39,8 @@ class PersistentQueryExample(AbstractPersistentQuery):
 
         """
         try:
-            return PersistentQueryExample.objects().get(name=query_name)
-        except mongoengine_errors.DoesNotExist as e:
+            return PersistentQueryExample.objects.get(name=query_name)
+        except ObjectDoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as e:
             raise exceptions.ModelError(str(e))
@@ -65,7 +65,7 @@ class PersistentQueryExample(AbstractPersistentQuery):
         Returns:
 
         """
-        return PersistentQueryExample.objects(user_id=str(user_id))
+        return PersistentQueryExample.objects.filter(user_id=str(user_id))
 
     @staticmethod
     def get_none():
@@ -74,4 +74,4 @@ class PersistentQueryExample(AbstractPersistentQuery):
         Returns:
 
         """
-        return PersistentQueryExample.objects().none()
+        return PersistentQueryExample.objects.none()

@@ -1,16 +1,18 @@
 """ Unit tests for PersistentQueryExample.
 """
 from unittest import TestCase, mock
+
 from mock import patch
+
 from core_explore_example_app.components.persistent_query_example import (
     api as persistent_query_example_api,
 )
 from core_explore_example_app.components.persistent_query_example.models import (
     PersistentQueryExample,
 )
+from core_main_app.access_control.exceptions import AccessControlError
 from core_main_app.commons import exceptions
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
-from core_main_app.access_control.exceptions import AccessControlError
 
 
 class TestPersistentQueryExampleGetById(TestCase):
@@ -89,8 +91,6 @@ class TestsPersistentQueryExampleUpsert(TestCase):
             user_id="1",
             name="mock_example",
             content={"content_test"},
-            templates=["5ea99316d26ebc48e475c60a"],
-            data_sources=[],
         )
 
     @patch.object(PersistentQueryExample, "save")
@@ -132,8 +132,8 @@ class TestsPersistentQueryExampleGetAll(TestCase):
 
         # Arrange
         expected_result = {
-            PersistentQueryExample(user_id="1"),
-            PersistentQueryExample(user_id="2"),
+            PersistentQueryExample(id=1, user_id="1"),
+            PersistentQueryExample(id=2, user_id="2"),
         }
         mock_get_all.return_value = expected_result
 
@@ -164,8 +164,8 @@ class TestsPersistentQueryExampleGetAllByUser(TestCase):
 
         # Arrange
         expected_result = {
-            PersistentQueryExample(user_id="1"),
-            PersistentQueryExample(user_id="1"),
+            PersistentQueryExample(id=1, user_id="1"),
+            PersistentQueryExample(id=2, user_id="1"),
         }
         mock_get_all_by_user.return_value = expected_result
 

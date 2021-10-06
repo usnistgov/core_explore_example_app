@@ -26,7 +26,8 @@ class SavedQueryFixtures(FixtureInterface):
         Returns:
 
         """
-        template = Template(filename="filename", content="<xml />", hash="hash").save()
+        template = Template(filename="filename", content="<xml />", hash="hash")
+        template.save()
         query_data_1 = (
             '{"$or": [{"list_content": {"$elemMatch": {"path": "/.*chemical-element-type/", "'
             'value": "Ac"}}}, {"list_content": {"$elemMatch": '
@@ -34,8 +35,9 @@ class SavedQueryFixtures(FixtureInterface):
         )
         self.data_1 = SavedQuery(
             user_id="1",
-            template=template.id,
+            template=template,
             query=query_data_1,
             displayed_query="Element is Ac",
-        ).save()
+        )
+        self.data_1.save()
         self.data_collection = [self.data_1]

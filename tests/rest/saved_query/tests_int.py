@@ -1,7 +1,6 @@
 """Integration tests for Saved Query rest api
 """
 
-from bson import ObjectId
 from rest_framework import status
 
 import core_explore_example_app.rest.saved_query.views as saved_query_views
@@ -57,7 +56,7 @@ class TestGetSavedQueryDetail(MongoIntegrationBaseTestCase):
     def test_get_raise_404_when_not_found(self):
         # Arrange
         user = create_mock_user("0")
-        self.param = {"pk": str(ObjectId())}
+        self.param = {"pk": -1}
 
         # Act
         response = RequestMock.do_request_get(
@@ -70,7 +69,7 @@ class TestGetSavedQueryDetail(MongoIntegrationBaseTestCase):
     def test_get_raise_500_sever_error_when_general_error_occurred(self):
         # Arrange
         user = create_mock_user("0")
-        self.param = {"pk": "0"}
+        self.param = {"pk": "test"}
 
         # Act
         response = RequestMock.do_request_get(
@@ -117,7 +116,7 @@ class TestDeleteSavedQueryDetail(MongoIntegrationBaseTestCase):
     def test_delete_raise_404_when_not_found(self):
         # Arrange
         user = create_mock_user("0")
-        self.param = {"pk": str(ObjectId())}
+        self.param = {"pk": -1}
 
         # Act
         response = RequestMock.do_request_delete(

@@ -41,7 +41,7 @@ def _restrict_occurs(element):
         # if more than one occurrence
         if element.options["min"] > 1:
             # keep only first element of the list
-            element.children = [element.children[0]]
+            element.children.set([element.children.all()[0]])
             # force min occurrences to one
             element.options["min"] = 1
     # force max number of occurrences to one

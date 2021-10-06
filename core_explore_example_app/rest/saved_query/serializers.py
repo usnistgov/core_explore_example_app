@@ -1,12 +1,11 @@
 """ Saved Query Serializers
 """
-
-from rest_framework_mongoengine.serializers import DocumentSerializer
+from rest_framework.serializers import ModelSerializer
 
 from core_explore_example_app.components.saved_query.models import SavedQuery
 
 
-class SavedQuerySerializer(DocumentSerializer):
+class SavedQuerySerializer(ModelSerializer):
     """Saved Query serializer"""
 
     class Meta(object):

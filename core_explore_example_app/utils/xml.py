@@ -46,13 +46,13 @@ def get_enumerations(data_structure_element):
     # find child simple type
     try:
         while data_structure_element.tag != "simple_type":
-            data_structure_element = data_structure_element.children[0]
-        simple_type_element = data_structure_element.children[0]
+            data_structure_element = data_structure_element.children.all()[0]
+        simple_type_element = data_structure_element.children.all()[0]
     except:
         raise XMLError("Unable to find a simple type for the data structure element.")
 
     enums = []
-    for enum_element in simple_type_element.children:
+    for enum_element in simple_type_element.children.all():
         if enum_element.tag == "enumeration":
             enums.append(enum_element.value)
     return enums

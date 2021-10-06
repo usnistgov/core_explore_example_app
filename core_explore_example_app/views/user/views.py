@@ -10,7 +10,6 @@ import core_explore_example_app.permissions.rights as rights
 import core_main_app.utils.decorators as decorators
 from core_explore_common_app.components.query import api as query_api
 from core_explore_common_app.settings import DEFAULT_DATE_TOGGLE_VALUE
-from core_explore_common_app.utils.query.query import create_default_query
 from core_explore_common_app.views.user.views import (
     ResultQueryRedirectView,
     ResultsView,
@@ -160,7 +159,7 @@ class SelectFieldsView(View):
                 ],
             }
 
-            template = template_api.get(template_id, request=request)
+            template = template_api.get_by_id(template_id, request=request)
             # get data structure
             data_structure = (
                 explore_data_structure_api.create_and_get_explore_data_structure(
@@ -232,7 +231,7 @@ class BuildQueryView(View):
 
         """
         try:
-            template = template_api.get(template_id, request=request)
+            template = template_api.get_by_id(template_id, request=request)
             if template is None:
                 return render(
                     request,
@@ -334,17 +333,14 @@ class BuildQueryView(View):
 
         """
         # from the template, we get the version manager
-        template_version_manager = template_version_manager_api.get_by_version_id(
-            str(template.id), request=request
-        )
+        template_version_manager = template.version_manager
         # from the version manager, we get all the version
         template_ids = template_api.get_all_accessible_by_id_list(
             template_version_manager.versions, request=request
         )
         # create query
-        query = create_default_query(request, template_ids)
-        # then upsert
-        return query_api.upsert(query, request.user)
+        query = query_api.create_default_query(request, template_ids)
+        return query
 
     @staticmethod
     def _get_js():
@@ -433,7 +429,7 @@ class ResultQueryView(ResultsView):
 
             context["exporter_app"] = True
             context["templates_list"] = json.dumps(
-                [str(template.id) for template in query.templates]
+                [str(template.id) for template in query.templates.all()]
             )
 
         return render(
@@ -514,7 +510,7 @@ class ResultQueryExampleRedirectView(ResultQueryRedirectView):
     def _get_reversed_url(query):
         return reverse(
             ResultQueryExampleRedirectView.redirect_url,
-            kwargs={"template_id": query.templates[0].id, "query_id": query.id},
+            kwargs={"template_id": query.templates.all()[0].id, "query_id": query.id},
         )
 
     @staticmethod
@@ -531,6 +527,6 @@ def build_sorting_context_array(query):
     """
     context_array = []
     for data_source in query.data_sources:
-        context_array.append(data_source.order_by_field)
+        context_array.append(data_source["order_by_field"])
 
     return ";".join(context_array)

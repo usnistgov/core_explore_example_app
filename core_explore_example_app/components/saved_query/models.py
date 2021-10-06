@@ -1,21 +1,19 @@
 """Saved query model
 """
-
-
-from django_mongoengine import fields, Document
-from mongoengine import errors as mongoengine_errors
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 
 from core_main_app.commons import exceptions
 from core_main_app.components.template.models import Template
 
 
-class SavedQuery(Document):
+class SavedQuery(models.Model):
     """Represents a query saved by the user (Query by Example)"""
 
-    user_id = fields.StringField(blank=False)
-    template = fields.ReferenceField(Template)
-    query = fields.StringField(blank=False)
-    displayed_query = fields.StringField(blank=False)
+    user_id = models.CharField(blank=False, max_length=200)
+    template = models.ForeignKey(Template, on_delete=models.CASCADE)
+    query = models.TextField(blank=False)
+    displayed_query = models.TextField(blank=False)
 
     @staticmethod
     def get_all():
@@ -39,8 +37,8 @@ class SavedQuery(Document):
 
         """
         try:
-            return SavedQuery.objects().get(pk=query_id)
-        except mongoengine_errors.DoesNotExist as e:
+            return SavedQuery.objects.get(pk=query_id)
+        except ObjectDoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as e:
             raise exceptions.ModelError(str(e))
@@ -56,4 +54,4 @@ class SavedQuery(Document):
         Returns:
 
         """
-        return SavedQuery.objects(user_id=str(user_id), template=template_id)
+        return SavedQuery.objects.filter(user_id=str(user_id), template=template_id)

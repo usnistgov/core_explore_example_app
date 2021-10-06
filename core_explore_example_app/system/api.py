@@ -10,4 +10,4 @@ def get_saved_queries_created_by_app():
     Returns:
 
     """
-    return SavedQuery.objects(user_id=ExploreExampleAppConfig.name).all()
+    return SavedQuery.objects.filter(user_id=ExploreExampleAppConfig.name).all()

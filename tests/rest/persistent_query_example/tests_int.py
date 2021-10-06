@@ -1,22 +1,20 @@
 """ Integration Test for Persistent Query Example Rest API
 """
 
-from tests.components.persistent_query_example.fixtures.fixtures import (
-    PersistentQueryExampleFixtures,
-)
-from core_main_app.utils.tests_tools.MockUser import create_mock_user
-from core_main_app.utils.tests_tools.RequestMock import RequestMock
+from django.contrib.auth.models import AnonymousUser
+from rest_framework import status
+
 from core_explore_example_app.rest.persistent_query_example import (
     views as persistent_query_example_views,
 )
-
-from rest_framework import status
-from core_explore_common_app.settings import CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT
 from core_main_app.utils.integration_tests.integration_base_test_case import (
     MongoIntegrationBaseTestCase,
 )
-from django.contrib.auth.models import AnonymousUser
-
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
+from core_main_app.utils.tests_tools.RequestMock import RequestMock
+from tests.components.persistent_query_example.fixtures.fixtures import (
+    PersistentQueryExampleFixtures,
+)
 
 fixture_data_structure = PersistentQueryExampleFixtures()
 
@@ -167,7 +165,7 @@ class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
         response = RequestMock.do_request_get(
             persistent_query_example_views.PersistentQueryExampleDetail.as_view(),
             user,
-            param={"pk": "507f1f77bcf86cd799439011"},
+            param={"pk": -1},
         )
 
         # Assert
@@ -209,7 +207,7 @@ class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
         response = RequestMock.do_request_delete(
             persistent_query_example_views.PersistentQueryExampleDetail.as_view(),
             user,
-            param={"pk": "507f1f77bcf86cd799439011"},
+            param={"pk": -1},
         )
 
         # Assert
@@ -252,7 +250,7 @@ class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
         response = RequestMock.do_request_patch(
             persistent_query_example_views.PersistentQueryExampleDetail.as_view(),
             user,
-            param={"pk": "507f1f77bcf86cd799439011"},
+            param={"pk": -1},
         )
 
         # Assert

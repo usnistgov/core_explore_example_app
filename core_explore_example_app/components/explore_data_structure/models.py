@@ -1,8 +1,7 @@
 """Explore Data Structure
 """
-
-from django_mongoengine import fields
-from mongoengine import errors as mongoengine_errors
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 
 from core_explore_example_app.permissions import rights
 from core_main_app.commons import exceptions as exceptions
@@ -12,7 +11,7 @@ from core_parser_app.components.data_structure.models import DataStructure
 class ExploreDataStructure(DataStructure):
     """Explore data structure"""
 
-    selected_fields_html_tree = fields.StringField(blank=True, default=None)
+    selected_fields_html_tree = models.TextField(blank=True, default=None, null=True)
 
     @staticmethod
     def get_permission():
@@ -29,7 +28,7 @@ class ExploreDataStructure(DataStructure):
             return ExploreDataStructure.objects.get(
                 user=str(user_id), template=str(template_id)
             )
-        except mongoengine_errors.DoesNotExist as e:
+        except ObjectDoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as e:
             raise exceptions.ModelError(str(e))
@@ -47,7 +46,7 @@ class ExploreDataStructure(DataStructure):
         """
         try:
             return ExploreDataStructure.objects.get(pk=str(data_structure_id))
-        except mongoengine_errors.DoesNotExist as e:
+        except ObjectDoesNotExist as e:
             raise exceptions.DoesNotExist(str(e))
         except Exception as ex:
             raise exceptions.ModelError(str(ex))

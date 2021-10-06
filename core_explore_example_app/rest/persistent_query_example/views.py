@@ -1,21 +1,19 @@
 """ REST views for the Persistent Query Example.
 """
-
+from django.db import IntegrityError
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from mongoengine import NotUniqueError
 
 import core_explore_example_app.components.persistent_query_example.api as persistent_query_example_api
-
 from core_explore_example_app.rest.persistent_query_example.serializers import (
     PersistentQueryExampleSerializer,
     PersistentQueryExampleAdminSerializer,
 )
-from core_main_app.commons import exceptions
 from core_main_app.access_control.exceptions import AccessControlError
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from core_main_app.commons import exceptions
 
 
 class AdminPersistentQueryExampleList(APIView):
@@ -295,7 +293,7 @@ class PersistentQueryExampleDetail(APIView):
         except AccessControlError as e:
             content = {"message": str(e)}
             return Response(content, status=status.HTTP_403_FORBIDDEN)
-        except NotUniqueError as e:
+        except IntegrityError as e:
             content = {"message": str(e)}
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
         except exceptions.DoesNotExist:

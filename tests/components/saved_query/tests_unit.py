@@ -2,13 +2,13 @@
 """
 from unittest.case import TestCase
 
-from bson.objectid import ObjectId
 from mock import patch
 from mock.mock import Mock
 
 from core_explore_example_app.components.saved_query import api as saved_query_api
 from core_explore_example_app.components.saved_query.models import SavedQuery
 from core_main_app.commons import exceptions
+from core_main_app.components.template.models import Template
 
 
 class TestSavedQueryGetById(TestCase):
@@ -36,10 +36,11 @@ class TestSavedQueryGetAllByUserAndTemplate(TestCase):
     def test_saved_queries_get_all_by_user_and_template_returns_saved_queries_from_user(
         self, mock_get_by_user_and_template
     ):
-        user_id = ObjectId()
-        template_id = ObjectId()
-        mock_data_1 = _create_saved_query(user_id=user_id, template=template_id)
-        mock_data_2 = _create_saved_query(user_id=user_id, template=template_id)
+        user_id = 1
+        template_id = 1
+        template = Template(id=1)
+        mock_data_1 = _create_saved_query(user_id=user_id, template=template)
+        mock_data_2 = _create_saved_query(user_id=user_id, template=template)
         mock_get_by_user_and_template.return_value = [mock_data_1, mock_data_2]
         # Act
         result = saved_query_api.get_all_by_user_and_template(
@@ -60,12 +61,12 @@ def _create_saved_query(user_id=None, template=None):
 
     """
     if user_id is None:
-        user_id = ObjectId()
+        user_id = 1
     if template is None:
-        template = ObjectId()
+        template = Template()
 
     return SavedQuery(
-        id=ObjectId(),
+        id=1,
         user_id=user_id,
         template=template,
         query="{}",
@@ -84,12 +85,12 @@ def _create_mock_saved_query(user_id=None, template=None):
 
     """
     if user_id is None:
-        user_id = ObjectId()
+        user_id = 1
     if template is None:
-        template = ObjectId()
+        template = Template()
     mock_saved_query = Mock(spec=SavedQuery)
     mock_saved_query.user_id = user_id
     mock_saved_query.template = template
-    mock_saved_query.id = ObjectId()
+    mock_saved_query.id = 1
 
     return mock_saved_query

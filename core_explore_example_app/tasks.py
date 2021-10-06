@@ -25,7 +25,7 @@ def delete_temporary_saved_queries():
         old_queries = [
             query
             for query in get_saved_queries_created_by_app()
-            if query.id.generation_time
+            if query.creation_date
             < timezone.now() - timedelta(days=QUERIES_MAX_DAYS_IN_DATABASE)
         ]
         # remove old queries from database

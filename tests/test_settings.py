@@ -10,6 +10,10 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     # Local apps
     "tests",
+    "core_main_app",
+    "core_parser_app",
+    "core_explore_common_app",
+    "core_explore_example_app",
 ]
 
 MIDDLEWARE = (
@@ -34,3 +38,17 @@ TEMPLATES = [
         },
     },
 ]
+
+# IN-MEMORY TEST DATABASE
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": ":memory:",
+        "USER": "",
+        "PASSWORD": "",
+        "HOST": "",
+        "PORT": "",
+    },
+}
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

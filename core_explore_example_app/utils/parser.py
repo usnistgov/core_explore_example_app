@@ -88,21 +88,14 @@ def remove_form_element(request, element_id):
     Returns:
 
     """
-    element_list = data_structure_element_api.get_all_by_child_id(element_id, request)
-
-    if len(element_list) == 0:
-        raise ValueError("No Data Structure Element found")
-    elif len(element_list) > 1:
-        raise ValueError("More than one Data Structure Element found")
-
     # Removing the element from the data structure
-    data_structure_element = element_list[0]
     data_structure_element_to_pull = data_structure_element_api.get_by_id(
         element_id, request
     )
+    data_structure_element = data_structure_element_to_pull.parent
 
     # number of children after deletion
-    children_number = len(data_structure_element.children) - 1
+    children_number = data_structure_element.children.count() - 1
 
     data_structure_element = remove_child_element(
         data_structure_element, data_structure_element_to_pull, request

@@ -76,7 +76,7 @@ def generate_element(request, explore_data_structure_id):
         explore_data_structure = explore_data_structure_api.get_by_id(
             explore_data_structure_id
         )
-        template = template_api.get(
+        template = template_api.get_by_id(
             str(explore_data_structure.template.id), request=request
         )
         xsd_parser = get_parser(request=request)
@@ -115,7 +115,7 @@ def generate_choice(request, explore_data_structure_id):
         explore_data_structure = explore_data_structure_api.get_by_id(
             explore_data_structure_id
         )
-        template = template_api.get(
+        template = template_api.get_by_id(
             str(explore_data_structure.template.id), request=request
         )
         xsd_parser = get_parser(request=request)
@@ -254,7 +254,7 @@ def get_sub_elements_query_builder(request):
     list_leaves_id = leaves_id.split(" ")
 
     # get template
-    template = template_api.get(template_id, request=request)
+    template = template_api.get_by_id(template_id, request=request)
 
     # get template namespaces
     namespaces = get_namespaces(template.content)
@@ -310,7 +310,7 @@ def insert_sub_elements_query(request):
     criteria_id = request.POST["criteriaID"]
 
     # get template
-    template = template_api.get(template_id, request=request)
+    template = template_api.get_by_id(template_id, request=request)
 
     # get template namespaces
     namespaces = get_namespaces(template.content)
@@ -371,7 +371,7 @@ def update_user_input(request):
         from_element_id, request
     )
     # get template
-    template = template_api.get(template_id, request=request)
+    template = template_api.get_by_id(template_id, request=request)
 
     # convert xml path to mongo dot notation
     namespaces = get_namespaces(template.content)
@@ -565,9 +565,9 @@ class GetQueryView(View):
                 # updating only the existing data-sources (the new data-source already got
                 # the default filter value)
                 if data_sources_index in range(0, len(order_by_field_array)):
-                    query_object.data_sources[
-                        data_sources_index
-                    ].order_by_field = order_by_field_array[data_sources_index]
+                    query_object.data_sources[data_sources_index][
+                        "order_by_field"
+                    ] = order_by_field_array[data_sources_index]
             if len(query_object.data_sources) == 0:
                 errors.append("Please select at least 1 data source.")
 
@@ -637,7 +637,7 @@ class SaveQueryView(View):
                 # save the query in the data base
                 saved_query = SavedQuery(
                     user_id=str(request.user.id),
-                    template=template_api.get(template_id, request=request),
+                    template=template_api.get_by_id(template_id, request=request),
                     query=json.dumps(query),
                     displayed_query=displayed_query,
                 )
@@ -666,6 +666,5 @@ class CreatePersistentQueryExampleUrlView(CreatePersistentQueryUrlView):
         return PersistentQueryExample(
             user_id=query.user_id,
             content=query.content,
-            templates=query.templates,
             data_sources=query.data_sources,
         )

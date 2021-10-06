@@ -396,7 +396,7 @@ def check_query_form(form_values, template_id, request=None):
     Returns:
 
     """
-    template = template_api.get(template_id, request=request)
+    template = template_api.get_by_id(template_id, request=request)
     namespaces = get_namespaces(template.content)
     default_prefix = get_default_prefix(namespaces)
 
@@ -433,7 +433,7 @@ def fields_to_query(form_values, template_id, use_wildcard=False, request=None):
 
     """
     # get template
-    template = template_api.get(template_id, request=request)
+    template = template_api.get_by_id(template_id, request=request)
     # get namespaces
     namespaces = get_namespaces(template.content)
     # get default prefix

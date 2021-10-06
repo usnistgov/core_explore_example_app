@@ -2,7 +2,6 @@
 """
 from unittest.case import TestCase
 
-from bson.objectid import ObjectId
 from mock import patch
 
 from core_explore_example_app.components.explore_data_structure import (
@@ -12,6 +11,7 @@ from core_explore_example_app.components.explore_data_structure.models import (
     ExploreDataStructure,
 )
 from core_main_app.components.template.models import Template
+from core_parser_app.components.data_structure.models import DataStructureElement
 
 
 class TestExploreDataStructureInsert(TestCase):
@@ -54,6 +54,27 @@ def _get_template():
     return template
 
 
+def _get_data_structure_element(user, data_structure):
+    """Return a data structure element
+
+    Args:
+        user:
+        data_structure:
+
+    Returns:
+
+    """
+    data_structure_element = DataStructureElement(
+        user=user,
+        tag="tag",
+        value="value",
+        options={},
+        data_structure=data_structure,
+    )
+    data_structure_element.save()
+    return data_structure_element
+
+
 def create_explore_data_structure(user, name):
     """Creates Explore Data Structure
 
@@ -65,6 +86,7 @@ def create_explore_data_structure(user, name):
 
     """
     template = _get_template()
-    return ExploreDataStructure(
-        user=user, template=template, name=name, data_structure_element_root=ObjectId()
+    explore_data_structure = ExploreDataStructure(
+        user=user, template=template, name=name, data_structure_element_root=None
     )
+    return explore_data_structure

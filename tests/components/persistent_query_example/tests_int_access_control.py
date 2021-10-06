@@ -1,22 +1,21 @@
 """ Unit Test Persistent Query Example
 """
 
-from tests.components.persistent_query_example.fixtures.fixtures import (
-    PersistentQueryExampleFixtures,
-)
 from django.contrib.auth.models import AnonymousUser
-from core_main_app.utils.tests_tools.MockUser import create_mock_user
-from core_main_app.utils.integration_tests.integration_base_test_case import (
-    MongoIntegrationBaseTestCase,
-)
 
 import core_explore_example_app.components.persistent_query_example.api as persistent_query_example_api
+from core_explore_common_app.settings import CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT
 from core_explore_example_app.components.persistent_query_example.models import (
     PersistentQueryExample,
 )
 from core_main_app.access_control.exceptions import AccessControlError
-
-from core_explore_common_app.settings import CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT
+from core_main_app.utils.integration_tests.integration_base_test_case import (
+    MongoIntegrationBaseTestCase,
+)
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
+from tests.components.persistent_query_example.fixtures.fixtures import (
+    PersistentQueryExampleFixtures,
+)
 
 fixture_persistent_query_example = PersistentQueryExampleFixtures()
 
