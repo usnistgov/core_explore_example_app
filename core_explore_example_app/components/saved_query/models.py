@@ -15,6 +15,10 @@ class SavedQuery(models.Model):
     query = models.TextField(blank=False)
     displayed_query = models.TextField(blank=False)
 
+    class Meta:
+        verbose_name = "Saved Query"
+        verbose_name_plural = "Saved Queries"
+
     @staticmethod
     def get_all():
         """Get all Saved Query.
