@@ -19,4 +19,7 @@ class ExploreExampleAppConfig(AppConfig):
 
         """
         if "migrate" not in sys.argv:
+            from core_explore_example_app import discover as app_discover
+
+            app_discover.init_periodic_tasks()
             discover.init_permissions(self.apps)
