@@ -1,4 +1,4 @@
-core-main-app==1.19.*
-core-explore-common-app==1.19.*
-core-parser-app==1.19.*
-xml-utils==1.17.*
+core-main-app==1.20.*
+core-explore-common-app==1.20.*
+core-parser-app==1.20.*
+xml-utils==1.18.*
