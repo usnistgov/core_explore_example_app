@@ -5,6 +5,7 @@ from os.path import join
 from django.template import loader
 
 from core_explore_example_app.utils.xml import get_enumerations
+from core_main_app.settings import MONGODB_INDEXING
 from xml_utils.xsd_types.xsd_types import get_xsd_numbers, get_xsd_gregorian_types
 
 
@@ -97,8 +98,9 @@ def prune_li(li):
                 branch_info.keep_the_branch = True
             selected_leaves.extend(ul_branch_info.selected_leaves)
 
-        # sub element queries available when more than one selected elements under the same element
-        if len(selected_leaves) > 1:
+        # sub element queries available when more than one selected elements under the same element,
+        # and data stored in MongoDB
+        if MONGODB_INDEXING and len(selected_leaves) > 1:
             # not for the choices
             if li[0].tag != "select":
                 # TODO: check if test useful
@@ -123,26 +125,6 @@ def prune_li(li):
                 return branch_info
         except:
             return branch_info
-
-
-def sub_element_query_li(li, selected_leaves):
-    """Update li with sub-element query attributes
-
-    Args:
-        li:
-        selected_leaves:
-
-    Returns:
-
-    """
-    # not for the choices
-    if li[0].tag != "select":
-        # TODO: check if test useful
-        if "select_class" not in li.attrib:
-            leaves_id = " ".join(selected_leaves)
-            # set element class
-            li.attrib["select_class"] = "parent"
-            li.attrib["select_id"] = leaves_id
 
 
 def add_selection_attributes(element, select_class, select_id=None):
