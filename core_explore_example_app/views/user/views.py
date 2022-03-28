@@ -422,6 +422,7 @@ class ResultQueryView(ResultsView):
             "default_date_toggle_value": DEFAULT_DATE_TOGGLE_VALUE,
             "data_sorting_fields": super().build_sorting_context_array(query),
             "default_data_sorting_fields": ",".join(DATA_SORTING_FIELDS),
+            "back_to_builder": True,
         }
 
         if "core_exporters_app" in INSTALLED_APPS:
@@ -456,6 +457,7 @@ class ResultQueryView(ResultsView):
                     "path": "core_explore_example_app/user/js/persistent_query.raw.js",
                     "is_raw": True,
                 },
+                {"path": "core_main_app/user/js/data/detail.js", "is_raw": False},
             ],
             "css": [],
         }
