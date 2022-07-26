@@ -11,6 +11,10 @@ from core_main_app.commons import exceptions
 class PersistentQueryExample(AbstractPersistentQuery):
     """Persistent Query Example"""
 
+    class Meta:
+        verbose_name = "Persistent Query by Example"
+        verbose_name_plural = "Persistent Queries by Example"
+
     @staticmethod
     def get_by_id(query_id):
         """Get a persistent query example

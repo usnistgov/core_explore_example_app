@@ -121,6 +121,8 @@ class Migration(migrations.Migration):
             ],
             options={
                 "abstract": False,
+                "verbose_name": "Persistent Query by Example",
+                "verbose_name_plural": "Persistent Queries by Example",
             },
         ),
     ]

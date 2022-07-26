@@ -11,6 +11,7 @@ class ExploreExampleAppConfig(AppConfig):
     """Core application settings"""
 
     name = "core_explore_example_app"
+    verbose_name = "Core Explore by Example App"
 
     def ready(self):
         """Runs when the app is ready
