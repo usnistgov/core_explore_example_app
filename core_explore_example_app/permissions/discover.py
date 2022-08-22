@@ -2,8 +2,8 @@
 """
 import logging
 
-from core_explore_example_app.permissions import rights as explore_example_rights
 from core_main_app.permissions import rights as main_rights
+from core_explore_example_app.permissions import rights as explore_example_rights
 
 logger = logging.getLogger(__name__)
 
@@ -20,21 +20,21 @@ def init_permissions(apps):
 
         # Get or Create the default group
         default_group, created = group.objects.get_or_create(
-            name=main_rights.default_group
+            name=main_rights.DEFAULT_GROUP
         )
 
         # Get explore example permissions
         explore_access_perm = permission.objects.get(
-            codename=explore_example_rights.explore_example_access
+            codename=explore_example_rights.EXPLORE_EXAMPLE_ACCESS
         )
         explore_save_query_perm = permission.objects.get(
-            codename=explore_example_rights.explore_example_save_query
+            codename=explore_example_rights.EXPLORE_EXAMPLE_SAVE_QUERY
         )
         explore_delete_query_perm = permission.objects.get(
-            codename=explore_example_rights.explore_example_delete_query
+            codename=explore_example_rights.EXPLORE_EXAMPLE_DELETE_QUERY
         )
         explore_example_data_structure_access_perm = permission.objects.get(
-            codename=explore_example_rights.explore_example_data_structure_access
+            codename=explore_example_rights.EXPLORE_EXAMPLE_DATA_STRUCTURE_ACCESS
         )
 
         # Add permissions to default group
@@ -44,5 +44,7 @@ def init_permissions(apps):
             explore_delete_query_perm,
             explore_example_data_structure_access_perm,
         )
-    except Exception as e:
-        logger.error("Impossible to init explore_example permissions: %s" % str(e))
+    except Exception as exception:
+        logger.error(
+            "Impossible to init explore_example permissions: %s", str(exception)
+        )

@@ -4,7 +4,7 @@ import sys
 
 from django.apps import AppConfig
 
-import core_explore_example_app.permissions.discover as discover
+from core_explore_example_app.permissions import discover
 
 
 class ExploreExampleAppConfig(AppConfig):

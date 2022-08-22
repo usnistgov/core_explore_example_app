@@ -3,24 +3,30 @@
 
 from rest_framework import status
 
-import core_explore_example_app.rest.saved_query.views as saved_query_views
 from core_main_app.utils.integration_tests.integration_base_test_case import (
     MongoIntegrationBaseTestCase,
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
+import core_explore_example_app.rest.saved_query.views as saved_query_views
 from tests.rest.saved_query.fixtures.fixtures import SavedQueryFixtures
 
 fixture_data = SavedQueryFixtures()
 
 
 class TestGetSavedQueryList(MongoIntegrationBaseTestCase):
+    """Test Get Saved Query List"""
+
     fixture = fixture_data
 
     def setUp(self):
-        super(TestGetSavedQueryList, self).setUp()
+        """setUp"""
+
+        super().setUp()
 
     def test_get_all_returns_status_200_with_no_permission_needed(self):
+        """test_get_all_returns_status_200_with_no_permission_needed"""
+
         # Arrange
         user = create_mock_user("1")
 
@@ -34,13 +40,19 @@ class TestGetSavedQueryList(MongoIntegrationBaseTestCase):
 
 
 class TestGetSavedQueryDetail(MongoIntegrationBaseTestCase):
+    """Test Get Saved Query Detail"""
+
     fixture = fixture_data
 
     def setUp(self):
-        super(TestGetSavedQueryDetail, self).setUp()
+        """setUp"""
+
+        super().setUp()
         self.data = None
 
     def test_get_returns_object_when_found(self):
+        """test_get_returns_object_when_found"""
+
         # Arrange
         user = create_mock_user("0")
         self.param = {"pk": self.fixture.data_1.id}
@@ -54,6 +66,8 @@ class TestGetSavedQueryDetail(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_raise_404_when_not_found(self):
+        """test_get_raise_404_when_not_found"""
+
         # Arrange
         user = create_mock_user("0")
         self.param = {"pk": -1}
@@ -67,6 +81,8 @@ class TestGetSavedQueryDetail(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_get_raise_500_sever_error_when_general_error_occurred(self):
+        """test_get_raise_500_sever_error_when_general_error_occurred"""
+
         # Arrange
         user = create_mock_user("0")
         self.param = {"pk": "test"}
@@ -81,13 +97,19 @@ class TestGetSavedQueryDetail(MongoIntegrationBaseTestCase):
 
 
 class TestDeleteSavedQueryDetail(MongoIntegrationBaseTestCase):
+    """Test Delete Saved Query Detail"""
+
     fixture = fixture_data
 
     def setUp(self):
+        """setUp"""
+
         super(TestDeleteSavedQueryDetail, self).setUp()
         self.data = None
 
     def test_delete_returns_403_status_when_user_is_unhautorized(self):
+        """test_delete_returns_403_status_when_user_is_unhautorized"""
+
         # Arrange
         user = create_mock_user("0")
         self.param = {"pk": self.fixture.data_1.id}
@@ -101,6 +123,8 @@ class TestDeleteSavedQueryDetail(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_delete_returns_204_status_when_found(self):
+        """test_delete_returns_204_status_when_found"""
+
         # Arrange
         user = create_mock_user("1")
         self.param = {"pk": self.fixture.data_1.id}
@@ -114,6 +138,8 @@ class TestDeleteSavedQueryDetail(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_delete_raise_404_when_not_found(self):
+        """test_delete_raise_404_when_not_found"""
+
         # Arrange
         user = create_mock_user("0")
         self.param = {"pk": -1}

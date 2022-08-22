@@ -4,13 +4,6 @@ import json
 import re
 from typing import List, Any
 
-from core_explore_example_app.commons.exceptions import MongoQueryException
-from core_explore_example_app.components.saved_query import api as saved_query_api
-from core_explore_example_app.utils.query_builder import (
-    get_element_value,
-    get_element_comparison,
-)
-from core_explore_example_app.utils.xml import validate_element_value
 from core_main_app.commons.exceptions import DoesNotExist
 from core_main_app.components.template import api as template_api
 from core_main_app.utils.xml import xpath_to_dot_notation
@@ -23,6 +16,13 @@ from xml_utils.xsd_types.xsd_types import (
     get_xsd_floating_numbers,
     get_xsd_gregorian_types,
 )
+from core_explore_example_app.commons.exceptions import MongoQueryException
+from core_explore_example_app.components.saved_query import api as saved_query_api
+from core_explore_example_app.utils.query_builder import (
+    get_element_value,
+    get_element_comparison,
+)
+from core_explore_example_app.utils.xml import validate_element_value
 
 
 def build_query_criteria(query, is_not=False):

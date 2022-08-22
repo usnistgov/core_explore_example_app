@@ -13,7 +13,9 @@ from core_explore_example_app.components.persistent_query_example.models import 
 class PersistentQueryExampleSerializer(ModelSerializer):
     """Persistent query example"""
 
-    class Meta(object):
+    class Meta:
+        """Meta"""
+
         model = PersistentQueryExample
         fields = ["id", "user_id", "content", "templates", "name"]
         read_only_fields = ("id", "user_id")
@@ -57,7 +59,7 @@ class PersistentQueryExampleSerializer(ModelSerializer):
 class PersistentQueryExampleAdminSerializer(ModelSerializer):
     """PersistentQueryAdminExample Serializer"""
 
-    class Meta(object):
+    class Meta:
         """Meta"""
 
         model = PersistentQueryExample

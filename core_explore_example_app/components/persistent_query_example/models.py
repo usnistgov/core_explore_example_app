@@ -12,6 +12,8 @@ class PersistentQueryExample(AbstractPersistentQuery):
     """Persistent Query Example"""
 
     class Meta:
+        """Meta"""
+
         verbose_name = "Persistent Query by Example"
         verbose_name_plural = "Persistent Queries by Example"
 
@@ -27,10 +29,10 @@ class PersistentQueryExample(AbstractPersistentQuery):
         """
         try:
             return PersistentQueryExample.objects.get(pk=query_id)
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_by_name(query_name):
@@ -44,10 +46,10 @@ class PersistentQueryExample(AbstractPersistentQuery):
         """
         try:
             return PersistentQueryExample.objects.get(name=query_name)
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_all():

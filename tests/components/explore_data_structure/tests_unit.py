@@ -4,20 +4,24 @@ from unittest.case import TestCase
 
 from mock import patch
 
+from core_main_app.components.template.models import Template
+from core_parser_app.components.data_structure.models import DataStructureElement
 from core_explore_example_app.components.explore_data_structure import (
     api as explore_data_structure_api,
 )
 from core_explore_example_app.components.explore_data_structure.models import (
     ExploreDataStructure,
 )
-from core_main_app.components.template.models import Template
-from core_parser_app.components.data_structure.models import DataStructureElement
 
 
 class TestExploreDataStructureInsert(TestCase):
+    """Test Explore Data Structure Insert"""
+
     @patch.object(ExploreDataStructure, "get_by_user_id_and_template_id")
     @patch.object(ExploreDataStructure, "save")
     def test_explore_data_structure_upsert_single_structure(self, mock_save, mock_list):
+        """test_explore_data_structure_upsert_single_structure"""
+
         data = create_explore_data_structure("1", "name_title_1")
         mock_save.return_value = data
         mock_list.return_value = None
@@ -25,10 +29,14 @@ class TestExploreDataStructureInsert(TestCase):
 
 
 class TestExploreDataStructureGetByUserIdAndTemplateId(TestCase):
+    """Test Explore Data Structure Get By User Id And TemplateId"""
+
     @patch.object(ExploreDataStructure, "get_by_user_id_and_template_id")
     def test_explore_data_structure_get_by_user_and_template_returns_explore_data_structure(
         self, mock_list
     ):
+        """test_explore_data_structure_get_by_user_and_template_returns_explore_data_structure"""
+
         # Arrange
         mock_data = create_explore_data_structure(user="1", name="name_title_1")
         mock_list.return_value = mock_data

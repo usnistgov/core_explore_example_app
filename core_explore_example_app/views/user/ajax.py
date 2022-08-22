@@ -9,10 +9,19 @@ from django.utils.decorators import method_decorator
 from django.utils.html import escape
 from django.views.generic import View
 
-import core_explore_example_app.permissions.rights as rights
 import core_main_app.utils.decorators as decorators
+from core_main_app.commons import exceptions
+from core_main_app.components.template import api as template_api
+from core_parser_app.components.data_structure_element import (
+    api as data_structure_element_api,
+)
+from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default_prefix
+from xml_utils.html_tree import parser as html_tree_parser
 from core_explore_common_app.components.query import api as query_api
 from core_explore_common_app.views.user.ajax import CreatePersistentQueryUrlView
+import core_explore_example_app.permissions.rights as rights
+
+
 from core_explore_example_app.apps import ExploreExampleAppConfig
 from core_explore_example_app.commons.exceptions import MongoQueryException
 from core_explore_example_app.components.explore_data_structure import (
@@ -44,21 +53,14 @@ from core_explore_example_app.utils.query_builder import (
     prune_html_tree,
     get_user_inputs,
 )
-from core_main_app.commons import exceptions
-from core_main_app.commons.exceptions import DoesNotExist
-from core_main_app.components.template import api as template_api
-from core_parser_app.components.data_structure_element import (
-    api as data_structure_element_api,
-)
-from xml_utils.html_tree import parser as html_tree_parser
-from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default_prefix
+
 
 logger = logging.getLogger(__name__)
 
 
 @decorators.permission_required(
-    content_type=rights.explore_example_content_type,
-    permission=rights.explore_example_access,
+    content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+    permission=rights.EXPLORE_EXAMPLE_ACCESS,
     raise_exception=True,
 )
 def generate_element(request, explore_data_structure_id):
@@ -86,9 +88,9 @@ def generate_element(request, explore_data_structure_id):
             data_structure=explore_data_structure,
             renderer_class=CustomCheckboxRenderer,
         )
-    except Exception as e:
+    except Exception as exception:
         return HttpResponseBadRequest(
-            "An unexpected error occurred: %s" % escape(str(e)),
+            "An unexpected error occurred: %s" % escape(str(exception)),
             content_type="application/javascript",
         )
 
@@ -96,8 +98,8 @@ def generate_element(request, explore_data_structure_id):
 
 
 @decorators.permission_required(
-    content_type=rights.explore_example_content_type,
-    permission=rights.explore_example_access,
+    content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+    permission=rights.EXPLORE_EXAMPLE_ACCESS,
     raise_exception=True,
 )
 def generate_choice(request, explore_data_structure_id):
@@ -125,9 +127,9 @@ def generate_choice(request, explore_data_structure_id):
             data_structure=explore_data_structure,
             renderer_class=CustomCheckboxRenderer,
         )
-    except Exception as e:
+    except Exception as exception:
         return HttpResponseBadRequest(
-            "An unexpected error occurred: %s" % escape(str(e)),
+            "An unexpected error occurred: %s" % escape(str(exception)),
             content_type="application/javascript",
         )
 
@@ -135,8 +137,8 @@ def generate_choice(request, explore_data_structure_id):
 
 
 @decorators.permission_required(
-    content_type=rights.explore_example_content_type,
-    permission=rights.explore_example_access,
+    content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+    permission=rights.EXPLORE_EXAMPLE_ACCESS,
     raise_exception=True,
 )
 def remove_element(request):
@@ -154,8 +156,8 @@ def remove_element(request):
 
 
 @decorators.permission_required(
-    content_type=rights.explore_example_content_type,
-    permission=rights.explore_example_access,
+    content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+    permission=rights.EXPLORE_EXAMPLE_ACCESS,
     raise_exception=True,
 )
 def save_fields(request):
@@ -198,14 +200,14 @@ def save_fields(request):
         explore_data_structure_api.upsert(explore_data_structure)
 
         return HttpResponse(json.dumps({}), content_type="application/javascript")
-    except Exception as e:
-        logger.error(escape(str(e)))
+    except Exception as exception:
+        logger.error(escape(str(exception)))
         return HttpResponseBadRequest("An error occurred while saving the form.")
 
 
 @decorators.permission_required(
-    content_type=rights.explore_example_content_type,
-    permission=rights.explore_example_access,
+    content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+    permission=rights.EXPLORE_EXAMPLE_ACCESS,
     raise_exception=True,
 )
 def select_element(request):
@@ -234,8 +236,8 @@ def select_element(request):
 
 
 @decorators.permission_required(
-    content_type=rights.explore_example_content_type,
-    permission=rights.explore_example_access,
+    content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+    permission=rights.EXPLORE_EXAMPLE_ACCESS,
     raise_exception=True,
 )
 def get_sub_elements_query_builder(request):
@@ -292,8 +294,8 @@ def get_sub_elements_query_builder(request):
 
 
 @decorators.permission_required(
-    content_type=rights.explore_example_content_type,
-    permission=rights.explore_example_access,
+    content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+    permission=rights.EXPLORE_EXAMPLE_ACCESS,
     raise_exception=True,
 )
 def insert_sub_elements_query(request):
@@ -349,8 +351,8 @@ def insert_sub_elements_query(request):
 
 
 @decorators.permission_required(
-    content_type=rights.explore_example_content_type,
-    permission=rights.explore_example_access,
+    content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+    permission=rights.EXPLORE_EXAMPLE_ACCESS,
     raise_exception=True,
 )
 def update_user_input(request):
@@ -387,8 +389,8 @@ def update_user_input(request):
 
 
 @decorators.permission_required(
-    content_type=rights.explore_example_content_type,
-    permission=rights.explore_example_access,
+    content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+    permission=rights.EXPLORE_EXAMPLE_ACCESS,
     raise_exception=True,
 )
 def add_criteria(request):
@@ -422,8 +424,8 @@ def _render_errors(errors):
 
 
 @decorators.permission_required(
-    content_type=rights.explore_example_content_type,
-    permission=rights.explore_example_access,
+    content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+    permission=rights.EXPLORE_EXAMPLE_ACCESS,
     raise_exception=True,
 )
 def clear_criteria(request):
@@ -443,8 +445,8 @@ def clear_criteria(request):
 
 
 @decorators.permission_required(
-    content_type=rights.explore_example_content_type,
-    permission=rights.explore_example_delete_query,
+    content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+    permission=rights.EXPLORE_EXAMPLE_DELETE_QUERY,
     raise_exception=True,
 )
 def clear_queries(request):
@@ -467,8 +469,8 @@ def clear_queries(request):
 
 
 @decorators.permission_required(
-    content_type=rights.explore_example_content_type,
-    permission=rights.explore_example_delete_query,
+    content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+    permission=rights.EXPLORE_EXAMPLE_DELETE_QUERY,
     raise_exception=True,
 )
 def delete_query(request):
@@ -483,15 +485,15 @@ def delete_query(request):
     saved_query_id = request.POST["savedQueryID"]
     try:
         saved_query = saved_query_api.get_by_id(saved_query_id[5:])
-    except DoesNotExist:
+    except exceptions.DoesNotExist:
         return HttpResponseBadRequest("The saved query does not exist anymore.")
     saved_query_api.delete(saved_query)
     return HttpResponse(json.dumps({}), content_type="application/javascript")
 
 
 @decorators.permission_required(
-    content_type=rights.explore_example_content_type,
-    permission=rights.explore_example_access,
+    content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+    permission=rights.EXPLORE_EXAMPLE_ACCESS,
     raise_exception=True,
 )
 def add_query_criteria(request):
@@ -512,7 +514,7 @@ def add_query_criteria(request):
     # get saved query number from id
     try:
         saved_query = saved_query_api.get_by_id(saved_query_id)
-    except DoesNotExist:
+    except exceptions.DoesNotExist:
         return HttpResponseBadRequest("The saved query does not exist anymore.")
 
     new_query_html = render_new_query(tag_id, saved_query, is_first)
@@ -523,12 +525,14 @@ def add_query_criteria(request):
 
 
 class GetQueryView(View):
+    """Get Query View"""
+
     fields_to_query_func = None
 
     @method_decorator(
         decorators.permission_required(
-            content_type=rights.explore_example_content_type,
-            permission=rights.explore_example_access,
+            content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+            permission=rights.EXPLORE_EXAMPLE_ACCESS,
             raise_exception=True,
         )
     )
@@ -591,20 +595,22 @@ class GetQueryView(View):
             return HttpResponseBadRequest(
                 "Invalid input.", content_type="application/javascript"
             )
-        except Exception as e:
+        except Exception as exception:
             return HttpResponseBadRequest(
-                "An unexpected error occurred: %s" % escape(str(e)),
+                "An unexpected error occurred: %s" % escape(str(exception)),
                 content_type="application/javascript",
             )
 
 
 class SaveQueryView(View):
+    """Save Query View"""
+
     fields_to_query_func = None
 
     @method_decorator(
         decorators.permission_required(
-            content_type=rights.explore_example_content_type,
-            permission=rights.explore_example_save_query,
+            content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+            permission=rights.EXPLORE_EXAMPLE_SAVE_QUERY,
             raise_exception=True,
         )
     )
@@ -642,8 +648,8 @@ class SaveQueryView(View):
                     displayed_query=displayed_query,
                 )
                 saved_query_api.upsert(saved_query)
-            except MongoQueryException as e:
-                errors = [str(e)]
+            except MongoQueryException as exception:
+                errors = [str(exception)]
                 return HttpResponseBadRequest(
                     _render_errors(errors), content_type="application/javascript"
                 )

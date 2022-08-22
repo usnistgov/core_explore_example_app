@@ -16,6 +16,8 @@ class SavedQuery(models.Model):
     displayed_query = models.TextField(blank=False)
 
     class Meta:
+        """Meta"""
+
         verbose_name = "Saved Query"
         verbose_name_plural = "Saved Queries"
 
@@ -42,10 +44,10 @@ class SavedQuery(models.Model):
         """
         try:
             return SavedQuery.objects.get(pk=query_id)
-        except ObjectDoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_all_by_user_and_template(user_id, template_id):

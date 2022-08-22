@@ -8,7 +8,7 @@ from core_explore_example_app.components.saved_query.models import SavedQuery
 class SavedQuerySerializer(ModelSerializer):
     """Saved Query serializer"""
 
-    class Meta(object):
+    class Meta:
         """Meta"""
 
         model = SavedQuery

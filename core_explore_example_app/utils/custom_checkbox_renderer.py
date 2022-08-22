@@ -7,24 +7,43 @@ class CustomCheckboxRenderer(CheckboxRenderer):
     """Custom Checkbox renderer, makes elements selectable and allows only one occurrence of each element"""
 
     def render_element(self, element):
-        return super(CustomCheckboxRenderer, self).render_element(
-            _restrict_occurs(element)
-        )
+        """render_element
+        Args:
+            element:
+
+        Returns:
+        """
+        return super().render_element(_restrict_occurs(element))
 
     def render_attribute(self, element):
-        return super(CustomCheckboxRenderer, self).render_attribute(
-            _restrict_occurs(element)
-        )
+        """render_attribute
+        Args:
+            element:
+
+        Returns:
+        """
+        return super().render_attribute(_restrict_occurs(element))
 
     def render_sequence(self, element, force_full_display=False):
-        return super(CustomCheckboxRenderer, self).render_sequence(
+        """render_sequence
+        Args:
+            element:
+            force_full_display:
+
+        Returns:
+        """
+        return super().render_sequence(
             _restrict_occurs(element), force_full_display=force_full_display
         )
 
     def render_choice(self, element):
-        return super(CustomCheckboxRenderer, self).render_choice(
-            _restrict_occurs(element)
-        )
+        """render_choice
+        Args:
+            element:
+
+        Returns:
+        """
+        return super().render_choice(_restrict_occurs(element))
 
 
 def _restrict_occurs(element):

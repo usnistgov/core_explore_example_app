@@ -5,15 +5,19 @@ from unittest.case import TestCase
 from mock import patch
 from mock.mock import Mock
 
-from core_explore_example_app.components.saved_query import api as saved_query_api
-from core_explore_example_app.components.saved_query.models import SavedQuery
 from core_main_app.commons import exceptions
 from core_main_app.components.template.models import Template
+from core_explore_example_app.components.saved_query import api as saved_query_api
+from core_explore_example_app.components.saved_query.models import SavedQuery
 
 
 class TestSavedQueryGetById(TestCase):
+    """Test Saved Query Get By Id"""
+
     @patch.object(SavedQuery, "get_by_id")
     def test_saved_query_get_by_id_raises_api_error_if_not_found(self, mock_get):
+        """test_saved_query_get_by_id_raises_api_error_if_not_found"""
+
         # Arrange
         mock_get.side_effect = exceptions.DoesNotExist("")
         # Act # Assert
@@ -22,6 +26,8 @@ class TestSavedQueryGetById(TestCase):
 
     @patch.object(SavedQuery, "get_by_id")
     def test_saved_query_get_by_id_returns_saved_query_if_found(self, mock_get):
+        """test_saved_query_get_by_id_returns_saved_query_if_found"""
+
         # Arrange
         mock_data = _create_saved_query()
         mock_get.return_value = mock_data
@@ -32,10 +38,14 @@ class TestSavedQueryGetById(TestCase):
 
 
 class TestSavedQueryGetAllByUserAndTemplate(TestCase):
+    """Test Saved Query Get All By User And Template"""
+
     @patch.object(SavedQuery, "get_all_by_user_and_template")
     def test_saved_queries_get_all_by_user_and_template_returns_saved_queries_from_user(
         self, mock_get_by_user_and_template
     ):
+        """test_saved_queries_get_all_by_user_and_template_returns_saved_queries_from_user"""
+
         user_id = 1
         template_id = 1
         template = Template(id=1)

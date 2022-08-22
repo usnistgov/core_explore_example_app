@@ -6,14 +6,22 @@ from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 
-import core_explore_example_app.permissions.rights as rights
+from core_main_app.commons import exceptions as exceptions
+from core_main_app.components.template import api as template_api
+from core_main_app.components.template_version_manager import (
+    api as template_version_manager_api,
+)
+from core_main_app.settings import DATA_SORTING_FIELDS
 import core_main_app.utils.decorators as decorators
+from core_main_app.utils.rendering import render
+
 from core_explore_common_app.components.query import api as query_api
 from core_explore_common_app.settings import DEFAULT_DATE_TOGGLE_VALUE
 from core_explore_common_app.views.user.views import (
     ResultQueryRedirectView,
     ResultsView,
 )
+from core_explore_example_app.permissions import rights
 from core_explore_example_app.components.explore_data_structure import (
     api as explore_data_structure_api,
 )
@@ -26,16 +34,11 @@ from core_explore_example_app.components.persistent_query_example.models import 
 from core_explore_example_app.components.saved_query import api as saved_query_api
 from core_explore_example_app.settings import INSTALLED_APPS
 from core_explore_example_app.utils.parser import render_form
-from core_main_app.commons import exceptions as exceptions
-from core_main_app.components.template import api as template_api
-from core_main_app.components.template_version_manager import (
-    api as template_version_manager_api,
-)
-from core_main_app.settings import DATA_SORTING_FIELDS
-from core_main_app.utils.rendering import render
 
 
 class IndexView(View):
+    """Index View"""
+
     api = template_version_manager_api
     get_redirect = "core_explore_example_app/user/index.html"
     select_object_redirect = "core_explore_example_select_fields"
@@ -44,8 +47,8 @@ class IndexView(View):
 
     @method_decorator(
         decorators.permission_required(
-            content_type=rights.explore_example_content_type,
-            permission=rights.explore_example_access,
+            content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+            permission=rights.EXPLORE_EXAMPLE_ACCESS,
             login_url=reverse_lazy("core_main_app_login"),
         )
     )
@@ -99,6 +102,8 @@ class IndexView(View):
 
 
 class SelectFieldsView(View):
+    """Select Fields View"""
+
     build_query_url = "core_explore_example_build_query"
     load_form_url = "core_explore_example_load_form"
     generate_element_url = "core_explore_example_generate_element"
@@ -107,8 +112,8 @@ class SelectFieldsView(View):
 
     @method_decorator(
         decorators.permission_required(
-            content_type=rights.explore_example_content_type,
-            permission=rights.explore_example_access,
+            content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+            permission=rights.EXPLORE_EXAMPLE_ACCESS,
             login_url=reverse_lazy("core_main_app_login"),
         )
     )
@@ -189,16 +194,18 @@ class SelectFieldsView(View):
                 assets=assets,
                 context=context,
             )
-        except Exception as e:
+        except Exception as exception:
             return render(
                 request,
                 "core_explore_example_app/user/errors.html",
                 assets={},
-                context={"errors": str(e)},
+                context={"errors": str(exception)},
             )
 
 
 class BuildQueryView(View):
+    """Build Query View"""
+
     build_query_url = "core_explore_example_build_query"
     get_query_url = "core_explore_example_get_query"
     save_query_url = "core_explore_example_save_query"
@@ -214,8 +221,8 @@ class BuildQueryView(View):
 
     @method_decorator(
         decorators.permission_required(
-            content_type=rights.explore_example_content_type,
-            permission=rights.explore_example_access,
+            content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+            permission=rights.EXPLORE_EXAMPLE_ACCESS,
             login_url=reverse_lazy("core_main_app_login"),
         )
     )
@@ -316,12 +323,12 @@ class BuildQueryView(View):
                 context=context,
                 modals=modals,
             )
-        except Exception as e:
+        except Exception as exception:
             return render(
                 request,
                 "core_explore_example_app/user/errors.html",
                 assets={},
-                context={"errors": str(e)},
+                context={"errors": str(exception)},
             )
 
     @staticmethod
@@ -371,6 +378,10 @@ class BuildQueryView(View):
 
     @staticmethod
     def get_description():
+        """get_description
+
+        Returns
+        """
         # FIXME should be in template
         return (
             "Click on a field of the Query Builder to add an element to your query. "
@@ -384,17 +395,23 @@ class BuildQueryView(View):
 
     @staticmethod
     def get_title():
+        """get_description
+
+        Returns
+        """
         return "Query Builder"
 
 
 class ResultQueryView(ResultsView):
+    """Result Query View"""
+
     back_to_query_redirect = "core_explore_example_build_query"
     get_query_url = "core_explore_example_get_query"
 
     @method_decorator(
         decorators.permission_required(
-            content_type=rights.explore_example_content_type,
-            permission=rights.explore_example_access,
+            content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+            permission=rights.EXPLORE_EXAMPLE_ACCESS,
             login_url=reverse_lazy("core_main_app_login"),
         )
     )
@@ -477,21 +494,21 @@ class ResultQueryView(ResultsView):
 
 
 class ResultQueryExampleRedirectView(ResultQueryRedirectView):
+    """Result Query Example Redirect View"""
+
     model_name = PersistentQueryExample.__name__
     object_name = "persistent_query_example"
     redirect_url = "core_explore_example_results"
 
     @method_decorator(
         decorators.permission_required(
-            content_type=rights.explore_example_content_type,
-            permission=rights.explore_example_access,
+            content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+            permission=rights.EXPLORE_EXAMPLE_ACCESS,
             login_url=reverse_lazy("core_main_app_login"),
         )
     )
     def get(self, request, *args, **kwargs):
-        return super(ResultQueryExampleRedirectView, self).get(
-            self, request, *args, **kwargs
-        )
+        return super().get(self, request, *args, **kwargs)
 
     @staticmethod
     def _get_persistent_query_by_id(persistent_query_id, user):

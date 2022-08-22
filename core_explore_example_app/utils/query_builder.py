@@ -4,12 +4,12 @@ from os.path import join
 
 from django.template import loader
 
-from core_explore_example_app.utils.xml import get_enumerations
 from core_main_app.settings import MONGODB_INDEXING
 from xml_utils.xsd_types.xsd_types import get_xsd_numbers, get_xsd_gregorian_types
+from core_explore_example_app.utils.xml import get_enumerations
 
 
-class BranchInfo(object):
+class BranchInfo:
     """Store information about a branch from the xml schema while it is being processed for field selection"""
 
     def __init__(self, keep_the_branch=False, selected_leaves=None):
@@ -17,6 +17,12 @@ class BranchInfo(object):
         self.selected_leaves = selected_leaves if selected_leaves is not None else []
 
     def add_selected_leaf(self, leaf_id):
+        """add_selected_leaf
+        Args:
+            leaf_id:
+
+        Returns
+        """
         self.selected_leaves.append(leaf_id)
         self.keep_the_branch = True
 

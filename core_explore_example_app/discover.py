@@ -24,5 +24,5 @@ def init_periodic_tasks():
             name=delete_temporary_saved_queries.__name__,
             task="core_explore_example_app.tasks.delete_temporary_saved_queries",
         )
-    except Exception as e:
-        logger.error(str(e))
+    except Exception as exception:
+        logger.error(str(exception))

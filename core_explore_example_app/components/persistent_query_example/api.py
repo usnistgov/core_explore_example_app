@@ -1,5 +1,7 @@
 """ Persistent Query Example API
 """
+from core_main_app.access_control.api import has_perm_administration
+from core_main_app.access_control.decorators import access_control
 from core_explore_common_app.access_control.api import (
     can_read_persistent_query,
     can_write_persistent_query,
@@ -7,8 +9,6 @@ from core_explore_common_app.access_control.api import (
 from core_explore_example_app.components.persistent_query_example.models import (
     PersistentQueryExample,
 )
-from core_main_app.access_control.api import has_perm_administration
-from core_main_app.access_control.decorators import access_control
 
 
 @access_control(can_write_persistent_query)

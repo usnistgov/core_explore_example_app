@@ -7,13 +7,13 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core_main_app.access_control.exceptions import AccessControlError
+from core_main_app.commons import exceptions
 import core_explore_example_app.components.persistent_query_example.api as persistent_query_example_api
 from core_explore_example_app.rest.persistent_query_example.serializers import (
     PersistentQueryExampleSerializer,
     PersistentQueryExampleAdminSerializer,
 )
-from core_main_app.access_control.exceptions import AccessControlError
-from core_main_app.commons import exceptions
 
 
 class AdminPersistentQueryExampleList(APIView):
@@ -50,8 +50,8 @@ class AdminPersistentQueryExampleList(APIView):
 
             # Return response
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except AccessControlError as e:
-            content = {"message": str(e)}
+        except AccessControlError as exception:
+            content = {"message": str(exception)}
             return Response(content, status=status.HTTP_403_FORBIDDEN)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
@@ -102,8 +102,8 @@ class AdminPersistentQueryExampleList(APIView):
         except ValidationError as validation_exception:
             content = {"message": validation_exception.detail}
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
-        except AccessControlError as e:
-            content = {"message": str(e)}
+        except AccessControlError as exception:
+            content = {"message": str(exception)}
             return Response(content, status=status.HTTP_403_FORBIDDEN)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
@@ -142,8 +142,8 @@ class PersistentQueryExampleList(APIView):
 
             # Return response
             return Response(serializer.data, status=status.HTTP_200_OK)
-        except AccessControlError as e:
-            content = {"message": str(e)}
+        except AccessControlError as exception:
+            content = {"message": str(exception)}
             return Response(content, status=status.HTTP_403_FORBIDDEN)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
@@ -235,8 +235,8 @@ class PersistentQueryExampleDetail(APIView):
         except exceptions.DoesNotExist:
             content = {"message": "Object not found."}
             return Response(content, status=status.HTTP_404_NOT_FOUND)
-        except AccessControlError as e:
-            content = {"message": str(e)}
+        except AccessControlError as exception:
+            content = {"message": str(exception)}
             return Response(content, status=status.HTTP_403_FORBIDDEN)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
@@ -290,11 +290,11 @@ class PersistentQueryExampleDetail(APIView):
         except ValidationError as validation_exception:
             content = {"message": validation_exception.detail}
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
-        except AccessControlError as e:
-            content = {"message": str(e)}
+        except AccessControlError as exception:
+            content = {"message": str(exception)}
             return Response(content, status=status.HTTP_403_FORBIDDEN)
-        except IntegrityError as e:
-            content = {"message": str(e)}
+        except IntegrityError as exception:
+            content = {"message": str(exception)}
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
         except exceptions.DoesNotExist:
             content = {"message": "Persistent query example not found."}
@@ -331,8 +331,8 @@ class PersistentQueryExampleDetail(APIView):
 
             # Return response
             return Response(status=status.HTTP_204_NO_CONTENT)
-        except AccessControlError as e:
-            content = {"message": str(e)}
+        except AccessControlError as exception:
+            content = {"message": str(exception)}
             return Response(content, status=status.HTTP_403_FORBIDDEN)
         except exceptions.DoesNotExist:
             content = {"message": "Persistent query example not found."}
@@ -380,8 +380,8 @@ class PersistentQueryExampleByName(APIView):
         except exceptions.DoesNotExist:
             content = {"message": "Persistent query example not found."}
             return Response(content, status=status.HTTP_404_NOT_FOUND)
-        except AccessControlError as e:
-            content = {"message": str(e)}
+        except AccessControlError as exception:
+            content = {"message": str(exception)}
             return Response(content, status=status.HTTP_403_FORBIDDEN)
         except Exception as api_exception:
             content = {"message": str(api_exception)}

@@ -1,13 +1,14 @@
 """Parser util for explore app
 """
-from core_explore_example_app.settings import PARSER_DOWNLOAD_DEPENDENCIES
-from core_explore_example_app.utils.custom_checkbox_renderer import (
-    CustomCheckboxRenderer,
-)
+
 from core_parser_app.components.data_structure_element import (
     api as data_structure_element_api,
 )
 from core_parser_app.tools.parser.parser import XSDParser, remove_child_element
+from core_explore_example_app.settings import PARSER_DOWNLOAD_DEPENDENCIES
+from core_explore_example_app.utils.custom_checkbox_renderer import (
+    CustomCheckboxRenderer,
+)
 
 
 # TODO: the form renders 'add' buttons based on maxOccurs attributes, but we
