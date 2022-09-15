@@ -1,13 +1,14 @@
 """Parser util for explore app
 """
-from core_explore_example_app.settings import PARSER_DOWNLOAD_DEPENDENCIES
-from core_explore_example_app.utils.custom_checkbox_renderer import (
-    CustomCheckboxRenderer,
-)
+
 from core_parser_app.components.data_structure_element import (
     api as data_structure_element_api,
 )
 from core_parser_app.tools.parser.parser import XSDParser, remove_child_element
+from core_explore_example_app.settings import PARSER_DOWNLOAD_DEPENDENCIES
+from core_explore_example_app.utils.custom_checkbox_renderer import (
+    CustomCheckboxRenderer,
+)
 
 
 # TODO: the form renders 'add' buttons based on maxOccurs attributes, but we
@@ -88,21 +89,14 @@ def remove_form_element(request, element_id):
     Returns:
 
     """
-    element_list = data_structure_element_api.get_all_by_child_id(element_id, request)
-
-    if len(element_list) == 0:
-        raise ValueError("No Data Structure Element found")
-    elif len(element_list) > 1:
-        raise ValueError("More than one Data Structure Element found")
-
     # Removing the element from the data structure
-    data_structure_element = element_list[0]
     data_structure_element_to_pull = data_structure_element_api.get_by_id(
         element_id, request
     )
+    data_structure_element = data_structure_element_to_pull.parent
 
     # number of children after deletion
-    children_number = len(data_structure_element.children) - 1
+    children_number = data_structure_element.children.count() - 1
 
     data_structure_element = remove_child_element(
         data_structure_element, data_structure_element_to_pull, request

@@ -29,7 +29,8 @@ def upsert(explore_data_structure):
     Returns:
 
     """
-    return explore_data_structure.save()
+    explore_data_structure.save()
+    return explore_data_structure
 
 
 def create_and_get_explore_data_structure(template, request):

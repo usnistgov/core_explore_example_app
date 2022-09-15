@@ -1,8 +1,9 @@
 """ Fixture files for SavedQuery
 """
-from core_explore_example_app.components.saved_query.models import SavedQuery
+
 from core_main_app.components.template.models import Template
 from core_main_app.utils.integration_tests.fixture_interface import FixtureInterface
+from core_explore_example_app.components.saved_query.models import SavedQuery
 
 
 class SavedQueryFixtures(FixtureInterface):
@@ -26,7 +27,8 @@ class SavedQueryFixtures(FixtureInterface):
         Returns:
 
         """
-        template = Template(filename="filename", content="<xml />", hash="hash").save()
+        template = Template(filename="filename", content="<xml />", hash="hash")
+        template.save()
         query_data_1 = (
             '{"$or": [{"list_content": {"$elemMatch": {"path": "/.*chemical-element-type/", "'
             'value": "Ac"}}}, {"list_content": {"$elemMatch": '
@@ -34,8 +36,9 @@ class SavedQueryFixtures(FixtureInterface):
         )
         self.data_1 = SavedQuery(
             user_id="1",
-            template=template.id,
+            template=template,
             query=query_data_1,
             displayed_query="Element is Ac",
-        ).save()
+        )
+        self.data_1.save()
         self.data_collection = [self.data_1]

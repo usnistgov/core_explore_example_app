@@ -1,22 +1,26 @@
 """Explore Data Structure
 """
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import models
 
-from django_mongoengine import fields
-from mongoengine import errors as mongoengine_errors
-
-from core_explore_example_app.permissions import rights
 from core_main_app.commons import exceptions as exceptions
 from core_parser_app.components.data_structure.models import DataStructure
+from core_explore_example_app.permissions import rights
 
 
 class ExploreDataStructure(DataStructure):
     """Explore data structure"""
 
-    selected_fields_html_tree = fields.StringField(blank=True, default=None)
+    selected_fields_html_tree = models.TextField(blank=True, default=None, null=True)
 
     @staticmethod
     def get_permission():
-        return f"{rights.explore_example_content_type}.{rights.explore_example_data_structure_access}"
+        """Return permission
+
+        Returns:
+
+        """
+        return f"{rights.EXPLORE_EXAMPLE_CONTENT_TYPE}.{rights.EXPLORE_EXAMPLE_DATA_STRUCTURE_ACCESS}"
 
     @staticmethod
     def get_by_user_id_and_template_id(user_id, template_id):
@@ -29,10 +33,10 @@ class ExploreDataStructure(DataStructure):
             return ExploreDataStructure.objects.get(
                 user=str(user_id), template=str(template_id)
             )
-        except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
-        except Exception as e:
-            raise exceptions.ModelError(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
+        except Exception as exception:
+            raise exceptions.ModelError(str(exception))
 
     @staticmethod
     def get_by_id(data_structure_id):
@@ -47,7 +51,7 @@ class ExploreDataStructure(DataStructure):
         """
         try:
             return ExploreDataStructure.objects.get(pk=str(data_structure_id))
-        except mongoengine_errors.DoesNotExist as e:
-            raise exceptions.DoesNotExist(str(e))
+        except ObjectDoesNotExist as exception:
+            raise exceptions.DoesNotExist(str(exception))
         except Exception as ex:
             raise exceptions.ModelError(str(ex))

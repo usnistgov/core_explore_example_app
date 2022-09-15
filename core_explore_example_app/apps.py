@@ -4,13 +4,14 @@ import sys
 
 from django.apps import AppConfig
 
-import core_explore_example_app.permissions.discover as discover
+from core_explore_example_app.permissions import discover
 
 
 class ExploreExampleAppConfig(AppConfig):
     """Core application settings"""
 
     name = "core_explore_example_app"
+    verbose_name = "Core Explore by Example App"
 
     def ready(self):
         """Runs when the app is ready

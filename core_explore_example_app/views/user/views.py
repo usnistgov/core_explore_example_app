@@ -6,15 +6,22 @@ from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 
-import core_explore_example_app.permissions.rights as rights
+from core_main_app.commons import exceptions as exceptions
+from core_main_app.components.template import api as template_api
+from core_main_app.components.template_version_manager import (
+    api as template_version_manager_api,
+)
+from core_main_app.settings import DATA_SORTING_FIELDS
 import core_main_app.utils.decorators as decorators
+from core_main_app.utils.rendering import render
+
 from core_explore_common_app.components.query import api as query_api
 from core_explore_common_app.settings import DEFAULT_DATE_TOGGLE_VALUE
-from core_explore_common_app.utils.query.query import create_default_query
 from core_explore_common_app.views.user.views import (
     ResultQueryRedirectView,
     ResultsView,
 )
+from core_explore_example_app.permissions import rights
 from core_explore_example_app.components.explore_data_structure import (
     api as explore_data_structure_api,
 )
@@ -27,16 +34,11 @@ from core_explore_example_app.components.persistent_query_example.models import 
 from core_explore_example_app.components.saved_query import api as saved_query_api
 from core_explore_example_app.settings import INSTALLED_APPS
 from core_explore_example_app.utils.parser import render_form
-from core_main_app.commons import exceptions as exceptions
-from core_main_app.components.template import api as template_api
-from core_main_app.components.template_version_manager import (
-    api as template_version_manager_api,
-)
-from core_main_app.settings import DATA_SORTING_FIELDS
-from core_main_app.utils.rendering import render
 
 
 class IndexView(View):
+    """Index View"""
+
     api = template_version_manager_api
     get_redirect = "core_explore_example_app/user/index.html"
     select_object_redirect = "core_explore_example_select_fields"
@@ -45,8 +47,8 @@ class IndexView(View):
 
     @method_decorator(
         decorators.permission_required(
-            content_type=rights.explore_example_content_type,
-            permission=rights.explore_example_access,
+            content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+            permission=rights.EXPLORE_EXAMPLE_ACCESS,
             login_url=reverse_lazy("core_main_app_login"),
         )
     )
@@ -100,6 +102,8 @@ class IndexView(View):
 
 
 class SelectFieldsView(View):
+    """Select Fields View"""
+
     build_query_url = "core_explore_example_build_query"
     load_form_url = "core_explore_example_load_form"
     generate_element_url = "core_explore_example_generate_element"
@@ -108,8 +112,8 @@ class SelectFieldsView(View):
 
     @method_decorator(
         decorators.permission_required(
-            content_type=rights.explore_example_content_type,
-            permission=rights.explore_example_access,
+            content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+            permission=rights.EXPLORE_EXAMPLE_ACCESS,
             login_url=reverse_lazy("core_main_app_login"),
         )
     )
@@ -160,7 +164,7 @@ class SelectFieldsView(View):
                 ],
             }
 
-            template = template_api.get(template_id, request=request)
+            template = template_api.get_by_id(template_id, request=request)
             # get data structure
             data_structure = (
                 explore_data_structure_api.create_and_get_explore_data_structure(
@@ -190,16 +194,18 @@ class SelectFieldsView(View):
                 assets=assets,
                 context=context,
             )
-        except Exception as e:
+        except Exception as exception:
             return render(
                 request,
                 "core_explore_example_app/user/errors.html",
                 assets={},
-                context={"errors": str(e)},
+                context={"errors": str(exception)},
             )
 
 
 class BuildQueryView(View):
+    """Build Query View"""
+
     build_query_url = "core_explore_example_build_query"
     get_query_url = "core_explore_example_get_query"
     save_query_url = "core_explore_example_save_query"
@@ -215,8 +221,8 @@ class BuildQueryView(View):
 
     @method_decorator(
         decorators.permission_required(
-            content_type=rights.explore_example_content_type,
-            permission=rights.explore_example_access,
+            content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+            permission=rights.EXPLORE_EXAMPLE_ACCESS,
             login_url=reverse_lazy("core_main_app_login"),
         )
     )
@@ -232,7 +238,7 @@ class BuildQueryView(View):
 
         """
         try:
-            template = template_api.get(template_id, request=request)
+            template = template_api.get_by_id(template_id, request=request)
             if template is None:
                 return render(
                     request,
@@ -317,12 +323,12 @@ class BuildQueryView(View):
                 context=context,
                 modals=modals,
             )
-        except Exception as e:
+        except Exception as exception:
             return render(
                 request,
                 "core_explore_example_app/user/errors.html",
                 assets={},
-                context={"errors": str(e)},
+                context={"errors": str(exception)},
             )
 
     @staticmethod
@@ -334,17 +340,14 @@ class BuildQueryView(View):
 
         """
         # from the template, we get the version manager
-        template_version_manager = template_version_manager_api.get_by_version_id(
-            str(template.id), request=request
-        )
+        template_version_manager = template.version_manager
         # from the version manager, we get all the version
         template_ids = template_api.get_all_accessible_by_id_list(
             template_version_manager.versions, request=request
         )
         # create query
-        query = create_default_query(request, template_ids)
-        # then upsert
-        return query_api.upsert(query, request.user)
+        query = query_api.create_default_query(request, template_ids)
+        return query
 
     @staticmethod
     def _get_js():
@@ -375,6 +378,10 @@ class BuildQueryView(View):
 
     @staticmethod
     def get_description():
+        """get_description
+
+        Returns
+        """
         # FIXME should be in template
         return (
             "Click on a field of the Query Builder to add an element to your query. "
@@ -388,17 +395,23 @@ class BuildQueryView(View):
 
     @staticmethod
     def get_title():
+        """get_description
+
+        Returns
+        """
         return "Query Builder"
 
 
 class ResultQueryView(ResultsView):
+    """Result Query View"""
+
     back_to_query_redirect = "core_explore_example_build_query"
     get_query_url = "core_explore_example_get_query"
 
     @method_decorator(
         decorators.permission_required(
-            content_type=rights.explore_example_content_type,
-            permission=rights.explore_example_access,
+            content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+            permission=rights.EXPLORE_EXAMPLE_ACCESS,
             login_url=reverse_lazy("core_main_app_login"),
         )
     )
@@ -426,6 +439,7 @@ class ResultQueryView(ResultsView):
             "default_date_toggle_value": DEFAULT_DATE_TOGGLE_VALUE,
             "data_sorting_fields": super().build_sorting_context_array(query),
             "default_data_sorting_fields": ",".join(DATA_SORTING_FIELDS),
+            "back_to_builder": True,
         }
 
         if "core_exporters_app" in INSTALLED_APPS:
@@ -433,7 +447,7 @@ class ResultQueryView(ResultsView):
 
             context["exporter_app"] = True
             context["templates_list"] = json.dumps(
-                [str(template.id) for template in query.templates]
+                [str(template.id) for template in query.templates.all()]
             )
 
         return render(
@@ -460,6 +474,7 @@ class ResultQueryView(ResultsView):
                     "path": "core_explore_example_app/user/js/persistent_query.raw.js",
                     "is_raw": True,
                 },
+                {"path": "core_main_app/user/js/data/detail.js", "is_raw": False},
             ],
             "css": [],
         }
@@ -479,21 +494,21 @@ class ResultQueryView(ResultsView):
 
 
 class ResultQueryExampleRedirectView(ResultQueryRedirectView):
+    """Result Query Example Redirect View"""
+
     model_name = PersistentQueryExample.__name__
     object_name = "persistent_query_example"
     redirect_url = "core_explore_example_results"
 
     @method_decorator(
         decorators.permission_required(
-            content_type=rights.explore_example_content_type,
-            permission=rights.explore_example_access,
+            content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
+            permission=rights.EXPLORE_EXAMPLE_ACCESS,
             login_url=reverse_lazy("core_main_app_login"),
         )
     )
     def get(self, request, *args, **kwargs):
-        return super(ResultQueryExampleRedirectView, self).get(
-            self, request, *args, **kwargs
-        )
+        return super().get(self, request, *args, **kwargs)
 
     @staticmethod
     def _get_persistent_query_by_id(persistent_query_id, user):
@@ -514,7 +529,7 @@ class ResultQueryExampleRedirectView(ResultQueryRedirectView):
     def _get_reversed_url(query):
         return reverse(
             ResultQueryExampleRedirectView.redirect_url,
-            kwargs={"template_id": query.templates[0].id, "query_id": query.id},
+            kwargs={"template_id": query.templates.all()[0].id, "query_id": query.id},
         )
 
     @staticmethod
@@ -531,6 +546,6 @@ def build_sorting_context_array(query):
     """
     context_array = []
     for data_source in query.data_sources:
-        context_array.append(data_source.order_by_field)
+        context_array.append(data_source["order_by_field"])
 
     return ";".join(context_array)

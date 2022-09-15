@@ -58,4 +58,5 @@ def upsert(saved_query):
     Returns:
 
     """
-    return saved_query.save()
+    saved_query.save()
+    return saved_query

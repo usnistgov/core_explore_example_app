@@ -15,7 +15,11 @@ mock_criteria_4 = {"root.variable1.#text": "value"}
 
 
 class TestBuildOrCriteria(TestCase):
+    """Test Build Or Criteria"""
+
     def test_build_or_criteria_regression_with_two_params(self):
+        """test_build_or_criteria_regression_with_two_params"""
+
         # get the result from the old version which allow 2 params
         build_or_criteria_with_two_params_result = (
             self._build_or_criteria_with_two_params(mock_criteria_1, mock_criteria_2)
@@ -28,11 +32,15 @@ class TestBuildOrCriteria(TestCase):
         )
 
     def test_build_or_criteria_with_one_params(self):
+        """test_build_or_criteria_with_one_params"""
+
         build_or_criteria_result = build_or_criteria(*[mock_criteria_1])
 
         self.assertDictEqual(build_or_criteria_result, {"$or": [mock_criteria_1]})
 
     def test_build_or_criteria_with_four_params(self):
+        """test_build_or_criteria_with_four_params"""
+
         build_or_criteria_result = build_or_criteria(
             *[
                 mock_criteria_1,
@@ -72,7 +80,11 @@ class TestBuildOrCriteria(TestCase):
 
 
 class TestBuildAndCriteria(TestCase):
+    """Test Build And Criteria"""
+
     def test_build_and_criteria_regression_with_one_params(self):
+        """test_build_and_criteria_regression_with_one_params"""
+
         # get the result from the old version which allow 2 params
         build_and_criteria_with_two_params_result = (
             self._build_and_criteria_with_two_params(mock_criteria_1, mock_criteria_2)
@@ -85,11 +97,15 @@ class TestBuildAndCriteria(TestCase):
         )
 
     def test_build_and_criteria_with_one_params(self):
+        """test_build_and_criteria_with_one_params"""
+
         build_and_criteria_result = build_and_criteria(*[mock_criteria_1])
 
         self.assertDictEqual(build_and_criteria_result, {"$and": [mock_criteria_1]})
 
     def test_build_and_criteria_with_four_params(self):
+        """test_build_and_criteria_with_four_params"""
+
         build_and_criteria_result = build_and_criteria(
             *[
                 mock_criteria_1,
@@ -129,7 +145,11 @@ class TestBuildAndCriteria(TestCase):
 
 
 class TestBuildWildcardCriteria(TestCase):
+    """Test Build Wildcard Criteria"""
+
     def test_build_wildcard_criteria_regression_with_one_params(self):
+        """test_build_wildcard_criteria_regression_with_one_params"""
+
         # get the result from the old version which allow 2 params
         build_wildcard_criteria_with_two_params_result = (
             self._build_wildcard_elem_match_criteria(mock_criteria_1, mock_criteria_2)
@@ -145,6 +165,8 @@ class TestBuildWildcardCriteria(TestCase):
         )
 
     def test_build_wildcard_criteria_with_one_params(self):
+        """test_build_wildcard_criteria_with_one_params"""
+
         build_wildcard_criteria_result = build_wildcard_elem_match_criteria(
             *[mock_criteria_1]
         )
@@ -155,6 +177,8 @@ class TestBuildWildcardCriteria(TestCase):
         )
 
     def test_build_and_criteria_with_four_params(self):
+        """test_build_and_criteria_with_four_params"""
+
         build_wildcard_criteria_result = build_wildcard_elem_match_criteria(
             *[mock_criteria_1, mock_criteria_2, mock_criteria_3, mock_criteria_4]
         )

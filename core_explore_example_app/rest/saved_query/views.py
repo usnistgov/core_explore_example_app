@@ -7,9 +7,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from core_main_app.commons import exceptions
 import core_explore_example_app.components.saved_query.api as saved_query_api
 from core_explore_example_app.rest.saved_query.serializers import SavedQuerySerializer
-from core_main_app.commons import exceptions
 
 
 class SavedQueryList(APIView):

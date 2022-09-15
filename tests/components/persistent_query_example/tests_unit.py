@@ -1,23 +1,28 @@
 """ Unit tests for PersistentQueryExample.
 """
 from unittest import TestCase, mock
+
 from mock import patch
+
+from core_main_app.access_control.exceptions import AccessControlError
+from core_main_app.commons import exceptions
+from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_explore_example_app.components.persistent_query_example import (
     api as persistent_query_example_api,
 )
 from core_explore_example_app.components.persistent_query_example.models import (
     PersistentQueryExample,
 )
-from core_main_app.commons import exceptions
-from core_main_app.utils.tests_tools.MockUser import create_mock_user
-from core_main_app.access_control.exceptions import AccessControlError
 
 
 class TestPersistentQueryExampleGetById(TestCase):
+    """Test Persistent Query Example Get By Id"""
+
     @patch.object(PersistentQueryExample, "get_by_id")
     def test_persistent_query_example_get_by_id_return_data_if_found(
         self, mock_get_by_id
     ):
+        """test_persistent_query_example_get_by_id_return_data_if_found"""
 
         # Arrange
         expected_result = PersistentQueryExample(user_id="1")
@@ -31,6 +36,7 @@ class TestPersistentQueryExampleGetById(TestCase):
         )
 
     def test_persistent_query_example_get_by_id_raises_model_error_if_not_found(self):
+        """test_persistent_query_example_get_by_id_raises_model_error_if_not_found"""
 
         # Arrange
         mock_user = create_mock_user("1")
@@ -43,6 +49,7 @@ class TestPersistentQueryExampleGetById(TestCase):
     def test_persistent_query_example_get_by_id_raises_does_not_exist_error_if_not_found(
         self, mock_get_by_id
     ):
+        """test_persistent_query_example_get_by_id_raises_does_not_exist_error_if_not_found"""
 
         # Arrange
         mock_get_by_id.side_effect = exceptions.DoesNotExist(message="mock error")
@@ -54,10 +61,13 @@ class TestPersistentQueryExampleGetById(TestCase):
 
 
 class TestsPersistentQueryExampleGetByName(TestCase):
+    """Tests Persistent Query Example Get By Name"""
+
     @mock.patch.object(PersistentQueryExample, "get_by_name")
     def test_persistent_query_example_get_by_name_return_data_if_found(
         self, mock_get_by_name
     ):
+        """test_persistent_query_example_get_by_name_return_data_if_found"""
         # Arrange
         expected_result = PersistentQueryExample(user_id="1")
         mock_get_by_name.return_value = expected_result
@@ -73,6 +83,7 @@ class TestsPersistentQueryExampleGetByName(TestCase):
     def test_persistent_query_example_get_by_name_raises_does_not_exist_error_if_not_found(
         self, mock_get_by_name
     ):
+        """test_persistent_query_example_get_by_name_raises_does_not_exist_error_if_not_found"""
 
         # Arrange
         mock_get_by_name.side_effect = exceptions.DoesNotExist(message="mock error")
@@ -84,17 +95,18 @@ class TestsPersistentQueryExampleGetByName(TestCase):
 
 
 class TestsPersistentQueryExampleUpsert(TestCase):
+    """Tests Persistent Query Example Upsert"""
+
     def setUp(self) -> None:
         self.mock_persistent_query_example = PersistentQueryExample(
             user_id="1",
             name="mock_example",
             content={"content_test"},
-            templates=["5ea99316d26ebc48e475c60a"],
-            data_sources=[],
         )
 
     @patch.object(PersistentQueryExample, "save")
     def test_persistent_query_example_upsert_return_data(self, mock_save):
+        """test_persistent_query_example_upsert_return_data"""
 
         # Arrange
         mock_save.return_value = self.mock_persistent_query_example
@@ -110,8 +122,11 @@ class TestsPersistentQueryExampleUpsert(TestCase):
 
 
 class TestsPersistentQueryExampleDelete(TestCase):
+    """Tests Persistent Query Example Delete"""
+
     @patch.object(PersistentQueryExample, "delete")
     def test_returns_no_error(self, mock_delete):
+        """test_returns_no_error"""
 
         # Arrange
         mock_delete.return_value = None
@@ -127,13 +142,16 @@ class TestsPersistentQueryExampleDelete(TestCase):
 
 
 class TestsPersistentQueryExampleGetAll(TestCase):
+    """Tests Persistent Query Example Get All"""
+
     @patch.object(PersistentQueryExample, "get_all")
     def test_returns_no_error(self, mock_get_all):
+        """test_returns_no_error"""
 
         # Arrange
         expected_result = {
-            PersistentQueryExample(user_id="1"),
-            PersistentQueryExample(user_id="2"),
+            PersistentQueryExample(id=1, user_id="1"),
+            PersistentQueryExample(id=2, user_id="2"),
         }
         mock_get_all.return_value = expected_result
 
@@ -148,6 +166,7 @@ class TestsPersistentQueryExampleGetAll(TestCase):
     def test_persistent_query_example_get_all_raises_does_not_access_control_error_if_not_admin(
         self, mock_get_all
     ):
+        """test_persistent_query_example_get_all_raises_does_not_access_control_error_if_not_admin"""
 
         # Arrange
         mock_get_all.side_effect = AccessControlError
@@ -159,13 +178,16 @@ class TestsPersistentQueryExampleGetAll(TestCase):
 
 
 class TestsPersistentQueryExampleGetAllByUser(TestCase):
+    """Tests Persistent Query Example Get All By User"""
+
     @patch.object(PersistentQueryExample, "get_all_by_user")
     def test_returns_no_error(self, mock_get_all_by_user):
+        """test_returns_no_error"""
 
         # Arrange
         expected_result = {
-            PersistentQueryExample(user_id="1"),
-            PersistentQueryExample(user_id="1"),
+            PersistentQueryExample(id=1, user_id="1"),
+            PersistentQueryExample(id=2, user_id="1"),
         }
         mock_get_all_by_user.return_value = expected_result
 

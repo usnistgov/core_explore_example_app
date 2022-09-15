@@ -2,22 +2,26 @@
 """
 from unittest.case import TestCase
 
-from bson.objectid import ObjectId
 from mock import patch
 
+from core_main_app.components.template.models import Template
+from core_parser_app.components.data_structure.models import DataStructureElement
 from core_explore_example_app.components.explore_data_structure import (
     api as explore_data_structure_api,
 )
 from core_explore_example_app.components.explore_data_structure.models import (
     ExploreDataStructure,
 )
-from core_main_app.components.template.models import Template
 
 
 class TestExploreDataStructureInsert(TestCase):
+    """Test Explore Data Structure Insert"""
+
     @patch.object(ExploreDataStructure, "get_by_user_id_and_template_id")
     @patch.object(ExploreDataStructure, "save")
     def test_explore_data_structure_upsert_single_structure(self, mock_save, mock_list):
+        """test_explore_data_structure_upsert_single_structure"""
+
         data = create_explore_data_structure("1", "name_title_1")
         mock_save.return_value = data
         mock_list.return_value = None
@@ -25,10 +29,14 @@ class TestExploreDataStructureInsert(TestCase):
 
 
 class TestExploreDataStructureGetByUserIdAndTemplateId(TestCase):
+    """Test Explore Data Structure Get By User Id And TemplateId"""
+
     @patch.object(ExploreDataStructure, "get_by_user_id_and_template_id")
     def test_explore_data_structure_get_by_user_and_template_returns_explore_data_structure(
         self, mock_list
     ):
+        """test_explore_data_structure_get_by_user_and_template_returns_explore_data_structure"""
+
         # Arrange
         mock_data = create_explore_data_structure(user="1", name="name_title_1")
         mock_list.return_value = mock_data
@@ -54,6 +62,27 @@ def _get_template():
     return template
 
 
+def _get_data_structure_element(user, data_structure):
+    """Return a data structure element
+
+    Args:
+        user:
+        data_structure:
+
+    Returns:
+
+    """
+    data_structure_element = DataStructureElement(
+        user=user,
+        tag="tag",
+        value="value",
+        options={},
+        data_structure=data_structure,
+    )
+    data_structure_element.save()
+    return data_structure_element
+
+
 def create_explore_data_structure(user, name):
     """Creates Explore Data Structure
 
@@ -65,6 +94,7 @@ def create_explore_data_structure(user, name):
 
     """
     template = _get_template()
-    return ExploreDataStructure(
-        user=user, template=template, name=name, data_structure_element_root=ObjectId()
+    explore_data_structure = ExploreDataStructure(
+        user=user, template=template, name=name, data_structure_element_root=None
     )
+    return explore_data_structure

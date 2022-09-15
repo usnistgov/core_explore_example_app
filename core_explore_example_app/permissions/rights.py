@@ -1,7 +1,7 @@
 """ Rights for core explore example app
 """
-explore_example_content_type = "core_explore_example_app"
-explore_example_access = "access_explore_example"
-explore_example_save_query = "save_query"
-explore_example_delete_query = "delete_query"
-explore_example_data_structure_access = "access_explore_example_data_structure"
+EXPLORE_EXAMPLE_CONTENT_TYPE = "core_explore_example_app"
+EXPLORE_EXAMPLE_ACCESS = "access_explore_example"
+EXPLORE_EXAMPLE_SAVE_QUERY = "save_query"
+EXPLORE_EXAMPLE_DELETE_QUERY = "delete_query"
+EXPLORE_EXAMPLE_DATA_STRUCTURE_ACCESS = "access_explore_example_data_structure"

@@ -1,13 +1,13 @@
 """Util to build user readable queries
 """
 
+from core_parser_app.components.data_structure_element import (
+    api as data_structure_element_api,
+)
 from core_explore_example_app.utils.mongo_query import get_parent_name
 from core_explore_example_app.utils.query_builder import (
     get_element_value,
     get_element_comparison,
-)
-from core_parser_app.components.data_structure_element import (
-    api as data_structure_element_api,
 )
 
 
@@ -68,8 +68,8 @@ def build_query_pretty_criteria(query_value, is_not):
     """
     if is_not:
         return "NOT(" + query_value + ")"
-    else:
-        return query_value
+
+    return query_value
 
 
 def build_or_pretty_criteria(query, criteria):

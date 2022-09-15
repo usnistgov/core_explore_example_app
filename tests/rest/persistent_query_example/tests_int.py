@@ -1,31 +1,33 @@
 """ Integration Test for Persistent Query Example Rest API
 """
 
-from tests.components.persistent_query_example.fixtures.fixtures import (
-    PersistentQueryExampleFixtures,
+from django.contrib.auth.models import AnonymousUser
+from rest_framework import status
+
+from core_main_app.utils.integration_tests.integration_base_test_case import (
+    MongoIntegrationBaseTestCase,
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 from core_explore_example_app.rest.persistent_query_example import (
     views as persistent_query_example_views,
 )
-
-from rest_framework import status
-from core_explore_common_app.settings import CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT
-from core_main_app.utils.integration_tests.integration_base_test_case import (
-    MongoIntegrationBaseTestCase,
+from tests.components.persistent_query_example.fixtures.fixtures import (
+    PersistentQueryExampleFixtures,
 )
-from django.contrib.auth.models import AnonymousUser
-
 
 fixture_data_structure = PersistentQueryExampleFixtures()
 
 
 class TestPersistentQueryExampleListAdmin(MongoIntegrationBaseTestCase):
+    """Test Persistent Query Example List Admin"""
+
     fixture = fixture_data_structure
 
     def setUp(self):
-        super(TestPersistentQueryExampleListAdmin, self).setUp()
+        """setUp"""
+
+        super().setUp()
 
         self.user = create_mock_user("1", is_staff=True, is_superuser=True)
 
@@ -35,6 +37,8 @@ class TestPersistentQueryExampleListAdmin(MongoIntegrationBaseTestCase):
         }
 
     def test_get_returns_all_user_persistent_query_example(self):
+        """test_get_returns_all_user_persistent_query_example"""
+
         # Act
         response = RequestMock.do_request_get(
             persistent_query_example_views.AdminPersistentQueryExampleList.as_view(),
@@ -45,6 +49,8 @@ class TestPersistentQueryExampleListAdmin(MongoIntegrationBaseTestCase):
         self.assertEqual(len(response.data), 3)
 
     def test_post_returns_http_201(self):
+        """test_post_returns_http_201"""
+
         # Arrange
 
         # Act
@@ -59,10 +65,14 @@ class TestPersistentQueryExampleListAdmin(MongoIntegrationBaseTestCase):
 
 
 class TestPersistentQueryExampleList(MongoIntegrationBaseTestCase):
+    """Test Persistent Query Example List"""
+
     fixture = fixture_data_structure
 
     def setUp(self):
-        super(TestPersistentQueryExampleList, self).setUp()
+        """setUp"""
+
+        super().setUp()
 
         self.user = create_mock_user("1")
 
@@ -71,6 +81,8 @@ class TestPersistentQueryExampleList(MongoIntegrationBaseTestCase):
         }
 
     def test_get_returns_all_persistent_query_example(self):
+        """test_get_returns_all_persistent_query_example"""
+
         # Act
         response = RequestMock.do_request_get(
             persistent_query_example_views.PersistentQueryExampleList.as_view(),
@@ -81,6 +93,7 @@ class TestPersistentQueryExampleList(MongoIntegrationBaseTestCase):
         self.assertEqual(len(response.data), 1)
 
     def test_post_returns_http_201(self):
+        """test_post_returns_http_201"""
 
         # Act
         response = RequestMock.do_request_post(
@@ -94,12 +107,18 @@ class TestPersistentQueryExampleList(MongoIntegrationBaseTestCase):
 
 
 class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
+    """Test Persistent Query Example Detail"""
+
     fixture = fixture_data_structure
 
     def setUp(self):
-        super(TestPersistentQueryExampleDetail, self).setUp()
+        """setUp"""
+
+        super().setUp()
 
     def test_get_returns_http_200(self):
+        """test_get_returns_http_200"""
+
         # Arrange
         user = create_mock_user("1")
 
@@ -114,6 +133,8 @@ class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_returns_persistent_query_example(self):
+        """test_get_returns_persistent_query_example"""
+
         # Arrange
         user = create_mock_user("1")
 
@@ -132,6 +153,8 @@ class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
     def test_get_other_user_persistent_query_example_returns_persistent_query_example(
         self,
     ):
+        """test_get_other_user_persistent_query_example_returns_persistent_query_example"""
+
         # Arrange
         user = create_mock_user("2")
 
@@ -148,6 +171,7 @@ class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
         )
 
     def test_get_other_user_persistent_query_example_as_anonymous_user(self):
+        """test_get_other_user_persistent_query_example_as_anonymous_user"""
 
         # Act
         response = RequestMock.do_request_get(
@@ -160,6 +184,8 @@ class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_wrong_id_returns_http_404(self):
+        """test_get_wrong_id_returns_http_404"""
+
         # Arrange
         user = create_mock_user("1")
 
@@ -167,13 +193,15 @@ class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
         response = RequestMock.do_request_get(
             persistent_query_example_views.PersistentQueryExampleDetail.as_view(),
             user,
-            param={"pk": "507f1f77bcf86cd799439011"},
+            param={"pk": -1},
         )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_delete_returns_http_204(self):
+        """test_delete_returns_http_204"""
+
         # Arrange
         user = create_mock_user("1")
 
@@ -188,6 +216,8 @@ class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_delete_other_user_persistent_query_example_returns_http_403(self):
+        """test_delete_other_user_persistent_query_example_returns_http_403"""
+
         # Arrange
         user = create_mock_user("2")
 
@@ -202,6 +232,8 @@ class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_delete_wrong_id_returns_http_404(self):
+        """test_delete_wrong_id_returns_http_404"""
+
         # Arrange
         user = create_mock_user("1")
 
@@ -209,13 +241,15 @@ class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
         response = RequestMock.do_request_delete(
             persistent_query_example_views.PersistentQueryExampleDetail.as_view(),
             user,
-            param={"pk": "507f1f77bcf86cd799439011"},
+            param={"pk": -1},
         )
 
         # Assert
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_patch_other_user_persistent_query_example_returns_http_403(self):
+        """test_patch_other_user_persistent_query_example_returns_http_403"""
+
         # Arrange
         user = create_mock_user("2")
 
@@ -230,6 +264,8 @@ class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_patch_returns_updated_name(self):
+        """test_patch_returns_updated_name"""
+
         # Arrange
         user = create_mock_user("1")
 
@@ -245,6 +281,8 @@ class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
         self.assertEqual(response.data["name"], "new_name")
 
     def test_patch_wrong_id_returns_http_404(self):
+        """test_patch_wrong_id_returns_http_404"""
+
         # Arrange
         user = create_mock_user("1")
 
@@ -252,7 +290,7 @@ class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
         response = RequestMock.do_request_patch(
             persistent_query_example_views.PersistentQueryExampleDetail.as_view(),
             user,
-            param={"pk": "507f1f77bcf86cd799439011"},
+            param={"pk": -1},
         )
 
         # Assert
@@ -260,12 +298,18 @@ class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
 
 
 class TestPersistentQueryExampleByName(MongoIntegrationBaseTestCase):
+    """Test Persistent Query Example By Name"""
+
     fixture = fixture_data_structure
 
     def setUp(self):
-        super(TestPersistentQueryExampleByName, self).setUp()
+        """setUp"""
+
+        super().setUp()
 
     def test_get_returns_http_200(self):
+        """test_get_returns_http_200"""
+
         # Arrange
         user = create_mock_user("1")
 
@@ -280,6 +324,8 @@ class TestPersistentQueryExampleByName(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_by_name_returns_persistent_query_example(self):
+        """test_get_by_name_returns_persistent_query_example"""
+
         # Arrange
         user = create_mock_user("1")
 
@@ -298,6 +344,8 @@ class TestPersistentQueryExampleByName(MongoIntegrationBaseTestCase):
     def test_get_other_user_persistent_query_example_by_name_returns_persistent_query_example(
         self,
     ):
+        """test_get_other_user_persistent_query_example_by_name_returns_persistent_query_example"""
+
         # Arrange
         user = create_mock_user("2")
 
@@ -314,6 +362,7 @@ class TestPersistentQueryExampleByName(MongoIntegrationBaseTestCase):
         )
 
     def test_get_other_user_persistent_query_example_by_name_as_anonymous_user(self):
+        """test_get_other_user_persistent_query_example_by_name_as_anonymous_user"""
 
         # Act
         response = RequestMock.do_request_get(
@@ -326,6 +375,8 @@ class TestPersistentQueryExampleByName(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_wrong_name_returns_http_404(self):
+        """test_get_wrong_name_returns_http_404"""
+
         # Arrange
         user = create_mock_user("1")
 

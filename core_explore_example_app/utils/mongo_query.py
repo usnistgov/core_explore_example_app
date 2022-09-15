@@ -4,13 +4,6 @@ import json
 import re
 from typing import List, Any
 
-from core_explore_example_app.commons.exceptions import MongoQueryException
-from core_explore_example_app.components.saved_query import api as saved_query_api
-from core_explore_example_app.utils.query_builder import (
-    get_element_value,
-    get_element_comparison,
-)
-from core_explore_example_app.utils.xml import validate_element_value
 from core_main_app.commons.exceptions import DoesNotExist
 from core_main_app.components.template import api as template_api
 from core_main_app.utils.xml import xpath_to_dot_notation
@@ -23,6 +16,13 @@ from xml_utils.xsd_types.xsd_types import (
     get_xsd_floating_numbers,
     get_xsd_gregorian_types,
 )
+from core_explore_example_app.commons.exceptions import MongoQueryException
+from core_explore_example_app.components.saved_query import api as saved_query_api
+from core_explore_example_app.utils.query_builder import (
+    get_element_value,
+    get_element_comparison,
+)
+from core_explore_example_app.utils.xml import validate_element_value
 
 
 def build_query_criteria(query, is_not=False):
@@ -396,7 +396,7 @@ def check_query_form(form_values, template_id, request=None):
     Returns:
 
     """
-    template = template_api.get(template_id, request=request)
+    template = template_api.get_by_id(template_id, request=request)
     namespaces = get_namespaces(template.content)
     default_prefix = get_default_prefix(namespaces)
 
@@ -433,7 +433,7 @@ def fields_to_query(form_values, template_id, use_wildcard=False, request=None):
 
     """
     # get template
-    template = template_api.get(template_id, request=request)
+    template = template_api.get_by_id(template_id, request=request)
     # get namespaces
     namespaces = get_namespaces(template.content)
     # get default prefix
