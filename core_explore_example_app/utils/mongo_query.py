@@ -313,7 +313,7 @@ def is_regex(expr):
 
     try:
         return expr.startswith("/") and expr.endswith("/")
-    except:
+    except Exception:
         return False
 
 

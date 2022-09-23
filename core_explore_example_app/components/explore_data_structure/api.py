@@ -48,7 +48,7 @@ def create_and_get_explore_data_structure(template, request):
         explore_data_structure = get_by_user_id_and_template_id(
             user_id=str(request.user.id), template_id=template.id
         )
-    except:
+    except Exception:
         # create explore data structure
         explore_data_structure = ExploreDataStructure(
             user=str(request.user.id),

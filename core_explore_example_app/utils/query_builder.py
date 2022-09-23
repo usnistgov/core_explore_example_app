@@ -129,7 +129,7 @@ def prune_li(li):
                 # tells to keep this branch until this leaf
                 branch_info.add_selected_leaf(element_id)
                 return branch_info
-        except:
+        except Exception:
             return branch_info
 
 
@@ -385,7 +385,7 @@ def get_user_inputs(element_type, data_structure_element, default_prefix):
             # enumeration
             enums = get_enumerations(data_structure_element)
             user_inputs = render_enum(enums)
-    except:
+    except Exception:
         # default renders string form
         user_inputs = render_string_select() + render_value_input()
 

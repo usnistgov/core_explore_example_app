@@ -48,7 +48,7 @@ def get_enumerations(data_structure_element):
         while data_structure_element.tag != "simple_type":
             data_structure_element = data_structure_element.children.all()[0]
         simple_type_element = data_structure_element.children.all()[0]
-    except:
+    except Exception:
         raise XMLError("Unable to find a simple type for the data structure element.")
 
     enums = []
