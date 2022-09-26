@@ -3,7 +3,9 @@
 import logging
 
 from core_main_app.permissions import rights as main_rights
-from core_explore_example_app.permissions import rights as explore_example_rights
+from core_explore_example_app.permissions import (
+    rights as explore_example_rights,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -46,5 +48,6 @@ def init_permissions(apps):
         )
     except Exception as exception:
         logger.error(
-            "Impossible to init explore_example permissions: %s", str(exception)
+            "Impossible to init explore_example permissions: %s",
+            str(exception),
         )

@@ -361,7 +361,9 @@ class TestPersistentQueryExampleByName(MongoIntegrationBaseTestCase):
             response.data["name"], self.fixture.persistent_query_example_1.name
         )
 
-    def test_get_other_user_persistent_query_example_by_name_as_anonymous_user(self):
+    def test_get_other_user_persistent_query_example_by_name_as_anonymous_user(
+        self,
+    ):
         """test_get_other_user_persistent_query_example_by_name_as_anonymous_user"""
 
         # Act

@@ -1,10 +1,15 @@
 """XML utils
 """
 from core_main_app.commons.exceptions import XMLError
-from xml_utils.xsd_types.xsd_types import get_xsd_floating_numbers, get_xsd_numbers
+from xml_utils.xsd_types.xsd_types import (
+    get_xsd_floating_numbers,
+    get_xsd_numbers,
+)
 
 
-def validate_element_value(element_name, element_type, element_value, namespace_prefix):
+def validate_element_value(
+    element_name, element_type, element_value, namespace_prefix
+):
     """Validates the element
 
     Args:
@@ -49,7 +54,9 @@ def get_enumerations(data_structure_element):
             data_structure_element = data_structure_element.children.all()[0]
         simple_type_element = data_structure_element.children.all()[0]
     except Exception:
-        raise XMLError("Unable to find a simple type for the data structure element.")
+        raise XMLError(
+            "Unable to find a simple type for the data structure element."
+        )
 
     enums = []
     for enum_element in simple_type_element.children.all():

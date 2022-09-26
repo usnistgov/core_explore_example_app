@@ -9,7 +9,9 @@ from rest_framework.views import APIView
 
 from core_main_app.commons import exceptions
 import core_explore_example_app.components.saved_query.api as saved_query_api
-from core_explore_example_app.rest.saved_query.serializers import SavedQuerySerializer
+from core_explore_example_app.rest.saved_query.serializers import (
+    SavedQuerySerializer,
+)
 
 
 class SavedQueryList(APIView):
@@ -52,7 +54,9 @@ class SavedQueryList(APIView):
                 saved_query_list = saved_query_list.filter(user_id=user_id)
             template_id = self.request.query_params.get("template_id", None)
             if template_id is not None:
-                saved_query_list = saved_query_list.filter(template=str(template_id))
+                saved_query_list = saved_query_list.filter(
+                    template=str(template_id)
+                )
 
             # Serialize object
             return_value = SavedQuerySerializer(saved_query_list, many=True)
@@ -60,7 +64,9 @@ class SavedQueryList(APIView):
             return Response(return_value.data)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class SavedQueryDetail(APIView):
@@ -113,7 +119,9 @@ class SavedQueryDetail(APIView):
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def delete(self, request, pk):
         """Delete a SavedQuery
@@ -150,4 +158,6 @@ class SavedQueryDetail(APIView):
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

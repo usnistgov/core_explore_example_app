@@ -9,7 +9,9 @@ from core_main_app.utils.integration_tests.integration_base_test_case import (
     MongoIntegrationBaseTestCase,
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
-from core_explore_common_app.settings import CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT
+from core_explore_common_app.settings import (
+    CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT,
+)
 import core_explore_example_app.components.persistent_query_example.api as persistent_query_example_api
 from core_explore_example_app.components.persistent_query_example.models import (
     PersistentQueryExample,
@@ -30,7 +32,9 @@ class TestPersistentQueryExampleGetById(MongoIntegrationBaseTestCase):
         """test_get_by_id_as_superuser_returns_persistent_query_example"""
 
         # Arrange
-        persistent_query_example_id = self.fixture.persistent_query_example_1.id
+        persistent_query_example_id = (
+            self.fixture.persistent_query_example_1.id
+        )
         mock_user = create_mock_user("0", is_staff=True, is_superuser=True)
 
         # Act
@@ -39,13 +43,17 @@ class TestPersistentQueryExampleGetById(MongoIntegrationBaseTestCase):
         )
 
         # Assert
-        self.assertTrue(isinstance(persistent_query_example, PersistentQueryExample))
+        self.assertTrue(
+            isinstance(persistent_query_example, PersistentQueryExample)
+        )
 
     def test_get_by_id_as_owner_returns_persistent_query_example(self):
         """test_get_by_id_as_owner_returns_persistent_query_example"""
 
         # Arrange
-        persistent_query_example_id = self.fixture.persistent_query_example_1.id
+        persistent_query_example_id = (
+            self.fixture.persistent_query_example_1.id
+        )
         mock_user = create_mock_user("1")
 
         # Act
@@ -54,13 +62,19 @@ class TestPersistentQueryExampleGetById(MongoIntegrationBaseTestCase):
         )
 
         # Assert
-        self.assertTrue(isinstance(persistent_query_example, PersistentQueryExample))
+        self.assertTrue(
+            isinstance(persistent_query_example, PersistentQueryExample)
+        )
 
-    def test_get_by_id_as_user_not_owner_returns_persistent_query_example(self):
+    def test_get_by_id_as_user_not_owner_returns_persistent_query_example(
+        self,
+    ):
         """test_get_by_id_as_user_not_owner_returns_persistent_query_example"""
 
         # Arrange
-        persistent_query_example_id = self.fixture.persistent_query_example_1.id
+        persistent_query_example_id = (
+            self.fixture.persistent_query_example_1.id
+        )
         mock_user = create_mock_user("0")
 
         # Act # Assert
@@ -77,7 +91,9 @@ class TestPersistentQueryExampleGetById(MongoIntegrationBaseTestCase):
         """test_get_by_id_as_anonymous_user"""
 
         # Arrange
-        persistent_query_example_id = self.fixture.persistent_query_example_1.id
+        persistent_query_example_id = (
+            self.fixture.persistent_query_example_1.id
+        )
 
         # Act # Assert
         if CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT:
@@ -106,7 +122,9 @@ class TestPersistentQueryExampleGetByName(MongoIntegrationBaseTestCase):
         """test_get_by_name_as_superuser_returns_persistent_query_example"""
 
         # Arrange
-        persistent_query_example_name = self.fixture.persistent_query_example_1.name
+        persistent_query_example_name = (
+            self.fixture.persistent_query_example_1.name
+        )
         mock_user = create_mock_user("0", is_staff=True, is_superuser=True)
 
         # Act
@@ -115,13 +133,17 @@ class TestPersistentQueryExampleGetByName(MongoIntegrationBaseTestCase):
         )
 
         # Assert
-        self.assertTrue(isinstance(persistent_query_example, PersistentQueryExample))
+        self.assertTrue(
+            isinstance(persistent_query_example, PersistentQueryExample)
+        )
 
     def test_get_by_id_as_owner_returns_persistent_query_example(self):
         """test_get_by_id_as_owner_returns_persistent_query_example"""
 
         # Arrange
-        persistent_query_example_name = self.fixture.persistent_query_example_1.name
+        persistent_query_example_name = (
+            self.fixture.persistent_query_example_1.name
+        )
         mock_user = create_mock_user("1")
 
         # Act
@@ -130,13 +152,19 @@ class TestPersistentQueryExampleGetByName(MongoIntegrationBaseTestCase):
         )
 
         # Assert
-        self.assertTrue(isinstance(persistent_query_example, PersistentQueryExample))
+        self.assertTrue(
+            isinstance(persistent_query_example, PersistentQueryExample)
+        )
 
-    def test_get_by_id_as_user_not_owner_returns_persistent_query_example(self):
+    def test_get_by_id_as_user_not_owner_returns_persistent_query_example(
+        self,
+    ):
         """test_get_by_id_as_user_not_owner_returns_persistent_query_example"""
 
         # Arrange
-        persistent_query_example_name = self.fixture.persistent_query_example_1.name
+        persistent_query_example_name = (
+            self.fixture.persistent_query_example_1.name
+        )
         mock_user = create_mock_user("0")
 
         # Act # Assert
@@ -153,7 +181,9 @@ class TestPersistentQueryExampleGetByName(MongoIntegrationBaseTestCase):
         """test_get_by_id_as_anonymous_user"""
 
         # Arrange
-        persistent_query_example_name = self.fixture.persistent_query_example_1.name
+        persistent_query_example_name = (
+            self.fixture.persistent_query_example_1.name
+        )
 
         # Act # Assert
         if CAN_ANONYMOUS_ACCESS_PUBLIC_DOCUMENT:
@@ -188,9 +218,13 @@ class TestPersistentQueryExampleDelete(MongoIntegrationBaseTestCase):
         mock_user = create_mock_user("0", is_staff=True, is_superuser=True)
 
         # Act
-        persistent_query_example_api.delete(persistent_query_example, mock_user)
+        persistent_query_example_api.delete(
+            persistent_query_example, mock_user
+        )
 
-    def test_delete_own_persistent_query_example_deletes_persistent_query_example(self):
+    def test_delete_own_persistent_query_example_deletes_persistent_query_example(
+        self,
+    ):
         """test_delete_own_persistent_query_example_deletes_persistent_query_example"""
 
         # Arrange
@@ -198,7 +232,9 @@ class TestPersistentQueryExampleDelete(MongoIntegrationBaseTestCase):
         mock_user = create_mock_user("1")
 
         # Act
-        persistent_query_example_api.delete(persistent_query_example, mock_user)
+        persistent_query_example_api.delete(
+            persistent_query_example, mock_user
+        )
 
     def test_delete_others_persistent_query_example_raises_error(self):
         """test_delete_others_persistent_query_example_raises_error"""
@@ -209,7 +245,9 @@ class TestPersistentQueryExampleDelete(MongoIntegrationBaseTestCase):
 
         # Act # Assert
         with self.assertRaises(AccessControlError):
-            persistent_query_example_api.delete(persistent_query_example, mock_user)
+            persistent_query_example_api.delete(
+                persistent_query_example, mock_user
+            )
 
     def test_delete_others_persistent_query_example_as_anonymous_raises_error(
         self,
@@ -248,7 +286,9 @@ class TestPersistentQueryExampleUpdate(MongoIntegrationBaseTestCase):
         self.assertTrue(isinstance(result, PersistentQueryExample))
         self.assertTrue(result.name, "new_name_persistent_query_example_1")
 
-    def test_update_own_persistent_query_example_updates_persistent_query_example(self):
+    def test_update_own_persistent_query_example_updates_persistent_query_example(
+        self,
+    ):
         """test_update_own_persistent_query_example_updates_persistent_query_example"""
 
         # Arrange
@@ -273,7 +313,9 @@ class TestPersistentQueryExampleUpdate(MongoIntegrationBaseTestCase):
 
         # Act # Assert
         with self.assertRaises(AccessControlError):
-            persistent_query_example_api.upsert(persistent_query_example, mock_user)
+            persistent_query_example_api.upsert(
+                persistent_query_example, mock_user
+            )
 
     def test_update_others_persistent_query_example_as_anonymous_raises_error(
         self,

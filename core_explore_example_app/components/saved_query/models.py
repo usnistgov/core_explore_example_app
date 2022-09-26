@@ -60,4 +60,6 @@ class SavedQuery(models.Model):
         Returns:
 
         """
-        return SavedQuery.objects.filter(user_id=str(user_id), template=template_id)
+        return SavedQuery.objects.filter(
+            user_id=str(user_id), template=template_id
+        )

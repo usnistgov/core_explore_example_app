@@ -17,7 +17,9 @@ def get_by_user_id_and_template_id(user_id, template_id):
     Returns:
 
     """
-    return ExploreDataStructure.get_by_user_id_and_template_id(user_id, template_id)
+    return ExploreDataStructure.get_by_user_id_and_template_id(
+        user_id, template_id
+    )
 
 
 def upsert(explore_data_structure):
@@ -58,7 +60,9 @@ def create_and_get_explore_data_structure(template, request):
         upsert(explore_data_structure)
         # generate the root element
         root_element = generate_form(
-            template.content, data_structure=explore_data_structure, request=request
+            template.content,
+            data_structure=explore_data_structure,
+            request=request,
         )
         explore_data_structure.data_structure_element_root = root_element
         upsert(explore_data_structure)

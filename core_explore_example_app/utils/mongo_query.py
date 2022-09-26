@@ -10,14 +10,19 @@ from core_main_app.utils.xml import xpath_to_dot_notation
 from core_parser_app.components.data_structure_element import (
     api as data_structure_element_api,
 )
-from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default_prefix
+from xml_utils.xsd_tree.operations.namespaces import (
+    get_namespaces,
+    get_default_prefix,
+)
 from xml_utils.xsd_types.xsd_types import (
     get_xsd_numbers,
     get_xsd_floating_numbers,
     get_xsd_gregorian_types,
 )
 from core_explore_example_app.commons.exceptions import MongoQueryException
-from core_explore_example_app.components.saved_query import api as saved_query_api
+from core_explore_example_app.components.saved_query import (
+    api as saved_query_api,
+)
 from core_explore_example_app.utils.query_builder import (
     get_element_value,
     get_element_comparison,
@@ -57,7 +62,9 @@ def build_int_criteria(path, comparison, value):
     if comparison == "=":
         criteria[path] = int(value)
     else:
-        criteria[path] = json.loads('{{"${0}": {1} }}'.format(comparison, int(value)))
+        criteria[path] = json.loads(
+            '{{"${0}": {1} }}'.format(comparison, int(value))
+        )
 
     return criteria
 
@@ -78,7 +85,9 @@ def build_float_criteria(path, comparison, value):
     if comparison == "=":
         criteria[path] = float(value)
     else:
-        criteria[path] = json.loads('{{"${0}": {1} }}'.format(comparison, float(value)))
+        criteria[path] = json.loads(
+            '{{"${0}": {1} }}'.format(comparison, float(value))
+        )
 
     return criteria
 
@@ -205,14 +214,22 @@ def build_criteria(
     # build the query: value can be found at element:value or at element.#text:value
     # second case appends when the element has attributes or namespace information
     if element_type in get_xsd_floating_numbers(default_prefix):
-        element_query.append(build_float_criteria(element_path, comparison, value))
+        element_query.append(
+            build_float_criteria(element_path, comparison, value)
+        )
         attribute_query.append(
-            build_float_criteria("{}.#text".format(element_path), comparison, value)
+            build_float_criteria(
+                "{}.#text".format(element_path), comparison, value
+            )
         )
     elif element_type in get_xsd_numbers(default_prefix):
-        element_query.append(build_int_criteria(element_path, comparison, value))
+        element_query.append(
+            build_int_criteria(element_path, comparison, value)
+        )
         attribute_query.append(
-            build_int_criteria("{}.#text".format(element_path), comparison, value)
+            build_int_criteria(
+                "{}.#text".format(element_path), comparison, value
+            )
         )
     elif element_type in get_xsd_gregorian_types(default_prefix):
         # before creating the int query check if the value type is int
@@ -220,22 +237,34 @@ def build_criteria(
             int_value = int(value)
             # if the format is number perform a strict match
             attribute_query.append(
-                build_int_criteria("{}.#text".format(element_path), "=", int_value)
+                build_int_criteria(
+                    "{}.#text".format(element_path), "=", int_value
+                )
             )
-            element_query.append(build_int_criteria(element_path, "=", int_value))
+            element_query.append(
+                build_int_criteria(element_path, "=", int_value)
+            )
         except Exception:
             pass
 
         # string query
-        element_query.append(build_string_criteria(element_path, comparison, value))
+        element_query.append(
+            build_string_criteria(element_path, comparison, value)
+        )
         attribute_query.append(
-            build_string_criteria("{}.#text".format(element_path), comparison, value)
+            build_string_criteria(
+                "{}.#text".format(element_path), comparison, value
+            )
         )
 
     else:
-        element_query.append(build_string_criteria(element_path, comparison, value))
+        element_query.append(
+            build_string_criteria(element_path, comparison, value)
+        )
         attribute_query.append(
-            build_string_criteria("{}.#text".format(element_path), comparison, value)
+            build_string_criteria(
+                "{}.#text".format(element_path), comparison, value
+            )
         )
 
     if use_wildcard:
@@ -274,15 +303,25 @@ def invert_query(query):
             ):
                 # second query is the same as the first
                 if key == "$and":
-                    return {"$or": [invert_query(value[0]), invert_query(value[1])]}
+                    return {
+                        "$or": [invert_query(value[0]), invert_query(value[1])]
+                    }
                 elif key == "$or":
-                    return {"$and": [invert_query(value[0]), invert_query(value[1])]}
+                    return {
+                        "$and": [
+                            invert_query(value[0]),
+                            invert_query(value[1]),
+                        ]
+                    }
             for sub_value in value:
                 invert_query(sub_value)
         else:
             # lt, lte, =, gte, gt, not, ne
             if isinstance(value, dict):
-                if list(value.keys())[0] == "$not" or list(value.keys())[0] == "$ne":
+                if (
+                    list(value.keys())[0] == "$not"
+                    or list(value.keys())[0] == "$ne"
+                ):
                     query[key] = value[list(value.keys())[0]]
                 else:
                     saved_value = value
@@ -421,7 +460,9 @@ def check_query_form(form_values, template_id, request=None):
     return errors
 
 
-def fields_to_query(form_values, template_id, use_wildcard=False, request=None):
+def fields_to_query(
+    form_values, template_id, use_wildcard=False, request=None
+):
     """Takes values from the html tree and creates a query from them
 
     Args:
@@ -456,13 +497,19 @@ def fields_to_query(form_values, template_id, use_wildcard=False, request=None):
             try:
                 saved_query = saved_query_api.get_by_id(element_id)
             except DoesNotExist:
-                raise MongoQueryException("The saved query does not exist anymore.")
-            criteria = build_query_criteria(json.loads(saved_query.query), is_not)
+                raise MongoQueryException(
+                    "The saved query does not exist anymore."
+                )
+            criteria = build_query_criteria(
+                json.loads(saved_query.query), is_not
+            )
         else:
             data_structure_element = data_structure_element_api.get_by_id(
                 element_id, request
             )
-            element = get_dot_notation_to_element(data_structure_element, namespaces)
+            element = get_dot_notation_to_element(
+                data_structure_element, namespaces
+            )
             criteria = build_criteria(
                 element,
                 comparison,
@@ -521,7 +568,12 @@ def sub_elements_to_query(form_values, namespaces, default_prefix, request):
             comparison = get_element_comparison(field)
 
             criteria = build_criteria(
-                element_name, comparison, value, element_type, default_prefix, is_not
+                element_name,
+                comparison,
+                value,
+                element_type,
+                default_prefix,
+                is_not,
             )
 
             elem_match.append(criteria)

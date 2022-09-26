@@ -3,7 +3,9 @@
 from unittest.case import TestCase
 from unittest.mock import patch, Mock
 
-from core_explore_example_app.components.saved_query import api as saved_query_api
+from core_explore_example_app.components.saved_query import (
+    api as saved_query_api,
+)
 from core_explore_example_app.components.saved_query.models import SavedQuery
 from core_main_app.commons import exceptions
 from core_main_app.components.template.models import Template
@@ -13,7 +15,9 @@ class TestSavedQueryGetById(TestCase):
     """Test Saved Query Get By Id"""
 
     @patch.object(SavedQuery, "get_by_id")
-    def test_saved_query_get_by_id_raises_api_error_if_not_found(self, mock_get):
+    def test_saved_query_get_by_id_raises_api_error_if_not_found(
+        self, mock_get
+    ):
         """test_saved_query_get_by_id_raises_api_error_if_not_found"""
 
         # Arrange
@@ -23,7 +27,9 @@ class TestSavedQueryGetById(TestCase):
             saved_query_api.get_by_id(1)
 
     @patch.object(SavedQuery, "get_by_id")
-    def test_saved_query_get_by_id_returns_saved_query_if_found(self, mock_get):
+    def test_saved_query_get_by_id_returns_saved_query_if_found(
+        self, mock_get
+    ):
         """test_saved_query_get_by_id_returns_saved_query_if_found"""
 
         # Arrange

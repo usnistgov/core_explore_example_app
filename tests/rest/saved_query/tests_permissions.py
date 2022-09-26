@@ -8,7 +8,9 @@ from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
 import core_explore_example_app.components.saved_query.api as saved_query_api
 from core_explore_example_app.components.saved_query.models import SavedQuery
-from core_explore_example_app.rest.saved_query.serializers import SavedQuerySerializer
+from core_explore_example_app.rest.saved_query.serializers import (
+    SavedQuerySerializer,
+)
 from core_explore_example_app.rest.saved_query.views import (
     SavedQueryList,
     SavedQueryDetail,
@@ -32,7 +34,9 @@ class TestSavedQueryListGetPermissions(SimpleTestCase):
         mock_saved_query_get_all.return_value = {}
         mock_user = create_mock_user("1")
 
-        response = RequestMock.do_request_get(SavedQueryList.as_view(), mock_user)
+        response = RequestMock.do_request_get(
+            SavedQueryList.as_view(), mock_user
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -43,7 +47,9 @@ class TestSavedQueryListGetPermissions(SimpleTestCase):
         mock_saved_query_get_all.return_value = {}
         mock_user = create_mock_user("1", is_staff=True)
 
-        response = RequestMock.do_request_get(SavedQueryList.as_view(), mock_user)
+        response = RequestMock.do_request_get(
+            SavedQueryList.as_view(), mock_user
+        )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 

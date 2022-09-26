@@ -360,7 +360,9 @@ class TestPersistentQueryExampleDetailDelete(SimpleTestCase):
     @patch.object(persistent_query_example_api, "get_by_id")
     @patch.object(persistent_query_example_api, "delete")
     def test_authenticated_returns_http_200(
-        self, persistent_query_example_api_delete, persistent_query_example_get_by_id
+        self,
+        persistent_query_example_api_delete,
+        persistent_query_example_get_by_id,
     ):
         """test_authenticated_returns_http_200"""
 
@@ -379,7 +381,9 @@ class TestPersistentQueryExampleDetailDelete(SimpleTestCase):
     @patch.object(persistent_query_example_api, "get_by_id")
     @patch.object(persistent_query_example_api, "delete")
     def test_superuser_returns_http_200(
-        self, persistent_query_example_api_delete, persistent_query_example_get_by_id
+        self,
+        persistent_query_example_api_delete,
+        persistent_query_example_get_by_id,
     ):
         """test_superuser_returns_http_200"""
 

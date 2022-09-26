@@ -55,7 +55,9 @@ class AdminPersistentQueryExampleList(APIView):
             return Response(content, status=status.HTTP_403_FORBIDDEN)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def post(self, request):
         """Create a persistent query example
@@ -107,7 +109,9 @@ class AdminPersistentQueryExampleList(APIView):
             return Response(content, status=status.HTTP_403_FORBIDDEN)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class PersistentQueryExampleList(APIView):
@@ -135,7 +139,9 @@ class PersistentQueryExampleList(APIView):
 
         try:
             # Get object
-            object_list = persistent_query_example_api.get_all_by_user(request.user)
+            object_list = persistent_query_example_api.get_all_by_user(
+                request.user
+            )
 
             # Serialize object
             serializer = self.serializer(object_list, many=True)
@@ -147,7 +153,9 @@ class PersistentQueryExampleList(APIView):
             return Response(content, status=status.HTTP_403_FORBIDDEN)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def post(self, request):
         """Create a new persistent query example
@@ -193,7 +201,9 @@ class PersistentQueryExampleList(APIView):
             return Response(content, status=status.HTTP_400_BAD_REQUEST)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class PersistentQueryExampleDetail(APIView):
@@ -240,7 +250,9 @@ class PersistentQueryExampleDetail(APIView):
             return Response(content, status=status.HTTP_403_FORBIDDEN)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def patch(self, request, pk):
         """Update a persistent query example
@@ -301,7 +313,9 @@ class PersistentQueryExampleDetail(APIView):
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
     def delete(self, request, pk):
         """Delete a persistent query example
@@ -327,7 +341,9 @@ class PersistentQueryExampleDetail(APIView):
             )
 
             # delete object
-            persistent_query_example_api.delete(persistent_query_example, request.user)
+            persistent_query_example_api.delete(
+                persistent_query_example, request.user
+            )
 
             # Return response
             return Response(status=status.HTTP_204_NO_CONTENT)
@@ -339,7 +355,9 @@ class PersistentQueryExampleDetail(APIView):
             return Response(content, status=status.HTTP_404_NOT_FOUND)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 class PersistentQueryExampleByName(APIView):
@@ -368,8 +386,8 @@ class PersistentQueryExampleByName(APIView):
         """
         try:
             # Get object
-            persistent_query_example = persistent_query_example_api.get_by_name(
-                name, request.user
+            persistent_query_example = (
+                persistent_query_example_api.get_by_name(name, request.user)
             )
 
             # Serialize object
@@ -385,4 +403,6 @@ class PersistentQueryExampleByName(APIView):
             return Response(content, status=status.HTTP_403_FORBIDDEN)
         except Exception as api_exception:
             content = {"message": str(api_exception)}
-            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                content, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )

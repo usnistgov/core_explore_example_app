@@ -6,7 +6,9 @@ from rest_framework.urlpatterns import format_suffix_patterns
 from core_explore_example_app.rest.persistent_query_example import (
     views as persistent_query_example_views,
 )
-from core_explore_example_app.rest.saved_query import views as saved_query_views
+from core_explore_example_app.rest.saved_query import (
+    views as saved_query_views,
+)
 
 urlpatterns = [
     re_path(

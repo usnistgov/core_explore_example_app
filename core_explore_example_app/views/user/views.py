@@ -31,7 +31,9 @@ from core_explore_example_app.components.persistent_query_example import (
 from core_explore_example_app.components.persistent_query_example.models import (
     PersistentQueryExample,
 )
-from core_explore_example_app.components.saved_query import api as saved_query_api
+from core_explore_example_app.components.saved_query import (
+    api as saved_query_api,
+)
 from core_explore_example_app.settings import INSTALLED_APPS
 from core_explore_example_app.utils.parser import render_form
 
@@ -63,7 +65,9 @@ class IndexView(View):
         """
         assets = {"css": ["core_explore_example_app/user/css/style.css"]}
 
-        global_active_template_list = self.get_global_active_list(request=request)
+        global_active_template_list = self.get_global_active_list(
+            request=request
+        )
         user_active_template_list = self.get_user_active_list(request=request)
 
         context = {
@@ -74,7 +78,9 @@ class IndexView(View):
             "build_query_redirect": self.build_query_redirect,
         }
 
-        return render(request, self.get_redirect, assets=assets, context=context)
+        return render(
+            request, self.get_redirect, assets=assets, context=context
+        )
 
     def get_global_active_list(self, request):
         """Get all global version managers.
@@ -131,13 +137,22 @@ class SelectFieldsView(View):
             # Set the assets
             assets = {
                 "js": [
-                    {"path": "core_main_app/common/js/XMLTree.js", "is_raw": False},
-                    {"path": "core_parser_app/js/autosave.js", "is_raw": False},
+                    {
+                        "path": "core_main_app/common/js/XMLTree.js",
+                        "is_raw": False,
+                    },
+                    {
+                        "path": "core_parser_app/js/autosave.js",
+                        "is_raw": False,
+                    },
                     {
                         "path": "core_parser_app/js/autosave_checkbox.js",
                         "is_raw": False,
                     },
-                    {"path": "core_parser_app/js/autosave.raw.js", "is_raw": True},
+                    {
+                        "path": "core_parser_app/js/autosave.raw.js",
+                        "is_raw": True,
+                    },
                     {"path": "core_parser_app/js/buttons.js", "is_raw": False},
                     {
                         "path": "core_explore_example_app/user/js/buttons.raw.js",
@@ -166,10 +181,8 @@ class SelectFieldsView(View):
 
             template = template_api.get_by_id(template_id, request=request)
             # get data structure
-            data_structure = (
-                explore_data_structure_api.create_and_get_explore_data_structure(
-                    template, request
-                )
+            data_structure = explore_data_structure_api.create_and_get_explore_data_structure(
+                template, request
             )
             root_element = data_structure.data_structure_element_root
 
@@ -474,7 +487,10 @@ class ResultQueryView(ResultsView):
                     "path": "core_explore_example_app/user/js/persistent_query.raw.js",
                     "is_raw": True,
                 },
-                {"path": "core_main_app/user/js/data/detail.js", "is_raw": False},
+                {
+                    "path": "core_main_app/user/js/data/detail.js",
+                    "is_raw": False,
+                },
             ],
             "css": [],
         }
@@ -512,11 +528,15 @@ class ResultQueryExampleRedirectView(ResultQueryRedirectView):
 
     @staticmethod
     def _get_persistent_query_by_id(persistent_query_id, user):
-        return persistent_query_example_api.get_by_id(persistent_query_id, user)
+        return persistent_query_example_api.get_by_id(
+            persistent_query_id, user
+        )
 
     @staticmethod
     def _get_persistent_query_by_name(persistent_query_name, user):
-        return persistent_query_example_api.get_by_name(persistent_query_name, user)
+        return persistent_query_example_api.get_by_name(
+            persistent_query_name, user
+        )
 
     @staticmethod
     def get_url_path():
@@ -529,7 +549,10 @@ class ResultQueryExampleRedirectView(ResultQueryRedirectView):
     def _get_reversed_url(query):
         return reverse(
             ResultQueryExampleRedirectView.redirect_url,
-            kwargs={"template_id": query.templates.all()[0].id, "query_id": query.id},
+            kwargs={
+                "template_id": query.templates.all()[0].id,
+                "query_id": query.id,
+            },
         )
 
     @staticmethod

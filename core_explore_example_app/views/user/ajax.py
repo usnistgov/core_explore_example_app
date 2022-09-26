@@ -15,10 +15,15 @@ from core_main_app.components.template import api as template_api
 from core_parser_app.components.data_structure_element import (
     api as data_structure_element_api,
 )
-from xml_utils.xsd_tree.operations.namespaces import get_namespaces, get_default_prefix
+from xml_utils.xsd_tree.operations.namespaces import (
+    get_namespaces,
+    get_default_prefix,
+)
 from xml_utils.html_tree import parser as html_tree_parser
 from core_explore_common_app.components.query import api as query_api
-from core_explore_common_app.views.user.ajax import CreatePersistentQueryUrlView
+from core_explore_common_app.views.user.ajax import (
+    CreatePersistentQueryUrlView,
+)
 import core_explore_example_app.permissions.rights as rights
 
 
@@ -30,7 +35,9 @@ from core_explore_example_app.components.explore_data_structure import (
 from core_explore_example_app.components.persistent_query_example.models import (
     PersistentQueryExample,
 )
-from core_explore_example_app.components.saved_query import api as saved_query_api
+from core_explore_example_app.components.saved_query import (
+    api as saved_query_api,
+)
 from core_explore_example_app.components.saved_query.models import SavedQuery
 from core_explore_example_app.utils.custom_checkbox_renderer import (
     CustomCheckboxRenderer,
@@ -44,7 +51,10 @@ from core_explore_example_app.utils.mongo_query import (
     sub_elements_to_query,
     check_query_form,
 )
-from core_explore_example_app.utils.parser import remove_form_element, get_parser
+from core_explore_example_app.utils.parser import (
+    remove_form_element,
+    get_parser,
+)
 from core_explore_example_app.utils.query_builder import (
     render_initial_form,
     render_new_query,
@@ -199,10 +209,14 @@ def save_fields(request):
         # update explore data structure
         explore_data_structure_api.upsert(explore_data_structure)
 
-        return HttpResponse(json.dumps({}), content_type="application/javascript")
+        return HttpResponse(
+            json.dumps({}), content_type="application/javascript"
+        )
     except Exception as exception:
         logger.error(escape(str(exception)))
-        return HttpResponseBadRequest("An error occurred while saving the form.")
+        return HttpResponseBadRequest(
+            "An error occurred while saving the form."
+        )
 
 
 @decorators.permission_required(
@@ -268,7 +282,9 @@ def get_sub_elements_query_builder(request):
 
     form_fields = []
     for leaf_id in list_leaves_id:
-        data_structure_element = data_structure_element_api.get_by_id(leaf_id, request)
+        data_structure_element = data_structure_element_api.get_by_id(
+            leaf_id, request
+        )
         element_type = data_structure_element.options["type"]
         element_name = data_structure_element.options["name"]
 
@@ -286,7 +302,9 @@ def get_sub_elements_query_builder(request):
         )
 
     response_dict = {
-        "subElementQueryBuilder": render_sub_elements_query(parent_name, form_fields)
+        "subElementQueryBuilder": render_sub_elements_query(
+            parent_name, form_fields
+        )
     }
     return HttpResponse(
         json.dumps(response_dict), content_type="application/javascript"
@@ -324,8 +342,12 @@ def insert_sub_elements_query(request):
     errors = check_query_form(form_values, template_id, request=request)
 
     if len(errors) == 0:
-        query = sub_elements_to_query(form_values, namespaces, default_prefix, request)
-        displayed_query = sub_elements_to_pretty_query(form_values, namespaces, request)
+        query = sub_elements_to_query(
+            form_values, namespaces, default_prefix, request
+        )
+        displayed_query = sub_elements_to_pretty_query(
+            form_values, namespaces, request
+        )
         ui_id = "ui" + criteria_id[4:]
         temporary_query = SavedQuery(
             user_id=ExploreExampleAppConfig.name,
@@ -380,7 +402,9 @@ def update_user_input(request):
     default_prefix = get_default_prefix(namespaces)
 
     element_type = data_structure_element.options["type"]
-    user_inputs = get_user_inputs(element_type, data_structure_element, default_prefix)
+    user_inputs = get_user_inputs(
+        element_type, data_structure_element, default_prefix
+    )
 
     response_dict = {"userInputs": user_inputs, "element_type": element_type}
     return HttpResponse(
@@ -486,7 +510,9 @@ def delete_query(request):
     try:
         saved_query = saved_query_api.get_by_id(saved_query_id[5:])
     except exceptions.DoesNotExist:
-        return HttpResponseBadRequest("The saved query does not exist anymore.")
+        return HttpResponseBadRequest(
+            "The saved query does not exist anymore."
+        )
     saved_query_api.delete(saved_query)
     return HttpResponse(json.dumps({}), content_type="application/javascript")
 
@@ -515,7 +541,9 @@ def add_query_criteria(request):
     try:
         saved_query = saved_query_api.get_by_id(saved_query_id)
     except exceptions.DoesNotExist:
-        return HttpResponseBadRequest("The saved query does not exist anymore.")
+        return HttpResponseBadRequest(
+            "The saved query does not exist anymore."
+        )
 
     new_query_html = render_new_query(tag_id, saved_query, is_first)
     response_dict = {"query": new_query_html, "first": is_first}
@@ -585,12 +613,15 @@ class GetQueryView(View):
                 query_object.content = json.dumps(query_content)
             elif len(errors) > 0:
                 return HttpResponseBadRequest(
-                    _render_errors(errors), content_type="application/javascript"
+                    _render_errors(errors),
+                    content_type="application/javascript",
                 )
 
             query_api.upsert(query_object, request.user)
 
-            return HttpResponse(json.dumps({}), content_type="application/javascript")
+            return HttpResponse(
+                json.dumps({}), content_type="application/javascript"
+            )
         except exceptions.ModelError:
             return HttpResponseBadRequest(
                 "Invalid input.", content_type="application/javascript"
@@ -629,7 +660,9 @@ class SaveQueryView(View):
         # Check that the user can save a query
         if "_auth_user_id" not in request.session:
             error = "You have to login to save a query."
-            return HttpResponseBadRequest(error, content_type="application/javascript")
+            return HttpResponseBadRequest(
+                error, content_type="application/javascript"
+            )
 
         # Check that the query is valid
         errors = check_query_form(form_values, template_id, request=request)
@@ -643,7 +676,9 @@ class SaveQueryView(View):
                 # save the query in the data base
                 saved_query = SavedQuery(
                     user_id=str(request.user.id),
-                    template=template_api.get_by_id(template_id, request=request),
+                    template=template_api.get_by_id(
+                        template_id, request=request
+                    ),
                     query=json.dumps(query),
                     displayed_query=displayed_query,
                 )
@@ -651,14 +686,17 @@ class SaveQueryView(View):
             except MongoQueryException as exception:
                 errors = [str(exception)]
                 return HttpResponseBadRequest(
-                    _render_errors(errors), content_type="application/javascript"
+                    _render_errors(errors),
+                    content_type="application/javascript",
                 )
         else:
             return HttpResponseBadRequest(
                 _render_errors(errors), content_type="application/javascript"
             )
 
-        return HttpResponse(json.dumps({}), content_type="application/javascript")
+        return HttpResponse(
+            json.dumps({}), content_type="application/javascript"
+        )
 
 
 class CreatePersistentQueryExampleUrlView(CreatePersistentQueryUrlView):

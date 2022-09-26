@@ -5,7 +5,9 @@ from unittest.case import TestCase
 from unittest.mock import patch
 
 from core_main_app.components.template.models import Template
-from core_parser_app.components.data_structure.models import DataStructureElement
+from core_parser_app.components.data_structure.models import (
+    DataStructureElement,
+)
 from core_explore_example_app.components.explore_data_structure import (
     api as explore_data_structure_api,
 )
@@ -19,7 +21,9 @@ class TestExploreDataStructureInsert(TestCase):
 
     @patch.object(ExploreDataStructure, "get_by_user_id_and_template_id")
     @patch.object(ExploreDataStructure, "save")
-    def test_explore_data_structure_upsert_single_structure(self, mock_save, mock_list):
+    def test_explore_data_structure_upsert_single_structure(
+        self, mock_save, mock_list
+    ):
         """test_explore_data_structure_upsert_single_structure"""
 
         data = create_explore_data_structure("1", "name_title_1")
@@ -38,10 +42,14 @@ class TestExploreDataStructureGetByUserIdAndTemplateId(TestCase):
         """test_explore_data_structure_get_by_user_and_template_returns_explore_data_structure"""
 
         # Arrange
-        mock_data = create_explore_data_structure(user="1", name="name_title_1")
+        mock_data = create_explore_data_structure(
+            user="1", name="name_title_1"
+        )
         mock_list.return_value = mock_data
         # Act
-        result = explore_data_structure_api.get_by_user_id_and_template_id("1", "1")
+        result = explore_data_structure_api.get_by_user_id_and_template_id(
+            "1", "1"
+        )
         # Assert
         self.assertTrue(isinstance(result, ExploreDataStructure))
 
@@ -95,6 +103,9 @@ def create_explore_data_structure(user, name):
     """
     template = _get_template()
     explore_data_structure = ExploreDataStructure(
-        user=user, template=template, name=name, data_structure_element_root=None
+        user=user,
+        template=template,
+        name=name,
+        data_structure_element_root=None,
     )
     return explore_data_structure

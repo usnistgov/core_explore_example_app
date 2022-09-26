@@ -22,10 +22,14 @@ class TestBuildOrCriteria(TestCase):
 
         # get the result from the old version which allow 2 params
         build_or_criteria_with_two_params_result = (
-            self._build_or_criteria_with_two_params(mock_criteria_1, mock_criteria_2)
+            self._build_or_criteria_with_two_params(
+                mock_criteria_1, mock_criteria_2
+            )
         )
         # get the result from the new version which allow N params
-        build_or_criteria_result = build_or_criteria(mock_criteria_1, mock_criteria_2)
+        build_or_criteria_result = build_or_criteria(
+            mock_criteria_1, mock_criteria_2
+        )
 
         self.assertDictEqual(
             build_or_criteria_result, build_or_criteria_with_two_params_result
@@ -36,7 +40,9 @@ class TestBuildOrCriteria(TestCase):
 
         build_or_criteria_result = build_or_criteria(*[mock_criteria_1])
 
-        self.assertDictEqual(build_or_criteria_result, {"$or": [mock_criteria_1]})
+        self.assertDictEqual(
+            build_or_criteria_result, {"$or": [mock_criteria_1]}
+        )
 
     def test_build_or_criteria_with_four_params(self):
         """test_build_or_criteria_with_four_params"""
@@ -87,13 +93,18 @@ class TestBuildAndCriteria(TestCase):
 
         # get the result from the old version which allow 2 params
         build_and_criteria_with_two_params_result = (
-            self._build_and_criteria_with_two_params(mock_criteria_1, mock_criteria_2)
+            self._build_and_criteria_with_two_params(
+                mock_criteria_1, mock_criteria_2
+            )
         )
         # get the result from the new version which allow N params
-        build_and_criteria_result = build_and_criteria(mock_criteria_1, mock_criteria_2)
+        build_and_criteria_result = build_and_criteria(
+            mock_criteria_1, mock_criteria_2
+        )
 
         self.assertDictEqual(
-            build_and_criteria_result, build_and_criteria_with_two_params_result
+            build_and_criteria_result,
+            build_and_criteria_with_two_params_result,
         )
 
     def test_build_and_criteria_with_one_params(self):
@@ -101,7 +112,9 @@ class TestBuildAndCriteria(TestCase):
 
         build_and_criteria_result = build_and_criteria(*[mock_criteria_1])
 
-        self.assertDictEqual(build_and_criteria_result, {"$and": [mock_criteria_1]})
+        self.assertDictEqual(
+            build_and_criteria_result, {"$and": [mock_criteria_1]}
+        )
 
     def test_build_and_criteria_with_four_params(self):
         """test_build_and_criteria_with_four_params"""
@@ -152,7 +165,9 @@ class TestBuildWildcardCriteria(TestCase):
 
         # get the result from the old version which allow 2 params
         build_wildcard_criteria_with_two_params_result = (
-            self._build_wildcard_elem_match_criteria(mock_criteria_1, mock_criteria_2)
+            self._build_wildcard_elem_match_criteria(
+                mock_criteria_1, mock_criteria_2
+            )
         )
         # get the result from the new version which allow N params
         build_wildcard_criteria_result = build_wildcard_elem_match_criteria(
@@ -180,7 +195,12 @@ class TestBuildWildcardCriteria(TestCase):
         """test_build_and_criteria_with_four_params"""
 
         build_wildcard_criteria_result = build_wildcard_elem_match_criteria(
-            *[mock_criteria_1, mock_criteria_2, mock_criteria_3, mock_criteria_4]
+            *[
+                mock_criteria_1,
+                mock_criteria_2,
+                mock_criteria_3,
+                mock_criteria_4,
+            ]
         )
 
         self.assertDictEqual(

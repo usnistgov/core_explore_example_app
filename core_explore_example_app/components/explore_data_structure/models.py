@@ -11,7 +11,9 @@ from core_explore_example_app.permissions import rights
 class ExploreDataStructure(DataStructure):
     """Explore data structure"""
 
-    selected_fields_html_tree = models.TextField(blank=True, default=None, null=True)
+    selected_fields_html_tree = models.TextField(
+        blank=True, default=None, null=True
+    )
 
     @staticmethod
     def get_permission():

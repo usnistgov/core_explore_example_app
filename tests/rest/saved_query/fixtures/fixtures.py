@@ -2,7 +2,9 @@
 """
 
 from core_main_app.components.template.models import Template
-from core_main_app.utils.integration_tests.fixture_interface import FixtureInterface
+from core_main_app.utils.integration_tests.fixture_interface import (
+    FixtureInterface,
+)
 from core_explore_example_app.components.saved_query.models import SavedQuery
 
 
@@ -27,7 +29,9 @@ class SavedQueryFixtures(FixtureInterface):
         Returns:
 
         """
-        template = Template(filename="filename", content="<xml />", hash="hash")
+        template = Template(
+            filename="filename", content="<xml />", hash="hash"
+        )
         template.save()
         query_data_1 = (
             '{"$or": [{"list_content": {"$elemMatch": {"path": "/.*chemical-element-type/", "'

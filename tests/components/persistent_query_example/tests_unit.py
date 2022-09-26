@@ -35,7 +35,9 @@ class TestPersistentQueryExampleGetById(TestCase):
             expected_result,
         )
 
-    def test_persistent_query_example_get_by_id_raises_model_error_if_not_found(self):
+    def test_persistent_query_example_get_by_id_raises_model_error_if_not_found(
+        self,
+    ):
         """test_persistent_query_example_get_by_id_raises_model_error_if_not_found"""
 
         # Arrange
@@ -52,7 +54,9 @@ class TestPersistentQueryExampleGetById(TestCase):
         """test_persistent_query_example_get_by_id_raises_does_not_exist_error_if_not_found"""
 
         # Arrange
-        mock_get_by_id.side_effect = exceptions.DoesNotExist(message="mock error")
+        mock_get_by_id.side_effect = exceptions.DoesNotExist(
+            message="mock error"
+        )
         mock_user = create_mock_user("1")
 
         # Act # Assert
@@ -86,7 +90,9 @@ class TestsPersistentQueryExampleGetByName(TestCase):
         """test_persistent_query_example_get_by_name_raises_does_not_exist_error_if_not_found"""
 
         # Arrange
-        mock_get_by_name.side_effect = exceptions.DoesNotExist(message="mock error")
+        mock_get_by_name.side_effect = exceptions.DoesNotExist(
+            message="mock error"
+        )
         mock_user = create_mock_user("1")
 
         # Act # Assert
@@ -195,5 +201,6 @@ class TestsPersistentQueryExampleGetAllByUser(TestCase):
 
         # Act # Assert
         self.assertEqual(
-            persistent_query_example_api.get_all_by_user(mock_user), expected_result
+            persistent_query_example_api.get_all_by_user(mock_user),
+            expected_result,
         )

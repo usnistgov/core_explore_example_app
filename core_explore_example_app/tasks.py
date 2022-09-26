@@ -7,7 +7,9 @@ from celery import shared_task
 from django.utils import timezone
 
 from core_explore_example_app.settings import QUERIES_MAX_DAYS_IN_DATABASE
-from core_explore_example_app.system.api import get_saved_queries_created_by_app
+from core_explore_example_app.system.api import (
+    get_saved_queries_created_by_app,
+)
 
 logger = logging.getLogger(__name__)
 

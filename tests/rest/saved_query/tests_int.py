@@ -59,7 +59,10 @@ class TestGetSavedQueryDetail(MongoIntegrationBaseTestCase):
 
         # Act
         response = RequestMock.do_request_get(
-            saved_query_views.SavedQueryDetail.as_view(), user, self.data, self.param
+            saved_query_views.SavedQueryDetail.as_view(),
+            user,
+            self.data,
+            self.param,
         )
 
         # Assert
@@ -74,7 +77,10 @@ class TestGetSavedQueryDetail(MongoIntegrationBaseTestCase):
 
         # Act
         response = RequestMock.do_request_get(
-            saved_query_views.SavedQueryDetail.as_view(), user, self.data, self.param
+            saved_query_views.SavedQueryDetail.as_view(),
+            user,
+            self.data,
+            self.param,
         )
 
         # Assert
@@ -89,11 +95,16 @@ class TestGetSavedQueryDetail(MongoIntegrationBaseTestCase):
 
         # Act
         response = RequestMock.do_request_get(
-            saved_query_views.SavedQueryDetail.as_view(), user, self.data, self.param
+            saved_query_views.SavedQueryDetail.as_view(),
+            user,
+            self.data,
+            self.param,
         )
 
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(
+            response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 class TestDeleteSavedQueryDetail(MongoIntegrationBaseTestCase):
@@ -116,7 +127,10 @@ class TestDeleteSavedQueryDetail(MongoIntegrationBaseTestCase):
 
         # Act
         response = RequestMock.do_request_delete(
-            saved_query_views.SavedQueryDetail.as_view(), user, self.data, self.param
+            saved_query_views.SavedQueryDetail.as_view(),
+            user,
+            self.data,
+            self.param,
         )
 
         # Assert
@@ -131,7 +145,10 @@ class TestDeleteSavedQueryDetail(MongoIntegrationBaseTestCase):
 
         # Act
         response = RequestMock.do_request_delete(
-            saved_query_views.SavedQueryDetail.as_view(), user, self.data, self.param
+            saved_query_views.SavedQueryDetail.as_view(),
+            user,
+            self.data,
+            self.param,
         )
 
         # Assert
@@ -146,7 +163,10 @@ class TestDeleteSavedQueryDetail(MongoIntegrationBaseTestCase):
 
         # Act
         response = RequestMock.do_request_delete(
-            saved_query_views.SavedQueryDetail.as_view(), user, self.data, self.param
+            saved_query_views.SavedQueryDetail.as_view(),
+            user,
+            self.data,
+            self.param,
         )
 
         # Assert

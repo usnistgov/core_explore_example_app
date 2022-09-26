@@ -30,6 +30,8 @@ class ExploreExample(models.Model):
             ),
             (
                 rights.EXPLORE_EXAMPLE_DATA_STRUCTURE_ACCESS,
-                get_formatted_name(rights.EXPLORE_EXAMPLE_DATA_STRUCTURE_ACCESS),
+                get_formatted_name(
+                    rights.EXPLORE_EXAMPLE_DATA_STRUCTURE_ACCESS
+                ),
             ),
         )

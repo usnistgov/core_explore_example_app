@@ -1,7 +1,9 @@
 """ Fixtures files for Persistent Query Example
 """
 from core_main_app.components.template.models import Template
-from core_main_app.utils.integration_tests.fixture_interface import FixtureInterface
+from core_main_app.utils.integration_tests.fixture_interface import (
+    FixtureInterface,
+)
 from core_explore_example_app.components.persistent_query_example.models import (
     PersistentQueryExample,
 )
@@ -28,7 +30,9 @@ class PersistentQueryExampleFixtures(FixtureInterface):
     def generate_template(self):
         """generate_template"""
 
-        self.template = Template(filename="filename", content="<xml />", hash="hash")
+        self.template = Template(
+            filename="filename", content="<xml />", hash="hash"
+        )
         self.template.save()
 
     def generate_query_collection(self):

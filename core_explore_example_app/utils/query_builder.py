@@ -5,7 +5,10 @@ from os.path import join
 from django.template import loader
 
 from core_main_app.settings import MONGODB_INDEXING
-from xml_utils.xsd_types.xsd_types import get_xsd_numbers, get_xsd_gregorian_types
+from xml_utils.xsd_types.xsd_types import (
+    get_xsd_numbers,
+    get_xsd_gregorian_types,
+)
 from core_explore_example_app.utils.xml import get_enumerations
 
 
@@ -14,7 +17,9 @@ class BranchInfo:
 
     def __init__(self, keep_the_branch=False, selected_leaves=None):
         self.keep_the_branch = keep_the_branch
-        self.selected_leaves = selected_leaves if selected_leaves is not None else []
+        self.selected_leaves = (
+            selected_leaves if selected_leaves is not None else []
+        )
 
     def add_selected_leaf(self, leaf_id):
         """add_selected_leaf
@@ -159,7 +164,9 @@ def render_yes_or_not():
 
     """
     return _render_template(
-        join("core_explore_example_app", "user", "query_builder", "yes_no.html")
+        join(
+            "core_explore_example_app", "user", "query_builder", "yes_no.html"
+        )
     )
 
 
@@ -170,7 +177,12 @@ def render_and_or_not():
 
     """
     return _render_template(
-        join("core_explore_example_app", "user", "query_builder", "and_or_not.html")
+        join(
+            "core_explore_example_app",
+            "user",
+            "query_builder",
+            "and_or_not.html",
+        )
     )
 
 
@@ -181,7 +193,12 @@ def render_numeric_select():
 
     """
     return _render_template(
-        join("core_explore_example_app", "user", "query_builder", "numeric_select.html")
+        join(
+            "core_explore_example_app",
+            "user",
+            "query_builder",
+            "numeric_select.html",
+        )
     )
 
 
@@ -219,7 +236,12 @@ def render_string_select():
 
     """
     return _render_template(
-        join("core_explore_example_app", "user", "query_builder", "string_select.html")
+        join(
+            "core_explore_example_app",
+            "user",
+            "query_builder",
+            "string_select.html",
+        )
     )
 
 
@@ -230,7 +252,12 @@ def render_initial_form():
 
     """
     return _render_template(
-        join("core_explore_example_app", "user", "query_builder", "initial_form.html")
+        join(
+            "core_explore_example_app",
+            "user",
+            "query_builder",
+            "initial_form.html",
+        )
     )
 
 
@@ -241,7 +268,9 @@ def render_remove_button():
 
     """
     return _render_template(
-        join("core_explore_example_app", "user", "query_builder", "remove.html")
+        join(
+            "core_explore_example_app", "user", "query_builder", "remove.html"
+        )
     )
 
 
@@ -269,7 +298,8 @@ def render_enum(enums):
         "enums": enums,
     }
     return _render_template(
-        join("core_explore_example_app", "user", "query_builder", "enum.html"), context
+        join("core_explore_example_app", "user", "query_builder", "enum.html"),
+        context,
     )
 
 
@@ -286,7 +316,12 @@ def render_new_query(tag_id, query, is_first=False):
     """
     context = {"tagID": tag_id, "query": query, "first": is_first}
     return _render_template(
-        join("core_explore_example_app", "user", "query_builder", "new_query.html"),
+        join(
+            "core_explore_example_app",
+            "user",
+            "query_builder",
+            "new_query.html",
+        ),
         context,
     )
 
@@ -304,7 +339,12 @@ def render_new_criteria(tag_id):
         "tagID": tag_id,
     }
     return _render_template(
-        join("core_explore_example_app", "user", "query_builder", "new_criteria.html"),
+        join(
+            "core_explore_example_app",
+            "user",
+            "query_builder",
+            "new_criteria.html",
+        ),
         context,
     )
 
@@ -354,7 +394,9 @@ def get_element_comparison(element_field):
     Returns:
 
     """
-    return element_field["comparison"] if "comparison" in element_field else "is"
+    return (
+        element_field["comparison"] if "comparison" in element_field else "is"
+    )
 
 
 def get_user_inputs(element_type, data_structure_element, default_prefix):
@@ -377,7 +419,9 @@ def get_user_inputs(element_type, data_structure_element, default_prefix):
                 user_inputs = render_numeric_select() + render_value_input()
             # gregorian date
             elif element_type in get_xsd_gregorian_types(default_prefix):
-                user_inputs = render_gregorian_strict_match() + render_value_input()
+                user_inputs = (
+                    render_gregorian_strict_match() + render_value_input()
+                )
             # string
             else:
                 user_inputs = render_string_select() + render_value_input()

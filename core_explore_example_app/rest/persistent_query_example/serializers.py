@@ -26,7 +26,9 @@ class PersistentQueryExampleSerializer(ModelSerializer):
         # Create instance from the validated data and insert it in DB
         persistent_query_example = PersistentQueryExample(
             user_id=str(self.context["request"].user.id),
-            content=validated_data["content"] if "content" in validated_data else None,
+            content=validated_data["content"]
+            if "content" in validated_data
+            else None,
             name=validated_data["name"] if "name" in validated_data else None,
         )
         persistent_query_example_api.upsert(
@@ -72,7 +74,9 @@ class PersistentQueryExampleAdminSerializer(ModelSerializer):
         # Create data
         persistent_query_example = PersistentQueryExample(
             user_id=validated_data["user_id"],
-            content=validated_data["content"] if "content" in validated_data else None,
+            content=validated_data["content"]
+            if "content" in validated_data
+            else None,
             name=validated_data["name"] if "name" in validated_data else None,
         )
         persistent_query_example_api.upsert(

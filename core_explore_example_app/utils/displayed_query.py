@@ -126,7 +126,9 @@ def fields_to_pretty_query(form_values):
         if element_type == "query":
             criteria = build_query_pretty_criteria(field["name"], is_not)
         else:
-            criteria = build_pretty_criteria(field["name"], comparison, value, is_not)
+            criteria = build_pretty_criteria(
+                field["name"], comparison, value, is_not
+            )
 
         if bool_comp == "OR":
             query = build_or_pretty_criteria(query, criteria)
@@ -172,7 +174,9 @@ def sub_elements_to_pretty_query(form_values, namespaces, request):
             value = get_element_value(field)
             comparison = get_element_comparison(field)
 
-            criteria = build_pretty_criteria(element_name, comparison, value, is_not)
+            criteria = build_pretty_criteria(
+                element_name, comparison, value, is_not
+            )
 
             list_criteria.append(criteria)
 

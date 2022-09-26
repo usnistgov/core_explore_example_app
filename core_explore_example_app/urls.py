@@ -4,10 +4,17 @@ from django.conf.urls import include
 from django.urls import re_path
 
 from core_explore_example_app.utils.mongo_query import fields_to_query
-from core_explore_example_app.views.user import views as user_views, ajax as user_ajax
+from core_explore_example_app.views.user import (
+    views as user_views,
+    ajax as user_ajax,
+)
 
 urlpatterns = [
-    re_path(r"^$", user_views.IndexView.as_view(), name="core_explore_example_index"),
+    re_path(
+        r"^$",
+        user_views.IndexView.as_view(),
+        name="core_explore_example_index",
+    ),
     re_path(r"^rest/", include("core_explore_example_app.rest.urls")),
     re_path(
         r"^select-fields/(?P<template_id>\w+)$",
@@ -30,7 +37,9 @@ urlpatterns = [
         name="core_explore_example_results",
     ),
     re_path(
-        r"^save-fields$", user_ajax.save_fields, name="core_explore_example_save_fields"
+        r"^save-fields$",
+        user_ajax.save_fields,
+        name="core_explore_example_save_fields",
     ),
     re_path(
         r"^generate-element/(?P<explore_data_structure_id>\w+)$",
