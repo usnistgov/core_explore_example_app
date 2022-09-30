@@ -1,14 +1,12 @@
 """ Unit Test Saved Query
 """
 from unittest.case import TestCase
+from unittest.mock import patch, Mock
 
-from mock import patch
-from mock.mock import Mock
-
-from core_main_app.commons import exceptions
-from core_main_app.components.template.models import Template
 from core_explore_example_app.components.saved_query import api as saved_query_api
 from core_explore_example_app.components.saved_query.models import SavedQuery
+from core_main_app.commons import exceptions
+from core_main_app.components.template.models import Template
 
 
 class TestSavedQueryGetById(TestCase):

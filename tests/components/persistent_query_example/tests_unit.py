@@ -2,7 +2,7 @@
 """
 from unittest import TestCase, mock
 
-from mock import patch
+from unittest.mock import patch
 
 from core_main_app.access_control.exceptions import AccessControlError
 from core_main_app.commons import exceptions

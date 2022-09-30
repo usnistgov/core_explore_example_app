@@ -2,7 +2,7 @@
 """
 from unittest.case import TestCase
 
-from mock import patch
+from unittest.mock import patch
 
 from core_main_app.components.template.models import Template
 from core_parser_app.components.data_structure.models import DataStructureElement
