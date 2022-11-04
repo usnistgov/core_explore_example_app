@@ -78,6 +78,9 @@ class IndexView(View):
             "build_query_redirect": self.build_query_redirect,
         }
 
+        # Set page title
+        context.update({"page_title": "Explore by Example"})
+
         return render(
             request, self.get_redirect, assets=assets, context=context
         )
@@ -200,6 +203,8 @@ class SelectFieldsView(View):
                 "data_structure_id": str(data_structure.id),
                 "xsd_form": xsd_form,
             }
+            # Set page title
+            context.update({"page_title": "Select Fields"})
 
             return render(
                 request,
@@ -212,7 +217,7 @@ class SelectFieldsView(View):
                 request,
                 "core_explore_example_app/user/errors.html",
                 assets={},
-                context={"errors": str(exception)},
+                context={"errors": str(exception), "page_title": "Error"},
             )
 
 
@@ -329,6 +334,9 @@ class BuildQueryView(View):
                 "core_explore_example_app/user/modals/delete_query.html",
             ]
 
+            # Set page title
+            context.update({"page_title": "Build Query"})
+
             return render(
                 request,
                 "core_explore_example_app/user/build_query.html",
@@ -341,7 +349,7 @@ class BuildQueryView(View):
                 request,
                 "core_explore_example_app/user/errors.html",
                 assets={},
-                context={"errors": str(exception)},
+                context={"errors": str(exception), "page_title": "Error"},
             )
 
     @staticmethod
@@ -462,6 +470,9 @@ class ResultQueryView(ResultsView):
             context["templates_list"] = json.dumps(
                 [str(template.id) for template in query.templates.all()]
             )
+
+        # Set page title
+        context.update({"page_title": "Query Results"})
 
         return render(
             request,
