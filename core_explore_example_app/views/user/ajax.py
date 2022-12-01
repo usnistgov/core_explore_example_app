@@ -9,24 +9,12 @@ from django.utils.decorators import method_decorator
 from django.utils.html import escape
 from django.views.generic import View
 
+import core_explore_example_app.permissions.rights as rights
 import core_main_app.utils.decorators as decorators
-from core_main_app.commons import exceptions
-from core_main_app.components.template import api as template_api
-from core_parser_app.components.data_structure_element import (
-    api as data_structure_element_api,
-)
-from xml_utils.xsd_tree.operations.namespaces import (
-    get_namespaces,
-    get_default_prefix,
-)
-from xml_utils.html_tree import parser as html_tree_parser
 from core_explore_common_app.components.query import api as query_api
 from core_explore_common_app.views.user.ajax import (
     CreatePersistentQueryUrlView,
 )
-import core_explore_example_app.permissions.rights as rights
-
-
 from core_explore_example_app.apps import ExploreExampleAppConfig
 from core_explore_example_app.commons.exceptions import MongoQueryException
 from core_explore_example_app.components.explore_data_structure import (
@@ -63,7 +51,17 @@ from core_explore_example_app.utils.query_builder import (
     prune_html_tree,
     get_user_inputs,
 )
-
+from core_main_app.commons import exceptions
+from core_main_app.components.template import api as template_api
+from core_main_app.utils.query.mongo.prepare import sanitize_value
+from core_parser_app.components.data_structure_element import (
+    api as data_structure_element_api,
+)
+from xml_utils.html_tree import parser as html_tree_parser
+from xml_utils.xsd_tree.operations.namespaces import (
+    get_namespaces,
+    get_default_prefix,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -181,8 +179,8 @@ def save_fields(request):
     """
     try:
         # get parameters form request
-        form_content = request.POST["formContent"]
-        template_id = request.POST["templateID"]
+        form_content = sanitize_value(request.POST["formContent"])
+        template_id = sanitize_value(request.POST["templateID"])
 
         # modify the form string to only keep the selected elements
         html_tree = html_tree_parser.from_string(form_content)
