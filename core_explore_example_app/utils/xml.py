@@ -1,6 +1,10 @@
 """XML utils
 """
-from core_main_app.commons.exceptions import XMLError
+from core_main_app.commons.exceptions import XMLError, QueryError
+from core_main_app.utils.query.mongo.prepare import (
+    sanitize_number,
+    sanitize_value,
+)
 from xml_utils.xsd_types.xsd_types import (
     get_xsd_floating_numbers,
     get_xsd_numbers,
@@ -26,15 +30,20 @@ def validate_element_value(
     # Floating number
     if element_type in get_xsd_floating_numbers(namespace_prefix):
         try:
-            float(element_value)
-        except ValueError:
-            error = "Element {} must be a number.".format(element_name)
+            sanitize_number(float(element_value))
+        except (ValueError, QueryError):
+            error = f"Element {element_name} must be a number."
     # Number
     elif element_type in get_xsd_numbers(namespace_prefix):
         try:
-            int(element_value)
-        except ValueError:
-            error = "Element {} must be an integer.".format(element_name)
+            sanitize_number(int(element_value))
+        except (ValueError, QueryError):
+            error = f"Element {element_name} must be an integer."
+    else:
+        try:
+            sanitize_value(element_value)
+        except QueryError:
+            error = f"Element {element_name} is not valid."
 
     return error
 

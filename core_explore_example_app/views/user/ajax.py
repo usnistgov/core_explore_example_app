@@ -588,31 +588,37 @@ class GetQueryView(View):
                 query_form = request.POST["queryForm"]
                 request.session["savedQueryFormExplore"] = query_form
 
-            errors = []
             query_object = query_api.get_by_id(query_id, request.user)
-            # set the data-sources sorting value according to the POST request field
+
+            # Check that the query fields are correctly filled and formatted.
+            errors = []
+            if len(query_object.data_sources) == 0:
+                errors = ["Please select at least 1 data source."]
+            elif form_values:
+                errors = check_query_form(
+                    form_values, template_id, request=request
+                )
+
+            if len(errors) > 0:  # If any error, send it back to the user.
+                return HttpResponseBadRequest(
+                    _render_errors(errors),
+                    content_type="application/javascript",
+                )
+
+            # Set the data-sources sorting value according to the POST request field
             for data_sources_index in range(len(query_object.data_sources)):
-                # updating only the existing data-sources (the new data-source already got
-                # the default filter value)
+                # updating only the existing data-sources (the new data-source already
+                # got the default filter value).
                 if data_sources_index in range(0, len(order_by_field_array)):
                     query_object.data_sources[data_sources_index][
                         "order_by_field"
                     ] = order_by_field_array[data_sources_index]
-            if len(query_object.data_sources) == 0:
-                errors.append("Please select at least 1 data source.")
 
-            if len(errors) == 0 and form_values:
-                errors.append(
-                    check_query_form(form_values, template_id, request=request)
-                )
-                query_content = self.fields_to_query_func(
-                    form_values, template_id, request=request
-                )
-                query_object.content = json.dumps(query_content)
-            elif len(errors) > 0:
-                return HttpResponseBadRequest(
-                    _render_errors(errors),
-                    content_type="application/javascript",
+            if form_values:
+                query_object.content = json.dumps(
+                    self.fields_to_query_func(
+                        form_values, template_id, request=request
+                    )
                 )
 
             query_api.upsert(query_object, request.user)
