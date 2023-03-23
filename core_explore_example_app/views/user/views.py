@@ -2,26 +2,17 @@
 """
 import json
 
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import View
 
-from core_main_app.commons import exceptions as exceptions
-from core_main_app.components.template import api as template_api
-from core_main_app.components.template_version_manager import (
-    api as template_version_manager_api,
-)
-from core_main_app.settings import DATA_SORTING_FIELDS
 import core_main_app.utils.decorators as decorators
-from core_main_app.utils.rendering import render
-
 from core_explore_common_app.components.query import api as query_api
 from core_explore_common_app.settings import DEFAULT_DATE_TOGGLE_VALUE
 from core_explore_common_app.views.user.views import (
     ResultQueryRedirectView,
     ResultsView,
 )
-from core_explore_example_app.permissions import rights
 from core_explore_example_app.components.explore_data_structure import (
     api as explore_data_structure_api,
 )
@@ -34,8 +25,16 @@ from core_explore_example_app.components.persistent_query_example.models import 
 from core_explore_example_app.components.saved_query import (
     api as saved_query_api,
 )
+from core_explore_example_app.permissions import rights
 from core_explore_example_app.settings import INSTALLED_APPS
 from core_explore_example_app.utils.parser import render_form
+from core_main_app.commons import exceptions as exceptions
+from core_main_app.components.template import api as template_api
+from core_main_app.components.template_version_manager import (
+    api as template_version_manager_api,
+)
+from core_main_app.settings import DATA_SORTING_FIELDS
+from core_main_app.utils.rendering import render
 
 
 class IndexView(View):
@@ -51,7 +50,6 @@ class IndexView(View):
         decorators.permission_required(
             content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
             permission=rights.EXPLORE_EXAMPLE_ACCESS,
-            login_url=reverse_lazy("core_main_app_login"),
         )
     )
     def get(self, request, *args, **kwargs):
@@ -123,7 +121,6 @@ class SelectFieldsView(View):
         decorators.permission_required(
             content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
             permission=rights.EXPLORE_EXAMPLE_ACCESS,
-            login_url=reverse_lazy("core_main_app_login"),
         )
     )
     def get(self, request, template_id, *args, **kwargs):
@@ -241,7 +238,6 @@ class BuildQueryView(View):
         decorators.permission_required(
             content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
             permission=rights.EXPLORE_EXAMPLE_ACCESS,
-            login_url=reverse_lazy("core_main_app_login"),
         )
     )
     def get(self, request, template_id, query_id=None):
@@ -433,7 +429,6 @@ class ResultQueryView(ResultsView):
         decorators.permission_required(
             content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
             permission=rights.EXPLORE_EXAMPLE_ACCESS,
-            login_url=reverse_lazy("core_main_app_login"),
         )
     )
     def get(self, request, template_id, query_id):
@@ -531,7 +526,6 @@ class ResultQueryExampleRedirectView(ResultQueryRedirectView):
         decorators.permission_required(
             content_type=rights.EXPLORE_EXAMPLE_CONTENT_TYPE,
             permission=rights.EXPLORE_EXAMPLE_ACCESS,
-            login_url=reverse_lazy("core_main_app_login"),
         )
     )
     def get(self, request, *args, **kwargs):
