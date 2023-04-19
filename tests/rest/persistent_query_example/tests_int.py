@@ -5,7 +5,7 @@ from django.contrib.auth.models import AnonymousUser
 from rest_framework import status
 
 from core_main_app.utils.integration_tests.integration_base_test_case import (
-    MongoIntegrationBaseTestCase,
+    IntegrationBaseTestCase,
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
@@ -19,7 +19,7 @@ from tests.components.persistent_query_example.fixtures.fixtures import (
 fixture_data_structure = PersistentQueryExampleFixtures()
 
 
-class TestPersistentQueryExampleListAdmin(MongoIntegrationBaseTestCase):
+class TestPersistentQueryExampleListAdmin(IntegrationBaseTestCase):
     """Test Persistent Query Example List Admin"""
 
     fixture = fixture_data_structure
@@ -64,7 +64,7 @@ class TestPersistentQueryExampleListAdmin(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
-class TestPersistentQueryExampleList(MongoIntegrationBaseTestCase):
+class TestPersistentQueryExampleList(IntegrationBaseTestCase):
     """Test Persistent Query Example List"""
 
     fixture = fixture_data_structure
@@ -106,7 +106,7 @@ class TestPersistentQueryExampleList(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
 
-class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
+class TestPersistentQueryExampleDetail(IntegrationBaseTestCase):
     """Test Persistent Query Example Detail"""
 
     fixture = fixture_data_structure
@@ -297,7 +297,7 @@ class TestPersistentQueryExampleDetail(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-class TestPersistentQueryExampleByName(MongoIntegrationBaseTestCase):
+class TestPersistentQueryExampleByName(IntegrationBaseTestCase):
     """Test Persistent Query Example By Name"""
 
     fixture = fixture_data_structure

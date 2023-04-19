@@ -6,7 +6,7 @@ from django.contrib.auth.models import AnonymousUser
 
 from core_main_app.access_control.exceptions import AccessControlError
 from core_main_app.utils.integration_tests.integration_base_test_case import (
-    MongoIntegrationBaseTestCase,
+    IntegrationBaseTestCase,
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_explore_common_app.settings import (
@@ -23,7 +23,7 @@ from tests.components.persistent_query_example.fixtures.fixtures import (
 fixture_persistent_query_example = PersistentQueryExampleFixtures()
 
 
-class TestPersistentQueryExampleGetById(MongoIntegrationBaseTestCase):
+class TestPersistentQueryExampleGetById(IntegrationBaseTestCase):
     """Test Persistent Query Example Get By Id"""
 
     fixture = fixture_persistent_query_example
@@ -113,7 +113,7 @@ class TestPersistentQueryExampleGetById(MongoIntegrationBaseTestCase):
                 )
 
 
-class TestPersistentQueryExampleGetByName(MongoIntegrationBaseTestCase):
+class TestPersistentQueryExampleGetByName(IntegrationBaseTestCase):
     """Test Persistent Query Example Get By Name"""
 
     fixture = fixture_persistent_query_example
@@ -203,7 +203,7 @@ class TestPersistentQueryExampleGetByName(MongoIntegrationBaseTestCase):
                 )
 
 
-class TestPersistentQueryExampleDelete(MongoIntegrationBaseTestCase):
+class TestPersistentQueryExampleDelete(IntegrationBaseTestCase):
     """Test Persistent Query Example Delete"""
 
     fixture = fixture_persistent_query_example
@@ -264,7 +264,7 @@ class TestPersistentQueryExampleDelete(MongoIntegrationBaseTestCase):
             )
 
 
-class TestPersistentQueryExampleUpdate(MongoIntegrationBaseTestCase):
+class TestPersistentQueryExampleUpdate(IntegrationBaseTestCase):
     """Test Persistent Query Example Update"""
 
     fixture = fixture_persistent_query_example
@@ -331,7 +331,7 @@ class TestPersistentQueryExampleUpdate(MongoIntegrationBaseTestCase):
             )
 
 
-class TestPersistentQueryExampleCreate(MongoIntegrationBaseTestCase):
+class TestPersistentQueryExampleCreate(IntegrationBaseTestCase):
     """Test Persistent Query Example Create"""
 
     fixture = fixture_persistent_query_example
@@ -396,7 +396,7 @@ class TestPersistentQueryExampleCreate(MongoIntegrationBaseTestCase):
                 )
 
 
-class TestPersistentQueryExampleGetAll(MongoIntegrationBaseTestCase):
+class TestPersistentQueryExampleGetAll(IntegrationBaseTestCase):
     """Test Persistent Query Example Get All"""
 
     fixture = fixture_persistent_query_example
@@ -431,7 +431,7 @@ class TestPersistentQueryExampleGetAll(MongoIntegrationBaseTestCase):
             persistent_query_example_api.get_all(AnonymousUser())
 
 
-class TestPersistentQueryExampleGetAllByUser(MongoIntegrationBaseTestCase):
+class TestPersistentQueryExampleGetAllByUser(IntegrationBaseTestCase):
     """Test Persistent Query Example Get All By User"""
 
     fixture = fixture_persistent_query_example

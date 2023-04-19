@@ -4,7 +4,7 @@
 from rest_framework import status
 
 from core_main_app.utils.integration_tests.integration_base_test_case import (
-    MongoIntegrationBaseTestCase,
+    IntegrationBaseTestCase,
 )
 from core_main_app.utils.tests_tools.MockUser import create_mock_user
 from core_main_app.utils.tests_tools.RequestMock import RequestMock
@@ -14,7 +14,7 @@ from tests.rest.saved_query.fixtures.fixtures import SavedQueryFixtures
 fixture_data = SavedQueryFixtures()
 
 
-class TestGetSavedQueryList(MongoIntegrationBaseTestCase):
+class TestGetSavedQueryList(IntegrationBaseTestCase):
     """Test Get Saved Query List"""
 
     fixture = fixture_data
@@ -39,7 +39,7 @@ class TestGetSavedQueryList(MongoIntegrationBaseTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class TestGetSavedQueryDetail(MongoIntegrationBaseTestCase):
+class TestGetSavedQueryDetail(IntegrationBaseTestCase):
     """Test Get Saved Query Detail"""
 
     fixture = fixture_data
@@ -107,7 +107,7 @@ class TestGetSavedQueryDetail(MongoIntegrationBaseTestCase):
         )
 
 
-class TestDeleteSavedQueryDetail(MongoIntegrationBaseTestCase):
+class TestDeleteSavedQueryDetail(IntegrationBaseTestCase):
     """Test Delete Saved Query Detail"""
 
     fixture = fixture_data
