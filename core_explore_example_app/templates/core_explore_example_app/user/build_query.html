@@ -15,7 +15,7 @@
             {% include data.query_builder_interface|safe %}
             </div>
         {% endif %}
-        <form class="ml-4">
+        <form class="{% if BOOTSTRAP_VERSION == "4.6.2" %}ml-4{% elif BOOTSTRAP_VERSION == "5.1.3" %}ms-4{% endif %}">
             <button type="button" class="btn btn-danger" onclick="clearCriteria()">
                 <i class="fas fa-eraser"></i> Clear
             </button>
@@ -23,7 +23,7 @@
             <button type="button" class="btn btn-secondary" onclick="saveQuery()">
                 <i class="fas fa-save"></i> Save Query
             </button>
-            {%endif%}
+            {% endif %}
             <button type="button" class="btn btn-primary" onclick="submit_query()">
                 <i class="fas fa-search"></i> Submit Query
             </button>
@@ -59,7 +59,7 @@
                               onclick="deleteQuery('query{{ query.id }}')">
                             <i class="fas fa-trash"></i>  Delete
                         </span>
-                        {%endif%}
+                        {% endif %}
                         <span class="btn btn-primary add-query"
                               onclick="addSavedQueryToForm('query{{ query.id }}')">
                             <i class="fas fa-arrow-circle-up"></i> Add to Query
@@ -78,7 +78,7 @@
         <button type="button" class="btn btn-danger" onclick="clearQueries()">
             <i class="fas fa-trash"></i> Delete All
         </button>
-        {%endif%}
+        {% endif %}
     </form>
 </div>
 {% endif %}

@@ -7,7 +7,7 @@
     }
 </style>
 
-<div class="float-right">
+<div class="{% if BOOTSTRAP_VERSION == "4.6.2" %}float-right{% elif BOOTSTRAP_VERSION == "5.1.3" %}float-end{% endif %}">
     <a {% if back_to_builder %} href="{% url data.back_to_query_redirect data.template_id data.query_id %}"
        {% else %}  id="btn-previous-page" {% endif %}
        class="btn btn-secondary" role="button"><i class="fas fa-arrow-left"></i> Back to Query</a>
