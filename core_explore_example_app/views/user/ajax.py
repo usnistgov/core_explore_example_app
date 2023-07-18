@@ -714,5 +714,4 @@ class CreatePersistentQueryExampleUrlView(CreatePersistentQueryUrlView):
         return PersistentQueryExample(
             user_id=query.user_id,
             content=query.content,
-            data_sources=query.data_sources,
         )
