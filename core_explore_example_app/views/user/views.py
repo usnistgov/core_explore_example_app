@@ -30,6 +30,7 @@ from core_explore_example_app.settings import INSTALLED_APPS
 from core_explore_example_app.utils.parser import render_form
 from core_main_app.commons import exceptions as exceptions
 from core_main_app.components.template import api as template_api
+from core_main_app.components.template.models import Template
 from core_main_app.components.template_version_manager import (
     api as template_version_manager_api,
 )
@@ -93,7 +94,9 @@ class IndexView(View):
             List of all global version managers
 
         """
-        return self.api.get_active_global_version_manager(request=request)
+        return self.api.get_active_global_version_manager(
+            request=request
+        ).filter(template__format=Template.XSD)
 
     def get_user_active_list(self, request):
         """Get all active version managers with given user id.
@@ -105,7 +108,9 @@ class IndexView(View):
             List of all global version managers with given user.
 
         """
-        return self.api.get_active_version_manager_by_user_id(request=request)
+        return self.api.get_active_version_manager_by_user_id(
+            request=request
+        ).filter(template__format=Template.XSD)
 
 
 class SelectFieldsView(View):
