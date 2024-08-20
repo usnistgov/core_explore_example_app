@@ -1,5 +1,6 @@
 """Url router for the administration site
 """
+
 from django.contrib import admin
 
 from core_main_app.admin import core_admin_site

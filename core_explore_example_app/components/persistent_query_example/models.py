@@ -1,5 +1,6 @@
 """ Persistent Query Example model
 """
+
 from django.core.exceptions import ObjectDoesNotExist
 
 from core_explore_common_app.components.abstract_persistent_query.models import (

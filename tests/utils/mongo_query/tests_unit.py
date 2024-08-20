@@ -1,5 +1,6 @@
 """ Build Criteria Regression Test
 """
+
 from unittest.case import TestCase
 
 from core_explore_example_app.utils.mongo_query import (

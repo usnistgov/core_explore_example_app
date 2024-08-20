@@ -1,5 +1,6 @@
 """Util to build queries for mongo db
 """
+
 import json
 import re
 from typing import List, Any

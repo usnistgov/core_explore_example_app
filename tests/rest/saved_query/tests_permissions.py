@@ -1,5 +1,6 @@
 """ Authentication tests for Saved Query REST API
 """
+
 from django.test import SimpleTestCase
 from unittest.mock import patch
 from rest_framework import status

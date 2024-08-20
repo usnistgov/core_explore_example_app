@@ -1,5 +1,6 @@
 """ Custom admin site for the Explore Data Structure model
 """
+
 from django.contrib import admin
 
 

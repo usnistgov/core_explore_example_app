@@ -1,5 +1,6 @@
 """ Unit Test Saved Query
 """
+
 from unittest.case import TestCase
 from unittest.mock import patch, Mock
 

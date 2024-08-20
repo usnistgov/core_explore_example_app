@@ -1,5 +1,6 @@
 """Explore Example app Ajax views
 """
+
 import json
 import logging
 

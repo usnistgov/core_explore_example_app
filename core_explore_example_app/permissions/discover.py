@@ -1,5 +1,6 @@
 """ Discover rules for core explore example app.
 """
+
 import logging
 
 from core_main_app.permissions import rights as main_rights

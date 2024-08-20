@@ -1,5 +1,6 @@
 """ Test user AJAX views
 """
+
 import json
 from unittest import TestCase, mock
 from unittest.mock import MagicMock, patch

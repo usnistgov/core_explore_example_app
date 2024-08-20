@@ -1,5 +1,6 @@
 """ Unit tests for XML utilities.
 """
+
 from unittest import TestCase
 
 from core_explore_example_app.utils.xml import validate_element_value

@@ -1,5 +1,6 @@
 """Explore example user views
 """
+
 import json
 
 from django.urls import reverse

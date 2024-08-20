@@ -1,5 +1,6 @@
 """XML utils
 """
+
 from core_main_app.commons.exceptions import XMLError, QueryError
 from core_main_app.utils.query.mongo.prepare import (
     sanitize_number,
