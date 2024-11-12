@@ -16,12 +16,6 @@ li.current_page_item a {color: #333;}
     height: 40px;
 }
 
-.title-page{
-	font-size: 2.0em;
-	line-height: 1.6em;
-	font-weight: bold;
-}
-
 .title-table{
 	font-weight: bold;
 	font-size: smaller;
