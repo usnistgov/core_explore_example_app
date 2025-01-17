@@ -37,7 +37,7 @@ chdir(normpath(join(abspath(__file__), pardir)))
 
 setup(
     name="core_explore_example_app",
-    version="2.13.0",
+    version="2.14.0",
     description="Exploration by example for the curator core project",
     long_description=long_desc,
     author="NIST IT Lab",
