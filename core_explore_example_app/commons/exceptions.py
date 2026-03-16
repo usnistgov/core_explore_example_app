@@ -1,5 +1,4 @@
-""" Core Explore Example exceptions
-"""
+"""Core Explore Example exceptions"""
 
 
 class MongoQueryException(Exception):

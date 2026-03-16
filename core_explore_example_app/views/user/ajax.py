@@ -1,5 +1,4 @@
-"""Explore Example app Ajax views
-"""
+"""Explore Example app Ajax views"""
 
 import json
 import logging

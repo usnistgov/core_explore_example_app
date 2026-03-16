@@ -1,5 +1,4 @@
-""" Unit tests for XML utilities.
-"""
+"""Unit tests for XML utilities."""
 
 from unittest import TestCase
 

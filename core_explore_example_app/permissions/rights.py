@@ -1,5 +1,4 @@
-""" Rights for core explore example app
-"""
+"""Rights for core explore example app"""
 
 EXPLORE_EXAMPLE_CONTENT_TYPE = "core_explore_example_app"
 EXPLORE_EXAMPLE_ACCESS = "access_explore_example"

@@ -1,5 +1,4 @@
-"""Explore example user views
-"""
+"""Explore example user views"""
 
 import json
 

@@ -1,5 +1,4 @@
-""" Auto discovery of explore example app.
-"""
+"""Auto discovery of explore example app."""
 
 import logging
 

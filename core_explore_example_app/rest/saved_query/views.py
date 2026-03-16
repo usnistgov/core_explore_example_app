@@ -1,5 +1,4 @@
-""" REST Views for Saved Queries
-"""
+"""REST Views for Saved Queries"""
 
 from django.http import Http404
 from drf_spectacular.types import OpenApiTypes

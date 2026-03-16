@@ -1,5 +1,4 @@
-""" Fixtures files for Data
-"""
+"""Fixtures files for Data"""
 
 from core_main_app.components.template.models import Template
 from core_main_app.components.template_version_manager.models import (

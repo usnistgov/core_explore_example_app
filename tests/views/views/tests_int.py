@@ -1,5 +1,4 @@
-""" Test user views
-"""
+"""Test user views"""
 
 from tests.components.data.fixtures.fixtures import (
     DataFixtures,

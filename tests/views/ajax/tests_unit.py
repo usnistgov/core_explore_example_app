@@ -1,5 +1,4 @@
-""" Test user AJAX views
-"""
+"""Test user AJAX views"""
 
 import json
 from unittest import TestCase, mock

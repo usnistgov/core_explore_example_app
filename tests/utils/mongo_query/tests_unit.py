@@ -1,5 +1,4 @@
-""" Build Criteria Regression Test
-"""
+"""Build Criteria Regression Test"""
 
 from unittest.case import TestCase
 

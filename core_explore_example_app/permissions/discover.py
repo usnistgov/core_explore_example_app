@@ -1,5 +1,4 @@
-""" Discover rules for core explore example app.
-"""
+"""Discover rules for core explore example app."""
 
 import logging
 

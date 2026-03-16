@@ -1,5 +1,4 @@
-"""Util to build queries for mongo db
-"""
+"""Util to build queries for mongo db"""
 
 import json
 import re

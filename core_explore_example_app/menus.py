@@ -1,5 +1,4 @@
-""" Add Explore Example in main menu
-"""
+"""Add Explore Example in main menu"""
 
 from django.urls import reverse
 from menu import Menu, MenuItem

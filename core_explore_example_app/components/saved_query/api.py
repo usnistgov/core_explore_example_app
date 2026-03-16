@@ -1,5 +1,4 @@
-"""Saved Query API
-"""
+"""Saved Query API"""
 
 from core_explore_example_app.components.saved_query.models import SavedQuery
 

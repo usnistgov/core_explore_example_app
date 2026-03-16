@@ -1,5 +1,4 @@
-""" Custom admin site for the Persistent Query Example model
-"""
+"""Custom admin site for the Persistent Query Example model"""
 
 from django.contrib import admin
 

@@ -1,5 +1,4 @@
-""" Authentication tests for Saved Query REST API
-"""
+"""Authentication tests for Saved Query REST API"""
 
 from django.test import SimpleTestCase
 from unittest.mock import patch

@@ -1,5 +1,4 @@
-"""Custom Checkbox Renderer class
-"""
+"""Custom Checkbox Renderer class"""
 
 from core_parser_app.tools.parser.renderer.checkbox import CheckboxRenderer
 

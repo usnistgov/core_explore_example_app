@@ -1,5 +1,4 @@
-""" Persistent Query Example model
-"""
+"""Persistent Query Example model"""
 
 from django.core.exceptions import ObjectDoesNotExist
 

@@ -1,5 +1,4 @@
-""" Explore data Structure api
-"""
+"""Explore data Structure api"""
 
 from core_explore_example_app.components.explore_data_structure.models import (
     ExploreDataStructure,

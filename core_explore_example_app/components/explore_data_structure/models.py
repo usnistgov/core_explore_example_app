@@ -1,5 +1,4 @@
-"""Explore Data Structure
-"""
+"""Explore Data Structure"""
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models

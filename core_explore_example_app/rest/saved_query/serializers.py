@@ -1,5 +1,4 @@
-""" Saved Query Serializers
-"""
+"""Saved Query Serializers"""
 
 from rest_framework.serializers import ModelSerializer
 

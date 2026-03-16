@@ -1,5 +1,4 @@
-""" Custom admin site for the Saved Query
-"""
+"""Custom admin site for the Saved Query"""
 
 from django.contrib import admin
 

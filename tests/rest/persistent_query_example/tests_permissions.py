@@ -1,5 +1,4 @@
-""" Authentication tests for PersistentQueryExample REST API.
-"""
+"""Authentication tests for PersistentQueryExample REST API."""
 
 from unittest.mock import patch
 

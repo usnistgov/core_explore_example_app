@@ -1,5 +1,4 @@
-""" Mock objects
-"""
+"""Mock objects"""
 
 from unittest.mock import Mock
 

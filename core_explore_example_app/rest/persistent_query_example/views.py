@@ -1,5 +1,4 @@
-""" REST views for the Persistent Query by Example.
-"""
+"""REST views for the Persistent Query by Example."""
 
 from django.db import IntegrityError
 from drf_spectacular.types import OpenApiTypes

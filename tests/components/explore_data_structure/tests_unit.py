@@ -1,5 +1,4 @@
-""" Unit Test Explore Data Structure
-"""
+"""Unit Test Explore Data Structure"""
 
 from unittest.case import TestCase
 

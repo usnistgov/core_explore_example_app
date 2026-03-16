@@ -1,5 +1,4 @@
-"""Util to build user readable queries
-"""
+"""Util to build user readable queries"""
 
 from core_parser_app.components.data_structure_element import (
     api as data_structure_element_api,

@@ -1,5 +1,4 @@
-"""Utils for the query builder
-"""
+"""Utils for the query builder"""
 
 from os.path import join
 

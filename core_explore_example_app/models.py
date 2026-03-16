@@ -1,5 +1,4 @@
-"""Explore Example models
-"""
+"""Explore Example models"""
 
 from django.db import models
 

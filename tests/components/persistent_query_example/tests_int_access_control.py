@@ -1,5 +1,4 @@
-""" Unit Test Persistent Query Example
-"""
+"""Unit Test Persistent Query Example"""
 
 from django.contrib.auth.models import AnonymousUser
 

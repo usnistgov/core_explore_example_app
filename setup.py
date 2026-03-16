@@ -1,5 +1,4 @@
-""" Setup for explore example app
-"""
+"""Setup for explore example app"""
 
 from os import chdir, pardir
 from os.path import join, exists, dirname, normpath, abspath

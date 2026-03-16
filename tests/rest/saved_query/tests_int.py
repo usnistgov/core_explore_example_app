@@ -1,5 +1,4 @@
-"""Integration tests for Saved Query rest api
-"""
+"""Integration tests for Saved Query rest api"""
 
 from rest_framework import status
 
